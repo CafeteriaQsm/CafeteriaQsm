@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>قائمة الطعام</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #c62828;
+            --primary-light: #ff5f52;
+            --primary-dark: #8e0000;
+            --secondary-color: #ffb74d;
+            --accent-color: #ff9800;
+            --light-bg: #fff8f0;
+            --card-bg: #ffffff;
+            --text-dark: #3e2723;
+            --text-light: #5d4037;
+            --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+            .logo i {
+                font-size: 2rem;
+            }
+
+        .cart-link {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+            .cart-link:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+            }
+
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px 10px;
+            gap: 10px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 80px;
+            z-index: 90;
+        }
+
+        .category-btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+            .category-btn.active, .category-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--secondary-color);
+            font-size: 1.8rem;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .meal-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+            .meal-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 20px rgba(198, 40, 40, 0.2);
+            }
+
+            .meal-card img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                transition: var(--transition);
+            }
+
+            .meal-card:hover img {
+                transform: scale(1.05);
+            }
+
+        .meal-content {
+            padding: 15px;
+        }
+
+        .meal-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .meal-card p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .meal-card button {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .meal-card button:hover {
+                background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+                transform: translateY(-2px);
+            }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            text-align: right;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--secondary-color);
+        }
+
+        .modal .extras {
+            margin: 20px 0;
+        }
+
+            .modal .extras h4 {
+                color: var(--text-dark);
+                margin-bottom: 10px;
+            }
+
+        .extras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+            .extras-grid label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                background-color: #f5f5f5;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+                .extras-grid label:hover {
+                    background-color: #eeeeee;
+                }
+
+            .extras-grid input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                accent-color: var(--primary-color);
+            }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .modal button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            font-weight: bold;
+        }
+
+            .add-btn:hover {
+                background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+                transform: translateY(-2px);
+            }
+
+        .close-btn {
+            background-color: #e0e0e0;
+            color: var(--text-dark);
+        }
+
+            .close-btn:hover {
+                background-color: #d6d6d6;
+            }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .categories {
+                top: 130px;
+            }
+
+            .menu-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .extras-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <span>مطعمنا الشهي</span>
+            </div>
+            <a href="cart.html" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>السلة</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="categories">
+        <button class="category-btn active" data-category="all">الكل</button>
+        <button class="category-btn" data-category="main">وجبات رئيسية</button>
+        <button class="category-btn" data-category="italian">مأكولات ايطالية</button>
+        <button class="category-btn" data-category="home">اكل بيتي</button>
+        <button class="category-btn" data-category="salads">سلطات</button>
+        <button class="category-btn" data-category="sandwiches">ساندويتشات</button>
+        <button class="category-btn" data-category="pastries">معجنات</button>
+        <button class="category-btn" data-category="drinks">مشروبات</button>
+        <button class="category-btn" data-category="extras">اضافات</button>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">الوجبات الرئيسية</h2>
+        <div class="menu-container" id="mainDishes">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">المأكولات الإيطالية</h2>
+        <div class="menu-container" id="italianDishes">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">الأكل البيتي</h2>
+        <div class="menu-container" id="homeDishes">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">السلطات</h2>
+        <div class="menu-container" id="salads">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">الساندويتشات</h2>
+        <div class="menu-container" id="sandwiches">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">المعجنات</h2>
+        <div class="menu-container" id="pastries">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">المشروبات</h2>
+        <div class="menu-container" id="drinks">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+
+        <h2 class="section-title">الإضافات</h2>
+        <div class="menu-container" id="extras">
+            <!-- سيتم تعبئتها بالجافاسكريبت -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="extrasModal">
+        <div class="modal-content">
+            <h3 id="modalMealName"></h3>
+            <div id="extrasContainer"></div>
+            <div class="modal-buttons">
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+                <button class="add-btn" onclick="confirmAddToCart()">
+                    <i class="fas fa-cart-plus"></i> أضف للسلة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const meals = [
+            // الوجبات الرئيسية
+            { name: "شاورما لحم", price: 30, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ30gIEfM4I30W_riIrovoJQLTCDMxK3oXzqQ&s", hasExtras: true, category: "main" },
+            { name: "شاورما دجاج", price: 25, img: "https://i0.wp.com/www.chefahmed.com/wp-content/uploads/2021/04/Chicken-Shawarma-2.jpg", hasExtras: true, category: "main" },
+            { name: "صدر دجاج مشوي", price: 28, img: "https://assets.nn.najah.edu/CACHE/images/uploads/weblog/2019/06/06/547597762/573f846611235ba9b74a23760c93ec6d.jpg", hasExtras: true, category: "main" },
+            { name: "شنيتسل دجاج", price: 22, img: "https://yummy.ps/upload/1561530971-seven-hens-photo-taken-at-chicken-schnitzel-eatery-by-on-3-hensley-hitch-price-(1).jpg", hasExtras: true, category: "main" },
+            { name: "كفتة مشوية", price: 32, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/kofta-kebab.jpg", hasExtras: true, category: "main" },
+
+            // المأكولات الإيطالية
+            { name: "بيتزا مارغريتا", price: 35, img: "https://www.acouplecooks.com/wp-content/uploads/2019/07/Margherita-Pizza-011.jpg", hasExtras: true, category: "italian" },
+            { name: "باستا كاربونارا", price: 28, img: "https://www.simplyrecipes.com/thmb/JmVE5vxG3b6tO46K7f2W0V6i6_4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Spaghetti-Carbonara-LEAD-6-425fb9a7064c486cb0c5f7c14a2a1e58.jpg", hasExtras: false, category: "italian" },
+            { name: "لازانيا", price: 32, img: "https://www.simplyrecipes.com/thmb/X5l5UP6mPvK0qJ7qyPtHhxPcHcM=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Best-Classic-Lasagna-Lead-1-b67f9c8bb82448d7ac34807d0d62244e.jpg", hasExtras: false, category: "italian" },
+
+            // الأكل البيتي
+            { name: "منسف", price: 40, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Mansaf.jpg", hasExtras: false, category: "home" },
+            { name: "مسخن", price: 35, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Musakhan.jpg", hasExtras: false, category: "home" },
+            { name: "محشي ورق عنب", price: 30, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Stuffed-Grape-Leaves.jpg", hasExtras: false, category: "home" },
+
+            // السلطات
+            { name: "سلطة يونانية", price: 18, img: "https://www.acouplecooks.com/wp-content/uploads/2021/05/Greek-Salad-004.jpg", hasExtras: true, category: "salads" },
+            { name: "سلطة سيزر", price: 20, img: "https://www.acouplecooks.com/wp-content/uploads/2021/04/Caesar-Salada-Recipe-002.jpg", hasExtras: true, category: "salads" },
+            { name: "تبولة", price: 15, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Tabbouleh.jpg", hasExtras: false, category: "salads" },
+
+            // الساندويتشات
+            { name: "ساندويتش شاورما", price: 18, img: "https://i0.wp.com/www.chefahmed.com/wp-content/uploads/2021/04/Chicken-Shawarma-Sandwich.jpg", hasExtras: true, category: "sandwiches" },
+            { name: "ساندويتش كفتة", price: 20, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Kofta-Sandwich.jpg", hasExtras: true, category: "sandwiches" },
+            { name: "ساندويتش فلافل", price: 12, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Falafel-Sandwich.jpg", hasExtras: true, category: "sandwiches" },
+            { name: "توست جبن", price: 10, img: "https://www.jacobs-agadatlechem.com/wp-content/uploads/2021/10/DAS1989-scaled-e1633924343146.jpg", hasExtras: true, category: "sandwiches" },
+
+            // المعجنات
+            { name: "مناقيش زعتر", price: 12, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Manakeesh-Zaatar.jpg", hasExtras: false, category: "pastries" },
+            { name: "سمبوسة", price: 15, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Sambousek.jpg", hasExtras: true, category: "pastries" },
+            { name: "فطيرة سبانخ", price: 14, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Spinach-Fatayer.jpg", hasExtras: false, category: "pastries" },
+
+            // المشروبات
+            { name: "اكس ال", price: 5, img: "https://almukhtar.ps/upload/05-2024/product/6651742694e20-IDX.jpeg", hasExtras: false, category: "drinks" },
+            { name: "كولا زيرو", price: 5, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8RRjpjXgm13-00Yq7XmMuWnqPuOsHqnv44w&s", hasExtras: false, category: "drinks" },
+            { name: "كولا", price: 5, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs4t872PT41WxH5VLhGUIFH0GwiEsdD68fYg&s", hasExtras: false, category: "drinks" },
+            { name: "ماء", price: 3, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtdZp306ifB0gJwo96Gk_3ZZN2GsRw-M2sGw&s", hasExtras: false, category: "drinks" },
+            { name: "صودا", price: 4, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEZg1Jy6nYhmRjmwpL3w5xPXrLE8DsLrWUTQ&s", hasExtras: false, category: "drinks" },
+            { name: "عصير برتقال", price: 8, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMMxOwc7Vs1a1xiHEZiRMSts8J1j8td4kz0Q&s", hasExtras: false, category: "drinks" },
+
+            // الإضافات
+            { name: "بطاطس مقلية", price: 8, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/French-Fries.jpg", hasExtras: false, category: "extras" },
+            { name: "نقانق", price: 15, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbzfomtDfXyKpSeTYhXNfwgfC6DgR9lrcvrid9_ILDDnTo992WgDQKjNQX_Zw0N9PPemA&usqp=CAU", hasExtras: false, category: "extras" },
+            { name: "جبنة إضافية", price: 5, img: "https://www.chefahmed.com/wp-content/uploads/2020/06/Cheese.jpg", hasExtras: false, category: "extras" }
+        ];
+
+        let selectedMeal = null;
+
+        // تصنيف الوجبات حسب الفئة
+        function categorizeMeals() {
+            const categories = {
+                main: document.getElementById('mainDishes'),
+                italian: document.getElementById('italianDishes'),
+                home: document.getElementById('homeDishes'),
+                salads: document.getElementById('salads'),
+                sandwiches: document.getElementById('sandwiches'),
+                pastries: document.getElementById('pastries'),
+                drinks: document.getElementById('drinks'),
+                extras: document.getElementById('extras')
+            };
+
+            // تفريغ الحاويات أولاً
+            Object.values(categories).forEach(container => {
+                container.innerHTML = '';
+            });
+
+            // إضافة الوجبات للحاويات المناسبة
+            meals.forEach(meal => {
+                const container = categories[meal.category];
+                if (container) {
+                    container.innerHTML += createMealCard(meal);
+                }
+            });
+        }
+
+        // إنشاء بطاقة وجبة
+        function createMealCard(meal) {
+            return `
+          <div class="meal-card" data-category="${meal.category}">
+            ${meal.hasExtras ? '<div class="badge">إضافات متاحة</div>' : ''}
+            <img src="${meal.img}" alt="${meal.name}" loading="lazy">
+            <div class="meal-content">
+              <h3>${meal.name}</h3>
+              <p>${getMealDescription(meal.name)}</p>
+              <span class="price">₪${meal.price}</span>
+              <button onclick='openExtrasModal(${JSON.stringify(meal).replace(/'/g, "\\'")})'>
+                <i class="fas fa-plus"></i> أضف إلى السلة
+              </button>
+            </div>
+          </div>
+        `;
+        }
+
+        // الحصول على وصف للوجبة
+        function getMealDescription(mealName) {
+            const descriptions = {
+                "شاورما لحم": "شاورما لحم طازجة مع خبز خاص وتوابل مميزة",
+                "شاورما دجاج": "شاورما دجاج مشوية مع خبز طازج وتوابل مميزة",
+                "صدر دجاج مشوي": "صدر دجاج مشوي مع أرز وخضار",
+                "شنيتسل دجاج": "شنيتسل دجاج مقرمش مع بطاطس مقلية",
+                "كفتة مشوية": "كفتة لحم مشوية مع أرز وخضار",
+                "بيتزا مارغريتا": "بيتزا إيطالية تقليدية مع جبن موزاريلا وطماطم",
+                "باستا كاربونارا": "باستا كريمي مع لحم مقدد وجبن بارميزان",
+                "لازانيا": "لازانيا إيطالية باللحم والجبن والصلصة",
+                "منسف": "الطبق الوطني الأردني مع اللحم والأرز والجميد",
+                "مسخن": "دجاج مشوي مع بصل وزيت زيتون على خبز طابون",
+                "محشي ورق عنب": "ورق عنب محشي بالأرز واللحم",
+                "سلطة يونانية": "خس، طماطم، خيار، زيتون، جبنة فيتا",
+                "سلطة سيزر": "خس، كراوتون، جبن بارميزان، صلصة سيزر",
+                "تبولة": "بقدونس، بندورة، بصل، برغل، زيت زيتون وليمون",
+                "ساندويتش شاورما": "شاورما دجاج في خبز طازج مع صلصات",
+                "ساندويتش كفتة": "كفتة لحم في خبز طازج مع خضار",
+                "ساندويتش فلافل": "فلافل مقرمشة في خبز طازج مع طحينة",
+                "توست جبن": "خبز توست محمص مع جبنة ذائبة",
+                "مناقيش زعتر": "عجينة رقيقة مع زعتر وزيت زيتون",
+                "سمبوسة": "عجينة رقيقة محشوة باللحم أو الجبن",
+                "فطيرة سبانخ": "عجينة رقيقة محشوة بالسبانخ والبهارات",
+                "بطاطس مقلية": "بطاطس مقلية مقرمشة ومملحة",
+                "نقانق": "نقانق مشوية مع خبز وتوابل",
+                "جبنة إضافية": "جبنة موزاريلا إضافية لأي وجبة"
+            };
+
+            return descriptions[mealName] || "وجبة لذيذة ومشبعة";
+        }
+
+        function openExtrasModal(meal) {
+            selectedMeal = meal;
+            document.getElementById("modalMealName").innerText = meal.name;
+
+            const container = document.getElementById("extrasContainer");
+            container.innerHTML = "";
+
+            if (meal.hasExtras) {
+                const options = ["خس", "بندورة", "بصل", "سلطة عربية", "كتشوب", "مايونيز", "صوص ثوم", "صوص حار"];
+                container.innerHTML = `
+            <div class="extras">
+              <h4>اختر الإضافات:</h4>
+              <div class="extras-grid">
+                ${options.map(opt => `
+                  <label>
+                    <input type="checkbox" value="${opt}">
+                    <span>${opt}</span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+          `;
+            } else {
+                container.innerHTML = "<p>لا توجد إضافات لهذه الوجبة.</p>";
+            }
+
+            document.getElementById("extrasModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("extrasModal").style.display = "none";
+        }
+
+        function confirmAddToCart() {
+            const checkboxes = document.querySelectorAll("#extrasContainer input:checked");
+            const extras = Array.from(checkboxes).map(cb => cb.value);
+
+            let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+            order.cart.push({
+                name: selectedMeal.name,
+                price: selectedMeal.price,
+                extras: extras,
+                img: selectedMeal.img
+            });
+
+            localStorage.setItem("order", JSON.stringify(order));
+
+            // إشعار بصري بدلاً من alert
+            showNotification(`✅ تم إضافة ${selectedMeal.name} إلى السلة`);
+            closeModal();
+        }
+
+        // إظهار إشعار
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--primary-color);
+          color: white;
+          padding: 15px 25px;
+          border-radius: 50px;
+          box-shadow: var(--shadow);
+          z-index: 10000;
+          font-weight: bold;
+          animation: fadeInOut 3s ease;
+        `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // فلترة القوائم حسب الفئة
+        function setupCategoryFilter() {
+            const categoryBtns = document.querySelectorAll('.category-btn');
+
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // إزالة النشاط من جميع الأزرار
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    // إضافة النشاط للزر المختار
+                    btn.classList.add('active');
+
+                    const category = btn.dataset.category;
+                    filterMealsByCategory(category);
+                });
+            });
+        }
+
+        // فلترة الوجبات حسب الفئة
+        function filterMealsByCategory(category) {
+            const allMealCards = document.querySelectorAll('.meal-card');
+
+            if (category === 'all') {
+                // إظهار جميع الوجبات
+                allMealCards.forEach(card => {
+                    card.style.display = 'block';
+                });
+
+                // إظهار جميع الأقسام
+                document.querySelectorAll('.menu-container').forEach(container => {
+                    container.style.display = 'grid';
+                });
+
+                document.querySelectorAll('.section-title').forEach(title => {
+                    title.style.display = 'block';
+                });
+            } else {
+                // إخفاء جميع الوجبات أولاً
+                allMealCards.forEach(card => {
+                    card.style.display = 'none';
+                });
+
+                // إخفاء جميع الأقسام أولاً
+                document.querySelectorAll('.menu-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+
+                document.querySelectorAll('.section-title').forEach(title => {
+                    title.style.display = 'none';
+                });
+
+                // إظهار الوجبات في الفئة المحددة فقط
+                const categoryCards = document.querySelectorAll(`.meal-card[data-category="${category}"]`);
+                categoryCards.forEach(card => {
+                    card.style.display = 'block';
+                });
+
+                // إظهار القسم المناسب
+                const sectionId = getSectionIdByCategory(category);
+                if (sectionId) {
+                    document.getElementById(sectionId).style.display = 'grid';
+                    document.querySelector(`.section-title[data-category="${category}"]`).style.display = 'block';
+                }
+            }
+        }
+
+        // الحصول على معرف القسم حسب الفئة
+        function getSectionIdByCategory(category) {
+            const mapping = {
+                'main': 'mainDishes',
+                'italian': 'italianDishes',
+                'home': 'homeDishes',
+                'salads': 'salads',
+                'sandwiches': 'sandwiches',
+                'pastries': 'pastries',
+                'drinks': 'drinks',
+                'extras': 'extras'
+            };
+
+            return mapping[category];
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            categorizeMeals();
+            setupCategoryFilter();
+
+            // إضافة خاصية data-category لعناوين الأقسام
+            document.querySelectorAll('.section-title').forEach(title => {
+                const sectionId = title.nextElementSibling.id;
+                const category = Object.keys({
+                    'mainDishes': 'main',
+                    'italianDishes': 'italian',
+                    'homeDishes': 'home',
+                    'salads': 'salads',
+                    'sandwiches': 'sandwiches',
+                    'pastries': 'pastries',
+                    'drinks': 'drinks',
+                    'extras': 'extras'
+                }).find(key => key === sectionId);
+
+                if (category) {
+                    title.setAttribute('data-category', category);
+                }
+            });
+        });
+
+        // إغلاق المودال عند النقر خارجها
+        window.onclick = function (event) {
+            const modal = document.getElementById('extrasModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+
+</body>
+</html>
