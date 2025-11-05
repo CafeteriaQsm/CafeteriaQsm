@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>تسجيل الدخول - كافتيريا</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
         * {
             box-sizing: border-box;
@@ -158,11 +157,11 @@
         </form>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
             authDomain: "cafeteria-app-82268.firebaseapp.com",
@@ -173,11 +172,30 @@
             appId: "1:457381739769:web:409cb927ef54368cb3f628"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-        window.loginUser = async function () {
+        // حفظ حالة تسجيل الدخول
+        function saveLoginSession(user) {
+            const sessionData = {
+                uid: user.uid,
+                email: user.email,
+                lastLogin: new Date().toISOString(),
+                loggedIn: true
+            };
+            localStorage.setItem('userSession', JSON.stringify(sessionData));
+        }
+
+        // التحقق من تسجيل الدخول
+        function checkAuth() {
+            const session = JSON.parse(localStorage.getItem('userSession'));
+            if (session && session.loggedIn) {
+                window.location.href = 'menu.html';
+            }
+        }
+
+        async function loginUser() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
             const messageDiv = document.getElementById('message');
@@ -190,13 +208,16 @@
             showMessage('⏳ جاري تسجيل الدخول...', 'success');
 
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
                 // تحديث آخر وقت تسجيل دخول في قاعدة البيانات
-                await update(ref(database, 'users/' + user.uid), {
+                await database.ref('users/' + user.uid).update({
                     lastLogin: new Date().toISOString()
                 });
+
+                // حفظ الجلسة
+                saveLoginSession(user);
 
                 showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
 
@@ -222,7 +243,7 @@
                 }
                 showMessage(errorMessage, 'error');
             }
-        };
+        }
 
         function showMessage(message, type) {
             const messageDiv = document.getElementById('message');
@@ -234,6 +255,9 @@
         document.getElementById('password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') loginUser();
         });
+
+        // التحقق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>
 </html>
