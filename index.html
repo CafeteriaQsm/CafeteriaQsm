@@ -110,19 +110,14 @@ window.loginUser = async function () {
     showMessage('⏳ جاري تسجيل الدخول...', 'success');
 
     try {
-        await setPersistence(auth, browserLocalPersistence); // يظل مسجل الدخول
+        await setPersistence(auth, browserLocalPersistence);
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // تحديث آخر وقت تسجيل دخول في قاعدة البيانات
         const now = new Date().toISOString();
         await update(ref(database, 'users/' + user.uid), { lastLogin: now });
 
-        showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
-
-        setTimeout(() => {
-            window.location.href = 'menu.html';
-        }, 1000);
+        showMessage('✅ تم تسجيل الدخول بنجاح! يمكنك الآن الذهاب إلى المنيو', 'success');
 
     } catch (error) {
         let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
@@ -143,27 +138,16 @@ window.loginUser = async function () {
     }
 };
 
-// التحقق من حالة المستخدم تلقائياً عند فتح الصفحة
+// التحقق من حالة المستخدم لتحديث آخر تسجيل دخول (بدون إعادة توجيه)
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // جلب آخر تسجيل دخول
         const dbRef = ref(database);
         const snapshot = await get(child(dbRef, 'users/' + user.uid + '/lastLogin'));
         const lastLogin = snapshot.exists() ? snapshot.val() : 'لا يوجد تسجيل سابق';
-
         lastLoginDisplay.textContent = 'آخر تسجيل دخول: ' + lastLogin;
-
-        // عرض الشاشة لبضع ثواني ثم الانتقال للصفحة الرئيسية
-        splash.style.opacity = '1';
-        setTimeout(() => {
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                window.location.href = 'menu.html';
-            }, 500);
-        }, 1500);
-
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 500);
     } else {
-        // لا يوجد مستخدم مسجل الدخول
         splash.style.display = 'none';
     }
 });
