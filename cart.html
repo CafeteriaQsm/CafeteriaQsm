@@ -266,122 +266,47 @@
         .btn {
             padding: 14px 25px;
             border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            flex: 1;
-            min-width: 150px;
+            font-weight: bold;
         }
 
         .btn-primary {
             background: linear-gradient(to right, var(--primary-color), var(--primary-light));
             color: white;
+            flex-grow: 1;
         }
 
             .btn-primary:hover {
                 background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
-                transform: translateY(-3px);
-                box-shadow: 0 6px 12px rgba(198, 40, 40, 0.2);
+                transform: translateY(-2px);
             }
 
         .btn-secondary {
-            background-color: #e9ecef;
+            background-color: #f1f1f1;
             color: var(--text-dark);
+            flex-grow: 1;
         }
 
             .btn-secondary:hover {
-                background-color: #dee2e6;
-                transform: translateY(-3px);
+                background-color: #ddd;
+                transform: translateY(-2px);
             }
 
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-            .btn-outline:hover {
-                background-color: var(--primary-color);
-                color: white;
-                transform: translateY(-3px);
-            }
-
-        .status-view {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            margin: 25px 0;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-            .status-view h3 {
-                color: var(--primary-color);
-                margin-bottom: 15px;
-            }
-
-        .status-info {
-            background-color: #e7f3ff;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-            .status-info p {
-                margin-bottom: 10px;
-            }
-
-        .my-orders-section {
-            margin-top: 40px;
-        }
-
-            .my-orders-section h3 {
-                color: var(--primary-color);
-                margin-bottom: 20px;
-                text-align: center;
-                padding-bottom: 10px;
-                border-bottom: 2px dashed var(--secondary-color);
-            }
-
-        .orders-container {
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .order-item-list {
-            margin-top: 15px;
-            padding-right: 15px;
-        }
-
-            .order-item-list li {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 10px;
-                padding-bottom: 10px;
-                border-bottom: 1px dashed #eee;
-            }
-
-            .order-item-list img {
-                width: 50px;
-                height: 50px;
-                border-radius: 8px;
-                object-fit: cover;
-            }
-
+        /* Order Status Styling */
         .order-status {
             display: inline-block;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         .status-pending {
@@ -404,6 +329,7 @@
             color: #155724;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .order-card {
                 flex-direction: column;
@@ -432,78 +358,107 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ستايل إشعارات الأكواد */
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+            90% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+        }
     </style>
 </head>
 <body>
-
     <div class="header">
         <h2><i class="fas fa-shopping-cart"></i> سلة الطلبات</h2>
         <p>راجع طلباتك وأكمل عملية الشراء</p>
     </div>
 
     <div class="cart-container">
-        <div id="cartContainer"></div>
+        <div id="cartContainer">
+            </div>
 
         <div class="order-form" id="orderSummary" style="display:none;">
             <h3><i class="fas fa-user-edit"></i> معلومات الطلب</h3>
-
             <div class="form-group">
                 <label for="studentName"><i class="fas fa-user"></i> اسم الطالب *</label>
                 <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية">
                 <small style="color: var(--text-light); font-size: 0.8rem;">يجب أن يكون اسم عربي صحيح</small>
             </div>
-
             <div class="form-group">
                 <label for="pickupInput"><i class="fas fa-clock"></i> وقت الاستلام *</label>
                 <input type="time" id="pickupInput" required>
             </div>
-
+            <div class="form-group">
+                <label for="notesInput"><i class="fas fa-sticky-note"></i> ملاحظات إضافية (اختياري)</label>
+                <textarea id="notesInput" rows="3" placeholder="أي ملاحظات حول الطلب (مثل حساسية، لا بصل، إلخ)"></textarea>
+            </div>
             <div class="form-group">
                 <label><i class="fas fa-credit-card"></i> طريقة الدفع *</label>
                 <div class="payment-methods">
-                    <div class="payment-method selected" onclick="selectPaymentMethod('cash')">
+                    <div class="payment-method selected" onclick="selectPaymentMethod('cash')" data-method="cash">
                         <i class="fas fa-money-bill-wave"></i>
                         <span>الدفع نقداً</span>
                     </div>
-                    <div class="payment-method" onclick="selectPaymentMethod('card')">
+                    <div class="payment-method" onclick="selectPaymentMethod('card')" data-method="card">
                         <i class="fas fa-credit-card"></i>
                         <span>بطاقة ائتمان</span>
                     </div>
-                    <div class="payment-method" onclick="selectPaymentMethod('mobile')">
+                    <div class="payment-method" onclick="selectPaymentMethod('mobile')" data-method="mobile">
                         <i class="fas fa-mobile-alt"></i>
                         <span>محفظة إلكترونية</span>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="noteInput"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
-                <textarea id="noteInput" rows="3" placeholder="أدخل ملاحظاتك الخاصة بالطلب (اختياري)"></textarea>
-            </div>
-
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="goToMenu()">
-                    <i class="fas fa-arrow-right"></i> الرجوع للقائمة
+                    <i class="fas fa-utensils"></i> قائمة الطعام
                 </button>
-                <button class="btn btn-primary" onclick="confirmOrder()">
+                <button class="btn btn-primary" onclick="placeOrder()">
                     <i class="fas fa-paper-plane"></i> إرسال الطلب
                 </button>
             </div>
         </div>
 
-        <div id="statusView"></div>
+        <div class="order-form" id="liveStatusSection" style="display:none;">
+            <h3><i class="fas fa-truck"></i> تتبع حالة الطلب <span id="orderCodeDisplay" style="color: var(--primary-light); font-size: 0.9em;"></span></h3>
+            <p style="text-align: center; font-size: 1.1rem;">
+                الحالة الحالية: <span id="liveStatus" class="order-status status-pending"></span>
+            </p>
+            <div class="action-buttons">
+                 <button class="btn btn-secondary" onclick="clearLiveStatus()">
+                    <i class="fas fa-times-circle"></i> مسح حالة الطلب
+                </button>
+            </div>
+        </div>
 
-        <div class="my-orders-section">
-            <h3><i class="fas fa-clipboard-list"></i> طلباتي الحالية</h3>
-            <button class="btn btn-outline" onclick="showMyOrders()">
-                <i class="fas fa-eye"></i> عرض طلباتي
-            </button>
-            <div id="myOrdersContainer" class="orders-container"></div>
+        <div class="order-form" id="myOrdersSection">
+             <h3><i class="fas fa-history"></i> طلباتي الحالية</h3>
+             <div id="myOrdersContainer">
+                 <p>جاري تحميل الطلبات...</p>
+             </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCu4ged4p8GzaQo4DFbY_sthYWHSvSYqpU",
@@ -516,169 +471,197 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        const auth = firebase.auth(); // تعريف Auth
 
         const cartContainer = document.getElementById("cartContainer");
         const orderSummary = document.getElementById("orderSummary");
-        const myOrdersContainer = document.getElementById("myOrdersContainer");
-        const order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
-        const userId = localStorage.getItem("userUID") || "user_" + Math.floor(Math.random() * 10000);
-        let selectedPaymentMethod = "cash";
+        let order = JSON.parse(localStorage.getItem('order')) || { cart: [], total: 0 };
+        let selectedPaymentMethod = 'cash'; // الدفع نقداً هو الافتراضي
 
-        // ✅ التحقق من صحة البيانات
-        function validateOrderData() {
-            const nameValue = document.getElementById("studentName").value.trim();
-            const timeValue = document.getElementById("pickupInput").value;
+        // ... (دالة showNotification) ...
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
+                color: ${type === 'error' ? '#721c24' : '#155724'};
+                padding: 15px 25px;
+                border-radius: 50px;
+                box-shadow: var(--shadow);
+                z-index: 10000;
+                font-weight: bold;
+                animation: fadeInOut 3s ease;
+                border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
+            `;
 
-            // التحقق من الاسم
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // ... (دالة selectPaymentMethod) ...
+        function selectPaymentMethod(method) {
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            selectedPaymentMethod = method;
+        }
+
+        // ... (دالة validateForm) ...
+        function validateForm(nameValue, timeValue) {
+            // Regex للتحقق من أن الاسم عربي (أحرف عربية ومسافات فقط)
+            const arabicRegex = /^[\u0621-\u064A\s]{3,}$/; 
+
             if (!nameValue) {
                 showNotification("⚠️ الرجاء إدخال اسم الطالب", "error");
                 return false;
             }
-
-            if (nameValue.length < 2) {
-                showNotification("⚠️ الاسم يجب أن يكون أكثر من حرفين", "error");
-                return false;
-            }
-
-            // التحقق من أن الاسم عربي فقط
-            const arabicRegex = /^[\u0600-\u06FF\s]+$/;
             if (!arabicRegex.test(nameValue)) {
                 showNotification("⚠️ الرجاء إدخال اسم عربي صحيح", "error");
                 return false;
             }
-
             // التحقق من الوقت
             if (!timeValue) {
                 showNotification("⚠️ الرجاء اختيار وقت الاستلام", "error");
                 return false;
             }
-
             return true;
         }
 
-        // ✅ عرض محتويات السلة
-        if (order.cart.length > 0) {
-            let total = 0;
-            order.cart.forEach((item, i) => {
-                total += item.price;
-                const div = document.createElement("div");
-                div.className = "order-card";
-                div.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <div class="order-details">
-            <h3>${item.name}</h3>
-            <p class="price">₪${item.price}</p>
-            ${item.extras?.length ? `<p class="extras"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
-          </div>
-          <button class="remove-btn" onclick="removeItem(${i})">
-            <i class="fas fa-trash"></i> إزالة
-          </button>
-        `;
-                cartContainer.appendChild(div);
-            });
-
-            const totalSection = document.createElement("div");
-            totalSection.className = "total-section";
-            totalSection.innerHTML = `
-        <h3>إجمالي الطلب</h3>
-        <div class="total-price">₪${total}</div>
-        <p>يشمل جميع الطلبات والإضافات</p>
-      `;
-            cartContainer.appendChild(totalSection);
-
-            orderSummary.style.display = "block";
-        } else {
-            cartContainer.innerHTML = `
-        <div class="empty-cart">
-          <i class="fas fa-shopping-cart"></i>
-          <h3>سلة التسوق فارغة</h3>
-          <p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p>
-          <button class="btn btn-primary" onclick="goToMenu()">
-            <i class="fas fa-utensils"></i> تصفح القائمة
-          </button>
-        </div>
-      `;
-        }
-
-        function removeItem(index) {
-            order.cart.splice(index, 1);
-            localStorage.setItem("order", JSON.stringify(order));
-            location.reload();
-        }
-
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-
-            // إزالة التحديد من جميع الأزرار
-            document.querySelectorAll('.payment-method').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-
-            // إضافة التحديد للزر المختار
-            event.currentTarget.classList.add('selected');
-        }
-
-        function goToMenu() {
-            window.location.href = "menu.html";
-        }
-
-        // ✅ إرسال الطلب إلى Firebase
-        function confirmOrder() {
-            // التحقق من صحة البيانات أولاً
-            if (!validateOrderData()) {
+        // ... (دالة placeOrder - تم تعديلها لإضافة حماية تسجيل الدخول وبيانات المستخدم) ...
+        async function placeOrder() {
+            const user = auth.currentUser;
+            
+            // 6. التحقق من تسجيل الدخول قبل إرسال الطلب
+            if (!user) {
+                showNotification('⚠️ يجب تسجيل الدخول أولاً لإرسال الطلب', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
                 return;
             }
 
-            const timeValue = document.getElementById("pickupInput").value;
-            const nameValue = document.getElementById("studentName").value.trim();
-            const note = document.getElementById("noteInput").value.trim();
+            const studentName = document.getElementById("studentName").value.trim();
+            const pickupTime = document.getElementById("pickupInput").value;
+            const notes = document.getElementById("notesInput").value.trim();
+            const paymentMethod = selectedPaymentMethod;
 
-            // تنظيف الاسم من أي رموز غير مرغوب فيها
-            const cleanName = nameValue.replace(/[^\u0600-\u06FF\s]/g, '').trim();
+            if (!validateForm(studentName, pickupTime)) return;
 
-            const orderCode = Math.floor(100000 + Math.random() * 900000);
+            // جلب رقم الهاتف والـ UID من بيانات المستخدم المسجل
+            const userSnapshot = await db.ref('users/' + user.uid).once('value');
+            const userData = userSnapshot.val();
 
-            const newOrder = {
+            if (!userData || !userData.phone) {
+                 showNotification('❌ فشل إرسال الطلب: بيانات المستخدم (كالهاتف) غير متوفرة. حاول إعادة تسجيل الدخول.', 'error');
+                 return;
+            }
+            
+            // إنشاء كود الطلب
+            const orderCode = Math.random().toString(36).substring(2, 9).toUpperCase();
+            
+            const newOrderRef = db.ref("orders").push();
+            
+            const orderDataToSave = {
                 code: orderCode,
-                studentName: cleanName,
-                userId: userId,
-                items: order.cart,
-                pickupTime: timeValue,
-                paymentMethod: selectedPaymentMethod,
-                notes: note,
-                total: order.cart.reduce((sum, item) => sum + item.price, 0),
-                status: "قيد المعالجة",
+                cart: order.cart,
+                total: order.total,
+                studentName: studentName,
+                studentPhone: userData.phone, // استخدام رقم الهاتف من قاعدة البيانات
+                userId: user.uid, // إضافة معرف المستخدم
+                pickupTime: pickupTime,
+                notes: notes,
+                paymentMethod: paymentMethod,
+                status: "قيد المعالجة", // الحالة الافتراضية
                 timestamp: new Date().toISOString()
             };
 
-            firebase.database().ref("orders").push(newOrder).then(() => {
-                localStorage.removeItem("order");
-                showStatusTracking(newOrder);
-                showNotification("✅ تم إرسال طلبك بنجاح!", "success");
-            }).catch(error => {
-                showNotification("❌ حدث خطأ أثناء إرسال الطلب", "error");
-                console.error("Error:", error);
-            });
+            newOrderRef.set(orderDataToSave)
+                .then(() => {
+                    showNotification(`✅ تم إرسال طلبك بنجاح! رقم الطلب: ${orderCode}`, "success");
+                    localStorage.removeItem('order');
+                    order = { cart: [], total: 0 };
+                    displayCart(); // لتحديث واجهة السلة (ستظهر فارغة)
+                    
+                    // تحديث واجهة تتبع الحالة
+                    document.getElementById('liveStatusSection').style.display = 'block';
+                    document.getElementById('orderCodeDisplay').textContent = `#${orderCode}`;
+                    trackLiveStatus(orderCode); // بدء تتبع حالة الطلب
+
+                    // تحديث قائمة الطلبات الحالية
+                    loadMyOrders(user);
+                })
+                .catch(error => {
+                    showNotification("❌ فشل في إرسال الطلب إلى المطعم", "error");
+                    console.error("Firebase Error:", error);
+                });
+        }
+        
+        // ... (دالة displayCart - تم تعديلها لاستخدام دالة updateOrder) ...
+        function displayCart() {
+            cartContainer.innerHTML = "";
+            let total = 0;
+            
+            if (order.cart.length > 0) {
+                order.cart.forEach((item, i) => {
+                    total += item.price;
+                    const div = document.createElement("div");
+                    div.className = "order-card";
+                    div.innerHTML = `
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="order-details">
+                            <h3>${item.name}</h3>
+                            <p class="price">₪${item.price}</p>
+                            ${item.extras?.length ? `<p class="extras"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${i})">
+                            <i class="fas fa-trash"></i> إزالة
+                        </button>
+                    `;
+                    cartContainer.appendChild(div);
+                });
+
+                const totalSection = document.createElement("div");
+                totalSection.className = "total-section";
+                totalSection.innerHTML = `
+                    <h3>إجمالي الطلب</h3>
+                    <div class="total-price">₪${total}</div>
+                    <p>يشمل جميع الطلبات والإضافات</p>
+                `;
+                cartContainer.appendChild(totalSection);
+                orderSummary.style.display = "block";
+            } else {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>سلة التسوق فارغة</h3>
+                        <p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p>
+                        <button class="btn btn-primary" onclick="goToMenu()">
+                            <i class="fas fa-utensils"></i> تصفح القائمة
+                        </button>
+                    </div>
+                `;
+                orderSummary.style.display = "none";
+            }
+            // تحديث إجمالي الطلب في الكائن order
+            order.total = total;
+            localStorage.setItem('order', JSON.stringify(order));
         }
 
-        // ✅ تتبع حالة الطلب
-        function showStatusTracking(data) {
-            const statusView = document.getElementById("statusView");
-            statusView.innerHTML = `
-        <div class="status-view">
-          <h3><i class="fas fa-check-circle"></i> تم استلام طلبك</h3>
-          <div class="status-info">
-            <p><strong>رقم الطلب:</strong> ${data.code}</p>
-            <p><strong>الحالة الحالية:</strong> <span class="order-status status-pending" id="liveStatus">${data.status}</span></p>
-            <p><strong>طريقة الدفع:</strong> ${getPaymentMethodText(data.paymentMethod)}</p>
-            <p><strong>وقت الاستلام:</strong> ${data.pickupTime}</p>
-          </div>
-          <p>سيتم تحديث حالة الطلب تلقائياً. يمكنك متابعة الطلب من قسم "طلباتي الحالية"</p>
-        </div>
-      `;
-            trackLiveStatus(data.code);
-            document.getElementById("orderSummary").style.display = "none";
-            cartContainer.innerHTML = "";
+        // ... (بقية الوظائف الحالية مثل removeItem و goToMenu و getPaymentMethodText و trackLiveStatus و clearLiveStatus و loadMyOrders) ...
+        function removeItem(index) {
+            order.cart.splice(index, 1); // إزالة العنصر من السلة
+            displayCart(); // إعادة عرض السلة
+            showNotification("🗑️ تم إزالة العنصر من السلة", "error");
+        }
+
+        function goToMenu() {
+            window.location.href = 'menu.html';
         }
 
         function getPaymentMethodText(method) {
@@ -696,112 +679,123 @@
                 snapshot.forEach(child => {
                     const newStatus = child.val().status;
                     document.getElementById("liveStatus").innerText = newStatus;
+                    document.getElementById('liveStatusSection').style.display = 'block';
 
-                    // تحديث فئة الحالة حسب التقدم
                     const statusElement = document.getElementById("liveStatus");
                     statusElement.className = "order-status";
-
                     if (newStatus === "قيد المعالجة") {
                         statusElement.classList.add("status-pending");
                     } else if (newStatus === "جاري التحضير") {
                         statusElement.classList.add("status-processing");
-                    } else if (newStatus === "جاهز للاستلام") {
+                    } else if (newStatus === "جاهز") {
                         statusElement.classList.add("status-ready");
-                    } else if (newStatus === "مكتمل") {
+                    } else if (newStatus === "تم التسليم") {
                         statusElement.classList.add("status-completed");
+                    }
+
+                    // إخفاء قسم التتبع بعد التسليم
+                    if (newStatus === "تم التسليم") {
+                        setTimeout(() => {
+                           // clearLiveStatus();
+                        }, 5000);
                     }
                 });
             });
         }
 
-        // ✅ عرض الطلبات الخاصة بالمستخدم
-        function showMyOrders() {
-            myOrdersContainer.innerHTML = "<p>🔄 جاري تحميل طلباتك...</p>";
-            db.ref("orders").orderByChild("userId").equalTo(userId).on("value", snapshot => {
+        // مسح حالة التتبع المباشرة
+        function clearLiveStatus() {
+            localStorage.removeItem('trackingOrderCode');
+            document.getElementById('liveStatusSection').style.display = 'none';
+            showNotification('✅ تم مسح حالة تتبع الطلب', 'success');
+        }
+
+        // تحميل الطلبات الحالية للمستخدم
+        function loadMyOrders(user) {
+            const myOrdersContainer = document.getElementById("myOrdersContainer");
+            myOrdersContainer.innerHTML = "<p>جاري تحميل الطلبات...</p>";
+            
+            // جلب آخر 5 طلبات لهذا المستخدم غير المكتملة
+            db.ref("orders").orderByChild("userId").equalTo(user.uid).limitToLast(5).on("value", snapshot => {
                 myOrdersContainer.innerHTML = "";
                 let found = false;
 
                 snapshot.forEach(child => {
+                    const orderId = child.key;
                     const order = child.val();
-                    const listItems = order.items?.map(item =>
-                        `<li>
-              <img src="${item.img}">
-              <div>
-                <strong>${item.name}</strong> - ₪${item.price}
-                ${item.extras?.length ? `<br><small>${item.extras.join(", ")}</small>` : ""}
-              </div>
-            </li>`
-                    ).join("");
+                    
+                    // عرض الطلبات التي لم يتم تسليمها بعد
+                    if (order.status === "تم التسليم") return;
 
                     found = true;
-                    const card = document.createElement("div");
+                    
+                    let listItems = order.cart.map(item => `
+                        <li>
+                            <span>${item.name} (₪${item.price})</span>
+                            ${item.extras?.length ? `<small>+ ${item.extras.join(", ")}</small>` : ''}
+                        </li>
+                    `).join('');
+
+                    const statusClass = order.status === "قيد المعالجة" ? "status-pending" :
+                                       order.status === "جاري التحضير" ? "status-processing" :
+                                       order.status === "جاهز" ? "status-ready" : "";
+
+                    const card = document.createElement('div');
                     card.className = "order-card";
-
-                    // تحديد فئة الحالة
-                    let statusClass = "status-pending";
-                    if (order.status === "جاري التحضير") statusClass = "status-processing";
-                    else if (order.status === "جاهز للاستلام") statusClass = "status-ready";
-                    else if (order.status === "مكتمل") statusClass = "status-completed";
-
+                    card.style.flexDirection = 'column';
+                    card.style.alignItems = 'flex-start';
                     card.innerHTML = `
-            <div style="width: 100%;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3>🧾 رقم الطلب: ${order.code}</h3>
-                <span class="order-status ${statusClass}">${order.status}</span>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                <p><strong>👤 اسم الطالب:</strong> ${order.studentName}</p>
-                <p><strong>⏰ وقت الاستلام:</strong> ${order.pickupTime}</p>
-                <p><strong>💰 المجموع:</strong> ₪${order.total}</p>
-                <p><strong>💳 طريقة الدفع:</strong> ${getPaymentMethodText(order.paymentMethod)}</p>
-              </div>
-              ${order.notes ? `<p><strong>📝 الملاحظات:</strong> ${order.notes}</p>` : ""}
-              <div class="order-item-list">
-                <h4>الطلبات:</h4>
-                <ul>${listItems}</ul>
-              </div>
-            </div>
-          `;
+                        <div style="width: 100%;">
+                            <h4 style="margin-bottom: 5px;">طلب رقم: #${order.code}</h4>
+                            <span class="order-status ${statusClass}">${order.status}</span>
+                            <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">
+                                وقت الاستلام: ${order.pickupTime} | المجموع: ₪${order.total} | الدفع: ${getPaymentMethodText(order.paymentMethod)}
+                            </p>
+                            <div style="margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px;">
+                                <h4>محتويات الطلب:</h4>
+                                <ul style="list-style: none; padding-right: 0;">${listItems}</ul>
+                            </div>
+                        </div>
+                    `;
                     myOrdersContainer.appendChild(card);
                 });
 
                 if (!found) {
-                    myOrdersContainer.innerHTML = "<p>❌ لا توجد طلبات حالية.</p>";
+                    myOrdersContainer.innerHTML = "<p>✅ لا توجد طلبات قيد التنفيذ حالياً.</p>";
                 }
             });
         }
 
-        // إظهار إشعار
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
-        color: ${type === 'error' ? '#721c24' : '#155724'};
-        padding: 15px 25px;
-        border-radius: 50px;
-        box-shadow: var(--shadow);
-        z-index: 10000;
-        font-weight: bold;
-        animation: fadeInOut 3s ease;
-        border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
-      `;
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        // تحديد طريقة الدفع الافتراضية عند التحميل
+        // تحديد طريقة الدفع الافتراضية عند التحميل وعرض محتويات السلة
         document.addEventListener('DOMContentLoaded', function () {
             // تحديد الدفع نقداً كخيار افتراضي
-            document.querySelector('.payment-method').classList.add('selected');
+            document.querySelector('.payment-method[data-method="cash"]').click();
+            displayCart();
+
+            // عند تحميل الصفحة، نتحقق من المستخدم لعرض طلباته وتعبئة اسمه
+            auth.onAuthStateChanged(user => {
+                 if (user) {
+                     loadMyOrders(user);
+                     // تعبئة الاسم من قاعدة البيانات إذا كان موجوداً
+                    db.ref('users/' + user.uid).once('value', snapshot => {
+                        const userData = snapshot.val();
+                        if (userData && userData.username) {
+                            document.getElementById('studentName').value = userData.username;
+                        }
+                    });
+
+                     // التحقق من وجود طلب قيد التتبع
+                     const trackingCode = localStorage.getItem('trackingOrderCode');
+                     if (trackingCode) {
+                         document.getElementById('liveStatusSection').style.display = 'block';
+                         document.getElementById('orderCodeDisplay').textContent = `#${trackingCode}`;
+                         trackLiveStatus(trackingCode);
+                     }
+                 } else {
+                     // إذا لم يكن مسجل دخوله، لا يتم تحميل الطلبات الحالية
+                     document.getElementById("myOrdersContainer").innerHTML = "<p>👤 يرجى تسجيل الدخول لعرض طلباتك الحالية.</p>";
+                 }
+             });
         });
     </script>
 </body>
