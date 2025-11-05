@@ -1,239 +1,177 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>تسجيل الدخول - كافتيريا</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>تسجيل الدخول - كافتيريا</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .container { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); padding: 40px; width: 100%; max-width: 450px; position: relative; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo i { font-size: 50px; color: #667eea; margin-bottom: 15px; }
+    h1 { color: #333; text-align: center; margin-bottom: 10px; font-size: 28px; }
+    .subtitle { color: #666; text-align: center; margin-bottom: 30px; }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
+    input { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: border-color 0.3s; }
+    input:focus { outline: none; border-color: #667eea; }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+    .btn:hover { transform: translateY(-2px); }
 
-            .logo i {
-                font-size: 50px;
-                color: #667eea;
-                margin-bottom: 15px;
-            }
+    .links { text-align: center; margin-top: 20px; }
+    .links a { color: #667eea; text-decoration: none; }
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
+    .message { padding: 12px; border-radius: 8px; margin-top: 15px; text-align: center; display: none; }
+    .success { background: #d4edda; color: #155724; display: block; }
+    .error { background: #f8d7da; color: #721c24; display: block; }
 
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-            input:focus {
-                outline: none;
-                border-color: #667eea;
-            }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-            .btn:hover {
-                transform: translateY(-2px);
-            }
-
-        .links {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-            .links a {
-                color: #667eea;
-                text-decoration: none;
-            }
-
-        .message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-            display: none;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-    </style>
+    /* شاشة التحميل */
+    #splash { position: absolute; top:0; left:0; width:100%; height:100%; background: #667eea; color: white; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 20px; text-align: center; transition: opacity 0.5s; z-index: 999; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <i>🔐</i>
-            <h1>تسجيل الدخول</h1>
-            <p class="subtitle">مرحباً بعودتك! سجل دخول إلى حسابك</p>
-        </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" placeholder="ادخل بريدك الإلكتروني" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">كلمة المرور</label>
-                <input type="password" id="password" placeholder="ادخل كلمة المرور" required>
-            </div>
-
-            <button type="button" class="btn" onclick="loginUser()">تسجيل الدخول</button>
-
-            <div id="message" class="message"></div>
-
-            <div class="links">
-                <p>ليس لديك حساب؟ <a href="register.html">أنشئ حساب جديد</a></p>
-            </div>
-        </form>
+<div class="container">
+    <!-- شاشة التحميل -->
+    <div id="splash">
+        <div>مرحباً بك!</div>
+        <div id="lastLoginDisplay" style="margin-top:10px; font-size:16px;"></div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+    <div class="logo">
+        <i>🔐</i>
+        <h1>تسجيل الدخول</h1>
+        <p class="subtitle">مرحباً بعودتك! سجل دخول إلى حسابك</p>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-            authDomain: "cafeteria-app-82268.firebaseapp.com",
-            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "cafeteria-app-82268",
-            storageBucket: "cafeteria-app-82268.appspot.com",
-            messagingSenderId: "457381739769",
-            appId: "1:457381739769:web:409cb927ef54368cb3f628"
-        };
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="ادخل بريدك الإلكتروني" required>
+        </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+        <div class="form-group">
+            <label for="password">كلمة المرور</label>
+            <input type="password" id="password" placeholder="ادخل كلمة المرور" required>
+        </div>
 
-        window.loginUser = async function () {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const messageDiv = document.getElementById('message');
+        <button type="button" class="btn" onclick="loginUser()">تسجيل الدخول</button>
 
-            if (!email || !password) {
-                showMessage('⚠️ يرجى ملء جميع الحقول', 'error');
-                return;
-            }
+        <div id="message" class="message"></div>
 
-            showMessage('⏳ جاري تسجيل الدخول...', 'success');
+        <div class="links">
+            <p>ليس لديك حساب؟ <a href="register.html">أنشئ حساب جديد</a></p>
+        </div>
+    </form>
+</div>
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getDatabase, ref, update, get, child } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-                // تحديث آخر وقت تسجيل دخول في قاعدة البيانات
-                await update(ref(database, 'users/' + user.uid), {
-                    lastLogin: new Date().toISOString()
-                });
+const firebaseConfig = {
+    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+    authDomain: "cafeteria-app-82268.firebaseapp.com",
+    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cafeteria-app-82268",
+    storageBucket: "cafeteria-app-82268.appspot.com",
+    messagingSenderId: "457381739769",
+    appId: "1:457381739769:web:409cb927ef54368cb3f628"
+};
 
-                showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-                // تحويل المستخدم بعد تسجيل الدخول الناجح
-                setTimeout(() => {
-                    window.location.href = 'menu.html';
-                }, 1000);
+const splash = document.getElementById('splash');
+const lastLoginDisplay = document.getElementById('lastLoginDisplay');
 
-            } catch (error) {
-                let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = '❌ لم يتم العثور على حساب بهذا البريد';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage = '❌ كلمة المرور غير صحيحة';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = '❌ البريد الإلكتروني غير صحيح';
-                        break;
-                    default:
-                        errorMessage = '❌ ' + error.message;
-                }
-                showMessage(errorMessage, 'error');
-            }
-        };
+function showMessage(message, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = message;
+    messageDiv.className = 'message ' + type;
+}
 
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = message;
-            messageDiv.className = 'message ' + type;
+// تسجيل الدخول
+window.loginUser = async function () {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!email || !password) {
+        showMessage('⚠️ يرجى ملء جميع الحقول', 'error');
+        return;
+    }
+
+    showMessage('⏳ جاري تسجيل الدخول...', 'success');
+
+    try {
+        await setPersistence(auth, browserLocalPersistence); // يظل مسجل الدخول
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // تحديث آخر وقت تسجيل دخول في قاعدة البيانات
+        const now = new Date().toISOString();
+        await update(ref(database, 'users/' + user.uid), { lastLogin: now });
+
+        showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
+
+        setTimeout(() => {
+            window.location.href = 'menu.html';
+        }, 1000);
+
+    } catch (error) {
+        let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
+        switch (error.code) {
+            case 'auth/user-not-found':
+                errorMessage = '❌ لم يتم العثور على حساب بهذا البريد';
+                break;
+            case 'auth/wrong-password':
+                errorMessage = '❌ كلمة المرور غير صحيحة';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = '❌ البريد الإلكتروني غير صحيح';
+                break;
+            default:
+                errorMessage = '❌ ' + error.message;
         }
+        showMessage(errorMessage, 'error');
+    }
+};
 
-        // تسجيل الدخول عند الضغط على Enter
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') loginUser();
-        });
-    </script>
+// التحقق من حالة المستخدم تلقائياً عند فتح الصفحة
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // جلب آخر تسجيل دخول
+        const dbRef = ref(database);
+        const snapshot = await get(child(dbRef, 'users/' + user.uid + '/lastLogin'));
+        const lastLogin = snapshot.exists() ? snapshot.val() : 'لا يوجد تسجيل سابق';
+
+        lastLoginDisplay.textContent = 'آخر تسجيل دخول: ' + lastLogin;
+
+        // عرض الشاشة لبضع ثواني ثم الانتقال للصفحة الرئيسية
+        splash.style.opacity = '1';
+        setTimeout(() => {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'menu.html';
+            }, 500);
+        }, 1500);
+
+    } else {
+        // لا يوجد مستخدم مسجل الدخول
+        splash.style.display = 'none';
+    }
+});
+
+// تسجيل الدخول عند الضغط على Enter
+document.getElementById('password').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') loginUser();
+});
+</script>
 </body>
 </html>
