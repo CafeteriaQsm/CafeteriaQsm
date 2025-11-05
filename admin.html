@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* (نفس الـ CSS الموجود لديك، لم يتم تغييره) */
         :root {
             --primary-color: #c62828;
             --primary-light: #ff5f52;
@@ -344,6 +343,26 @@
             margin-top: 10px;
         }
 
+        /* إضافة ستايل للوقت المهم */
+        .pickup-time {
+            background-color: #e7f3ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-right: 4px solid var(--info-color);
+            margin: 10px 0;
+        }
+
+        .time-label {
+            font-weight: bold;
+            color: var(--info-color);
+            margin-bottom: 5px;
+        }
+
+        .time-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .orders-container {
                 grid-template-columns: 1fr;
@@ -430,7 +449,7 @@
         </div>
 
         <div class="orders-container" id="ordersContainer">
-            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -525,17 +544,17 @@
 
             orders.forEach(order => {
                 const itemsList = (order.items || order.cart || []).map(item => `
-                <li>
-                <div class="item-name">
-                    <span>${item.name} x${item.quantity || 1}</span> </div>
-                <div>
-                    <span>₪${item.price * (item.quantity || 1)}</span>
-                    ${item.extras && item.extras.length ?
+                    <li>
+                    <div class="item-name">
+                        <span>${item.name} x${item.quantity || 1}</span> </div>
+                    <div>
+                        <span>₪${item.price * (item.quantity || 1)}</span>
+                        ${item.extras && item.extras.length ?
                         `<div class="item-extras">${item.extras.join(", ")}</div>` :
                         ''}
-                </div>
-                </li>
-            `).join("");
+                    </div>
+                    </li>
+                `).join("");
 
                 // تحديد فئة الحالة
                 let statusClass = "status-pending";
@@ -546,71 +565,81 @@
                 const card = document.createElement("div");
                 card.className = "order-card";
                 card.innerHTML = `
-                <div class="order-header">
-                <div class="order-code">
-                    <i class="fas fa-receipt"></i> الطلب #${order.code || 'N/A'}
-                </div>
-                <div class="order-status ${statusClass}">
-                    ${order.status}
-                </div>
-                </div>
-
-                <div class="order-body">
-                <div class="order-info">
-                    <div class="info-item">
-                    <span class="info-label">الطالب</span>
-                    <span class="info-value">${order.studentName || "غير محدد"}</span>
+                    <div class="order-header">
+                    <div class="order-code">
+                        <i class="fas fa-receipt"></i> الطلب #${order.code || 'N/A'}
                     </div>
-                    <div class="info-item">
-                    <span class="info-label">وقت الطلب</span>
-                    <span class="info-value">${formatDate(order.timestamp) || 'N/A'}</span>
+                    <div class="order-status ${statusClass}">
+                        ${order.status}
                     </div>
-                    <div class="info-item">
-                    <span class="info-label">المجموع</span>
-                    <span class="info-value">₪${order.total}</span>
                     </div>
-                    <div class="info-item">
-                    <span class="info-label">طريقة الدفع</span>
-                    <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
+
+                    <div class="order-body">
+                    <!-- 🔥 إضافة وقت الاستلام المطلوب بشكل بارز 🔥 -->
+                    <div class="pickup-time">
+                        <div class="time-label">
+                            <i class="fas fa-clock"></i> وقت الاستلام المطلوب
+                        </div>
+                        <div class="time-value">
+                            ${order.pickupTime || 'غير محدد'}
+                        </div>
                     </div>
-                </div>
 
-                ${order.notes ? `
-                    <div class="info-item">
-                    <span class="info-label">ملاحظات</span>
-                    <span class="info-value">${order.notes}</span>
+                    <div class="order-info">
+                        <div class="info-item">
+                        <span class="info-label">الطالب</span>
+                        <span class="info-value">${order.studentName || "غير محدد"}</span>
+                        </div>
+                        <div class="info-item">
+                        <span class="info-label">وقت الطلب</span>
+                        <span class="info-value">${formatDate(order.timestamp) || 'N/A'}</span>
+                        </div>
+                        <div class="info-item">
+                        <span class="info-label">المجموع</span>
+                        <span class="info-value">₪${order.total}</span>
+                        </div>
+                        <div class="info-item">
+                        <span class="info-label">طريقة الدفع</span>
+                        <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
+                        </div>
                     </div>
-                ` : ''}
 
-                <div class="order-items">
-                    <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
-                    <ul class="item-list">
-                    ${itemsList}
-                    </ul>
-                </div>
+                    ${order.notes ? `
+                        <div class="info-item">
+                        <span class="info-label">ملاحظات</span>
+                        <span class="info-value">${order.notes}</span>
+                        </div>
+                    ` : ''}
 
-                <div class="order-actions">
-                    <select class="status-select" id="status-${order.id}">
-                    <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
-                    <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
-                    <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
-                    <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
-                    </select>
+                    <div class="order-items">
+                        <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
+                        <ul class="item-list">
+                        ${itemsList}
+                        </ul>
+                    </div>
 
-                    <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
-                    <i class="fas fa-sync-alt"></i> تحديث
-                    </button>
+                    <div class="order-actions">
+                        <select class="status-select" id="status-${order.id}">
+                        <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
+                        <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
+                        <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
+                        <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
+                        </select>
 
-                    <button class="btn btn-success" onclick="markAsDelivered('${order.id}')">
-                    <i class="fas fa-check-circle"></i> تم التسليم
-                    </button>
+                        <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
+                        <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
 
-                    <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">
-                    <i class="fas fa-trash"></i> حذف
-                    </button>
-                </div>
-                </div>
-            `;
+                        <button class="btn btn-success" onclick="markAsDelivered('${order.id}')">
+                        <i class="fas fa-check-circle"></i> تم التسليم
+                        </button>
+
+                        <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">
+                        <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                    </div>
+                `;
 
                 ordersContainer.appendChild(card);
                 // تحديث قائمة المنسدلة لتعكس الحالة الحالية
@@ -629,16 +658,15 @@
             }
         }
 
-
         // عرض حالة فارغة
         function showEmptyState() {
             ordersContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-clipboard-list"></i>
-                <h3>لا توجد طلبات</h3>
-                <p>لم يتم العثور على أي طلبات حتى الآن</p>
-            </div>
-            `;
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>لا توجد طلبات</h3>
+                    <p>لم يتم العثور على أي طلبات حتى الآن</p>
+                </div>
+                `;
             totalOrdersElement.textContent = "0";
             pendingOrdersElement.textContent = "0";
             completedOrdersElement.textContent = "0";
@@ -674,13 +702,13 @@
             const notification = document.createElement('div');
             notification.textContent = message;
             notification.style.cssText = `
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
-            color: ${type === 'error' ? '#721c24' : '#155724'};
-            padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
-            z-index: 10000; font-weight: bold; animation: fadeInOut 3s ease;
-            border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
-            `;
+                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
+                color: ${type === 'error' ? '#721c24' : '#155724'};
+                padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
+                z-index: 10000; font-weight: bold; animation: fadeInOut 3s ease;
+                border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
+                `;
             document.body.appendChild(notification);
             setTimeout(() => { notification.remove(); }, 3000);
         }
@@ -690,7 +718,6 @@
         styleSheet.type = "text/css";
         styleSheet.innerText = `@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(-50%, -20px); } 10%, 90% { opacity: 1; transform: translate(-50%, 0); } }`;
         document.head.appendChild(styleSheet);
-
 
         statusFilter.addEventListener('change', applyFilters);
         searchOrder.addEventListener('input', applyFilters);
