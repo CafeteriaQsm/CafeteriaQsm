@@ -26,8 +26,12 @@
   .header-content { max-width:1200px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
   .logo { display:flex; align-items:center; gap:10px; font-size:1.5rem; font-weight:bold; }
   .logo i { font-size:2rem; }
-  .cart-link { background-color:white; color:var(--primary-color); padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:8px; transition:var(--transition); box-shadow:var(--shadow); }
-  .cart-link:hover { background-color:var(--secondary-color); transform:translateY(-2px); }
+  .header-buttons { display:flex; align-items:center; gap:15px; }
+  .cart-link, .login-btn, .logout-btn { background-color:white; color:var(--primary-color); padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:8px; transition:var(--transition); box-shadow:var(--shadow); border:none; cursor:pointer; font-size:0.9rem; }
+  .cart-link:hover, .login-btn:hover, .logout-btn:hover { background-color:var(--secondary-color); transform:translateY(-2px); }
+  .user-info { color:white; display:flex; align-items:center; gap:10px; font-size:0.9rem; }
+  .user-info i { font-size:1.2rem; }
+
   .categories { display:flex; overflow-x:auto; padding:15px 10px; gap:10px; background-color:white; box-shadow:0 2px 8px rgba(0,0,0,0.05); position:sticky; top:80px; z-index:90; }
   .category-btn { background-color:white; border:2px solid var(--primary-color); color:var(--primary-color); padding:8px 16px; border-radius:50px; white-space:nowrap; cursor:pointer; transition:var(--transition); font-weight:600; }
   .category-btn.active, .category-btn:hover { background-color:var(--primary-color); color:white; }
@@ -59,8 +63,20 @@
   .add-btn:hover { background:linear-gradient(to right,var(--primary-dark),var(--primary-color)); transform:translateY(-2px); }
   .close-btn { background-color:#e0e0e0; color:var(--text-dark); }
   .close-btn:hover { background-color:#d6d6d6; }
-  @media(max-width:768px){ .header-content{flex-direction:column; gap:15px;} .categories{top:130px;} .menu-container{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));} .section-title{font-size:1.5rem;} }
-  @media(max-width:480px){ .menu-container{grid-template-columns:1fr;} .modal-content{width:95%; padding:20px;} .extras-grid{grid-template-columns:1fr;} }
+  @media(max-width:768px){ 
+    .header-content{flex-direction:column; gap:15px;} 
+    .categories{top:130px;} 
+    .menu-container{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));} 
+    .section-title{font-size:1.5rem;} 
+    .header-buttons { flex-wrap: wrap; justify-content: center; }
+  }
+  @media(max-width:480px){ 
+    .menu-container{grid-template-columns:1fr;} 
+    .modal-content{width:95%; padding:20px;} 
+    .extras-grid{grid-template-columns:1fr;} 
+    .user-info { flex-direction: column; gap: 5px; }
+    .user-info span { font-size: 0.8rem; }
+  }
 </style>
 </head>
 <body>
@@ -68,7 +84,12 @@
 <header>
   <div class="header-content">
     <div class="logo"><i class="fas fa-utensils"></i><span>مطعمنا الشهي</span></div>
-    <a href="cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i> <span>السلة</span></a>
+    <div class="header-buttons">
+      <a href="cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i> <span>السلة</span></a>
+      <div id="userSection">
+        <!-- سيتم تعبئته بالجافاسكريبت -->
+      </div>
+    </div>
   </div>
 </header>
 
@@ -87,18 +108,25 @@
 <div class="container">
   <h2 class="section-title">الوجبات الرئيسية</h2>
   <div class="menu-container" id="mainDishes"></div>
+  
   <h2 class="section-title">المأكولات الإيطالية</h2>
   <div class="menu-container" id="italianDishes"></div>
+  
   <h2 class="section-title">الأكل البيتي</h2>
   <div class="menu-container" id="homeDishes"></div>
+  
   <h2 class="section-title">السلطات</h2>
   <div class="menu-container" id="salads"></div>
+  
   <h2 class="section-title">الساندويتشات</h2>
   <div class="menu-container" id="sandwiches"></div>
+  
   <h2 class="section-title">المعجنات</h2>
   <div class="menu-container" id="pastries"></div>
+  
   <h2 class="section-title">المشروبات</h2>
   <div class="menu-container" id="drinks"></div>
+  
   <h2 class="section-title">الإضافات</h2>
   <div class="menu-container" id="extras"></div>
 </div>
@@ -119,25 +147,67 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+  // استخدم الإعدادات الصحيحة من مشروعك
   const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://PROJECT_ID.firebaseio.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
+    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+    authDomain: "cafeteria-app-82268.firebaseapp.com",
+    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cafeteria-app-82268",
+    storageBucket: "cafeteria-app-82268.appspot.com",
+    messagingSenderId: "457381739769",
+    appId: "1:457381739769:web:409cb927ef54368cb3f628"
   };
+  
   firebase.initializeApp(firebaseConfig);
 
-  let currentUserUID = null; // لا حاجة لفحص المستخدم، يمكن تعيين UID لاحقًا عند تسجيل الدخول للسلة
+  let currentUserUID = null;
+  let currentUserEmail = null;
 
+  // ===== بيانات الوجبات التجريبية =====
   const meals = [
-    { name:"شاورما لحم", price:30, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ30gIEfM4I30W_riIrovoJQLTCDMxK3oXzqQ&s", hasExtras:true, category:"main"},
-    { name:"شاورما دجاج", price:25, img:"https://i0.wp.com/www.chefahmed.com/wp-content/uploads/2021/04/Chicken-Shawarma-2.jpg", hasExtras:true, category:"main"},
-    { name:"صدر دجاج مشوي", price:28, img:"https://assets.nn.najah.edu/CACHE/images/uploads/weblog/2019/06/06/547597762/573f846611235ba9b74a23760c93ec6d.jpg", hasExtras:true, category:"main"},
-    { name:"شنيتسل دجاج", price:22, img:"https://yummy.ps/upload/1561530971-seven-hens-photo-taken-at-chicken-schnitzel-eatery-by-on-3-hensley-hitch-price-(1).jpg", hasExtras:true, category:"main"},
-    { name:"كفتة مشوية", price:32, img:"https://www.chefahmed.com/wp-content/uploads/2020/06/kofta-kebab.jpg", hasExtras:true, category:"main"},
+    // وجبات رئيسية
+    { name:"شاورما لحم", price:30, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ30gIEfM4I30W_riIrovoJQLTCDMxK3oXzqQ&s", hasExtras:true, category:"main", extras: ["صوص ثوم", "خضار إضافية", "بطاطا مقلية"]},
+    { name:"شاورما دجاج", price:25, img:"https://i0.wp.com/www.chefahmed.com/wp-content/uploads/2021/04/Chicken-Shawarma-2.jpg", hasExtras:true, category:"main", extras: ["صوص ثوم", "خضار إضافية", "بطاطا مقلية"]},
+    { name:"صدر دجاج مشوي", price:28, img:"https://assets.nn.najah.edu/CACHE/images/uploads/weblog/2019/06/06/547597762/573f846611235ba9b74a23760c93ec6d.jpg", hasExtras:true, category:"main", extras: ["صوص باربيكيو", "أرز إضافي", "سلطة"]},
+    { name:"شنيتسل دجاج", price:22, img:"https://yummy.ps/upload/1561530971-seven-hens-photo-taken-at-chicken-schnitzel-eatery-by-on-3-hensley-hitch-price-(1).jpg", hasExtras:true, category:"main", extras: ["صوص ثوم", "بطاطا مقلية", "سلطة"]},
+    { name:"كفتة مشوية", price:32, img:"https://www.chefahmed.com/wp-content/uploads/2020/06/kofta-kebab.jpg", hasExtras:true, category:"main", extras: ["طحينة", "سلطة", "خبز إضافي"]},
+    
+    // مأكولات ايطالية
+    { name:"بيتزا مارغريتا", price:35, img:"https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=400", hasExtras:true, category:"italian", extras: ["جبنة إضافية", "صوص طماطم", "زيتون"]},
+    { name:"باستا كاربونارا", price:28, img:"https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=400", hasExtras:true, category:"italian", extras: ["جبنة بارميزان", "صوص كريمي", "فطر"]},
+    { name:"لازانيا", price:32, img:"https://images.unsplash.com/photo-1619895092539-128d4ebf7140?w=400", hasExtras:false, category:"italian"},
+    
+    // أكل بيتي
+    { name:"مسقعة", price:25, img:"https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400", hasExtras:false, category:"home"},
+    { name:"محشي ورق عنب", price:27, img:"https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400", hasExtras:false, category:"home"},
+    { name:"منسف", price:45, img:"https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400", hasExtras:true, category:"home", extras: ["لبن إضافي", "خبز شراك", "صنوبر"]},
+    
+    // سلطات
+    { name:"سلطة سيزر", price:18, img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400", hasExtras:true, category:"salads", extras: ["دجاج مشوي", "خبز محمص", "جبنة بارميزان"]},
+    { name:"سلطة يونانية", price:16, img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400", hasExtras:true, category:"salads", extras: ["زيتون إضافي", "جبنة فيتا", "خيار"]},
+    { name:"تبولة", price:14, img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400", hasExtras:false, category:"salads"},
+    
+    // ساندويتشات
+    { name:"ساندويتش برجر", price:20, img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", hasExtras:true, category:"sandwiches", extras: ["جبنة", "بيكون", "صوص خاص"]},
+    { name:"ساندويتش شاورما", price:18, img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400", hasExtras:true, category:"sandwiches", extras: ["صوص ثوم", "بطاطا", "خضار إضافية"]},
+    { name:"ساندويتش فلافل", price:12, img:"https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400", hasExtras:true, category:"sandwiches", extras: ["طحينة", "سلطة", "مخللات"]},
+    
+    // معجنات
+    { name:"مناقيش زعتر", price:8, img:"https://images.unsplash.com/photo-1563379091339-03246963d96f?w=400", hasExtras:true, category:"pastries", extras: ["زيت زيتون", "سمسم", "جبنة"]},
+    { name:"فطيرة سبانخ", price:10, img:"https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400", hasExtras:false, category:"pastries"},
+    { name:"كعك بالجبن", price:9, img:"https://images.unsplash.com/photo-1555507036-ab794f27d2e9?w=400", hasExtras:false, category:"pastries"},
+    
+    // مشروبات
+    { name:"عصير برتقال", price:8, img:"https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400", hasExtras:false, category:"drinks"},
+    { name:"عصير فراولة", price:10, img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d4b?w=400", hasExtras:false, category:"drinks"},
+    { name:"قهوة عربية", price:6, img:"https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=400", hasExtras:false, category:"drinks"},
+    { name:"شاي بالنعناع", price:5, img:"https://images.unsplash.com/photo-1597481499750-3e11b43f4e49?w=400", hasExtras:false, category:"drinks"},
+    
+    // إضافات
+    { name:"بطاطا مقلية", price:7, img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400", hasExtras:false, category:"extras"},
+    { name:"سلطة خضراء", price:5, img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400", hasExtras:false, category:"extras"},
+    { name:"صوص ثوم", price:3, img:"https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400", hasExtras:false, category:"extras"},
+    { name:"خبز إضافي", price:2, img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400", hasExtras:false, category:"extras"}
   ];
 
   const sections = {
@@ -151,12 +221,73 @@
     extras:"extras"
   };
 
+  // التحقق من حالة المستخدم
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      currentUserUID = user.uid;
+      currentUserEmail = user.email;
+      console.log("المستخدم مسجل دخول:", user.email);
+      updateUserSection(true, user.email);
+      loadMenu();
+    } else {
+      currentUserUID = null;
+      currentUserEmail = null;
+      console.log("المستخدم غير مسجل");
+      updateUserSection(false);
+      loadMenu();
+    }
+  });
+
+  // تحديث قسم المستخدم في الهيدر
+  function updateUserSection(isLoggedIn, email = null) {
+    const userSection = document.getElementById("userSection");
+    
+    if (isLoggedIn && email) {
+      userSection.innerHTML = `
+        <div class="user-info">
+          <i class="fas fa-user-circle"></i>
+          <span>${email}</span>
+        </div>
+        <button class="logout-btn" onclick="logoutUser()">
+          <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+      `;
+    } else {
+      userSection.innerHTML = `
+        <a href="index.html" class="login-btn">
+          <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+        </a>
+      `;
+    }
+  }
+
+  // تسجيل الخروج
+  function logoutUser() {
+    firebase.auth().signOut().then(() => {
+      alert("✅ تم تسجيل الخروج بنجاح");
+      window.location.reload();
+    }).catch((error) => {
+      console.error("خطأ في تسجيل الخروج:", error);
+      alert("❌ حدث خطأ أثناء تسجيل الخروج");
+    });
+  }
+
+  function loadMenu() {
+    // مسح المحتوى القديم
+    Object.values(sections).forEach(sectionId => {
+      document.getElementById(sectionId).innerHTML = '';
+    });
+    
+    // تحميل الوجبات
+    meals.forEach(createMealCard);
+  }
+
   function createMealCard(meal) {
     const div = document.createElement("div");
     div.className = "meal-card";
     div.innerHTML = `
-      ${meal.hasExtras ? '<span class="badge">+</span>' : ''}
-      <img src="${meal.img}" alt="${meal.name}">
+      ${meal.hasExtras ? '<span class="badge">إضافات متاحة</span>' : ''}
+      <img src="${meal.img}" alt="${meal.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'">
       <div class="meal-content">
         <h3>${meal.name}</h3>
         <span class="price">${meal.price} شيكل</span>
@@ -168,29 +299,49 @@
     document.getElementById(sections[meal.category]).appendChild(div);
   }
 
-  meals.forEach(createMealCard);
-
   let currentMeal = null;
   function handleAddClick(name, price, hasExtras){
-    if(hasExtras) openExtrasModal(name, price);
-    else addToCart(name, price, []);
+    if(!currentUserUID) { 
+      alert("الرجاء تسجيل الدخول أولاً لإضافة منتجات للسلة"); 
+      window.location.href = "index.html";
+      return; 
+    }
+    
+    if(hasExtras) {
+      openExtrasModal(name, price);
+    } else {
+      addToCart(name, price, []);
+    }
   }
 
   function openExtrasModal(name, price) {
+    const meal = meals.find(m => m.name === name);
     currentMeal = { name, price, extras: [] };
     document.getElementById("modalMealName").innerText = name;
     const container = document.getElementById("extrasContainer");
     container.innerHTML = "";
-    const extras = ["جبنة إضافية","صوص خاص","خضار إضافية"];
-    extras.forEach(extra => {
-      const label = document.createElement("label");
-      label.innerHTML = `<input type="checkbox" value="${extra}"> ${extra}`;
-      container.appendChild(label);
-    });
+    
+    if (meal && meal.extras) {
+      meal.extras.forEach(extra => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" value="${extra}"> ${extra}`;
+        container.appendChild(label);
+      });
+    } else {
+      const defaultExtras = ["جبنة إضافية", "صوص خاص", "خضار إضافية"];
+      defaultExtras.forEach(extra => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" value="${extra}"> ${extra}`;
+        container.appendChild(label);
+      });
+    }
+    
     document.getElementById("extrasModal").style.display = "block";
   }
 
-  function closeModal() { document.getElementById("extrasModal").style.display = "none"; }
+  function closeModal() { 
+    document.getElementById("extrasModal").style.display = "none"; 
+  }
 
   function confirmAddToCart() {
     const checkboxes = document.querySelectorAll("#extrasContainer input:checked");
@@ -200,13 +351,29 @@
   }
 
   function addToCart(name, price, extras) {
-    if(!currentUserUID) { alert("الرجاء تسجيل الدخول"); return; }
+    if(!currentUserUID) { 
+      alert("الرجاء تسجيل الدخول أولاً"); 
+      window.location.href = "index.html";
+      return; 
+    }
+    
     const cartRef = firebase.database().ref("carts/" + currentUserUID);
     const newItemRef = cartRef.push();
-    newItemRef.set({ name, price, extras });
-    alert("تمت الإضافة إلى السلة ✅");
+    newItemRef.set({ 
+      name, 
+      price, 
+      extras,
+      timestamp: Date.now(),
+      img: meals.find(m => m.name === name)?.img || ''
+    }).then(() => {
+      alert("✅ تمت الإضافة إلى السلة");
+    }).catch((error) => {
+      console.error("خطأ في إضافة المنتج:", error);
+      alert("❌ حدث خطأ أثناء إضافة المنتج للسلة");
+    });
   }
 
+  // فلترة الأقسام
   const categoryButtons = document.querySelectorAll(".category-btn");
   categoryButtons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -219,9 +386,22 @@
 
   function filterMealsByCategory(category) {
     Object.keys(sections).forEach(sec => {
-      document.getElementById(sections[sec]).parentElement.style.display = (category=="all" || category==sec) ? "block" : "none";
+      const sectionElement = document.getElementById(sections[sec]).parentElement;
+      if (category === "all" || category === sec) {
+        sectionElement.style.display = "block";
+      } else {
+        sectionElement.style.display = "none";
+      }
     });
   }
+
+  // جعل الدوال متاحة عالمياً
+  window.handleAddClick = handleAddClick;
+  window.openExtrasModal = openExtrasModal;
+  window.closeModal = closeModal;
+  window.confirmAddToCart = confirmAddToCart;
+  window.addToCart = addToCart;
+  window.logoutUser = logoutUser;
 </script>
 
 </body>
