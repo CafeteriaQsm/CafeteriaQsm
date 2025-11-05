@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* جميع التنسيقات كما هي من الكود الأصلي */
         :root {
             --primary-color: #c62828;
             --primary-light: #ff5f52;
@@ -491,6 +490,7 @@
         const userId = localStorage.getItem("userUID") || "user_" + Math.floor(Math.random() * 10000);
         let selectedPaymentMethod = "cash";
 
+        // عرض محتويات السلة
         if (order.cart.length > 0) {
             let total = 0;
             order.cart.forEach((item, i) => {
@@ -510,31 +510,54 @@
         `;
                 cartContainer.appendChild(div);
             });
+
             const totalSection = document.createElement("div");
             totalSection.className = "total-section";
-            totalSection.innerHTML = `<h3>إجمالي الطلب</h3><div class="total-price">₪${total}</div><p>يشمل جميع الطلبات والإضافات</p>`;
+            totalSection.innerHTML = `
+        <h3>إجمالي الطلب</h3>
+        <div class="total-price">₪${total}</div>
+        <p>يشمل جميع الطلبات والإضافات</p>
+      `;
             cartContainer.appendChild(totalSection);
+
             orderSummary.style.display = "block";
         } else {
-            cartContainer.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><h3>سلة التسوق فارغة</h3><p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p><button class="btn btn-primary" onclick="goToMenu()"><i class="fas fa-utensils"></i> تصفح القائمة</button></div>`;
+            cartContainer.innerHTML = `
+        <div class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>سلة التسوق فارغة</h3>
+          <p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p>
+          <button class="btn btn-primary" onclick="goToMenu()">
+            <i class="fas fa-utensils"></i> تصفح القائمة
+          </button>
+        </div>
+      `;
         }
 
-        function removeItem(index) { order.cart.splice(index, 1); localStorage.setItem("order", JSON.stringify(order)); location.reload(); }
+        function removeItem(index) {
+            order.cart.splice(index, 1);
+            localStorage.setItem("order", JSON.stringify(order));
+            location.reload();
+        }
 
+        // اختيار طريقة الدفع
         function selectPaymentMethod(event, method) {
             selectedPaymentMethod = method;
-            document.querySelectorAll(".payment-method").forEach(btn => btn.classList.remove("selected"));
-            event.currentTarget.classList.add("selected");
+
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            event.currentTarget.classList.add('selected');
         }
 
-        function goToMenu() { window.location.href = "menu.html"; }
-
+        // إرسال الطلب إلى صفحة الأدمن
         function confirmOrder() {
             const nameValue = document.getElementById("studentName").value.trim();
             const timeValue = document.getElementById("pickupInput").value;
             const noteValue = document.getElementById("noteInput").value.trim();
 
-            if (!nameValue || !timeValue) {
+            if (!timeValue || !nameValue) {
                 alert("⚠️ الرجاء تعبئة جميع الحقول المطلوبة (الاسم ووقت الاستلام)");
                 return;
             }
@@ -547,16 +570,36 @@
                 payment: selectedPaymentMethod,
                 cart: order.cart,
                 status: "pending",
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                orderNumber: generateOrderNumber()
             };
 
-            console.log("جاهز للإرسال:", newOrder);
+            console.log("📦 إرسال الطلب إلى الأدمن:", newOrder);
 
+            // إرسال الطلب إلى قاعدة البيانات - مربوط مع صفحة الأدمن
             db.ref("orders").push(newOrder)
-                .then(() => { alert("✅ تم إرسال الطلب بنجاح!"); localStorage.removeItem("order"); location.reload(); })
-                .catch(err => { console.error("خطأ Firebase:", err); alert("❌ حدث خطأ أثناء إرسال الطلب: " + err.message); });
+                .then((result) => {
+                    console.log("✅ تم إرسال الطلب بنجاح! مفتاح الطلب:", result.key);
+                    alert("✅ تم إرسال الطلب بنجاح! رقم الطلب: " + newOrder.orderNumber);
+                    localStorage.removeItem("order");
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("❌ خطأ في إرسال الطلب:", err);
+                    alert("❌ حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى.");
+                });
         }
 
+        // توليد رقم طلب فريد
+        function generateOrderNumber() {
+            return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
+
+        function goToMenu() {
+            window.location.href = "menu.html";
+        }
+
+        // عرض الطلبات الحالية للمستخدم
         function showMyOrders() {
             myOrdersContainer.innerHTML = "";
             db.ref("orders").orderByChild("userId").equalTo(userId).on("value", snapshot => {
@@ -567,20 +610,41 @@
                         const div = document.createElement("div");
                         div.className = "status-info";
                         div.innerHTML = `
+              <p><strong>رقم الطلب:</strong> ${orderItem.orderNumber || key}</p>
               <p><strong>الاسم:</strong> ${orderItem.name}</p>
               <p><strong>وقت الاستلام:</strong> ${orderItem.time}</p>
               <p><strong>طريقة الدفع:</strong> ${orderItem.payment}</p>
-              <p><strong>حالة الطلب:</strong> <span class="order-status status-${orderItem.status}">${orderItem.status}</span></p>
+              <p><strong>حالة الطلب:</strong> <span class="order-status status-${orderItem.status}">${getStatusText(orderItem.status)}</span></p>
+              ${orderItem.note ? `<p><strong>ملاحظات:</strong> ${orderItem.note}</p>` : ''}
               <ul class="order-item-list">
-                ${orderItem.cart.map(ci => `<li><img src="${ci.img}" alt="${ci.name}"/><span>${ci.name} - ₪${ci.price}</span></li>`).join("")}
+                ${orderItem.cart.map(ci => `
+                  <li>
+                    <img src="${ci.img}" alt="${ci.name}"/>
+                    <span>${ci.name} - ₪${ci.price}</span>
+                    ${ci.extras?.length ? `<br><small>الإضافات: ${ci.extras.join(", ")}</small>` : ""}
+                  </li>
+                `).join("")}
               </ul>
             `;
                         myOrdersContainer.appendChild(div);
                     });
                 } else {
-                    myOrdersContainer.innerHTML = `<p>لا توجد طلبات حالية.</p>`;
+                    myOrdersContainer.innerHTML = `<p style="text-align: center; padding: 20px;">لا توجد طلبات حالية.</p>`;
                 }
             });
+        }
+
+        // تحويل حالة الطلب إلى نص عربي
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'قيد الانتظار',
+                'confirmed': 'تم التأكيد',
+                'preparing': 'قيد التحضير',
+                'ready': 'جاهز للاستلام',
+                'completed': 'مكتمل',
+                'rejected': 'مرفوض'
+            };
+            return statusMap[status] || status;
         }
     </script>
 </body>
