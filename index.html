@@ -117,7 +117,19 @@ window.loginUser = async function () {
         const now = new Date().toISOString();
         await update(ref(database, 'users/' + user.uid), { lastLogin: now });
 
-        showMessage('✅ تم تسجيل الدخول بنجاح! يمكنك الآن الذهاب إلى المنيو', 'success');
+        showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
+
+        // إضافة زر للذهاب إلى القائمة يدوياً
+        setTimeout(() => {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `
+                ✅ تم تسجيل الدخول بنجاح!
+                <br>
+                <button onclick="goToMenu()" style="margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    الذهاب إلى القائمة
+                </button>
+            `;
+        }, 1500);
 
     } catch (error) {
         let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
@@ -138,7 +150,12 @@ window.loginUser = async function () {
     }
 };
 
-// التحقق من حالة المستخدم لتحديث آخر تسجيل دخول (بدون إعادة توجيه)
+// دالة للذهاب إلى القائمة
+window.goToMenu = function() {
+    window.location.href = 'menu.html';
+};
+
+// التحقق من حالة المستخدم لتحديث آخر تسجيل دخول
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const dbRef = ref(database);
@@ -147,6 +164,19 @@ onAuthStateChanged(auth, async (user) => {
         lastLoginDisplay.textContent = 'آخر تسجيل دخول: ' + lastLogin;
         splash.style.opacity = '0';
         setTimeout(() => { splash.style.display = 'none'; }, 500);
+        
+        // إذا كان المستخدم مسجل دخول، نعرض زر للذهاب للقائمة
+        showMessage(`✅ أنت مسجل دخول كـ ${user.email}`, 'success');
+        setTimeout(() => {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `
+                ✅ أنت مسجل دخول كـ ${user.email}
+                <br>
+                <button onclick="goToMenu()" style="margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    الذهاب إلى القائمة
+                </button>
+            `;
+        }, 1000);
     } else {
         splash.style.display = 'none';
     }
