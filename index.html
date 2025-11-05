@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>تسجيل الدخول - كافتيريا</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         * {
             box-sizing: border-box;
@@ -30,8 +30,6 @@
             padding: 40px;
             width: 100%;
             max-width: 450px;
-            /* إضافة استجابة بسيطة */
-            margin: auto;
         }
 
         .logo {
@@ -81,126 +79,117 @@
             input:focus {
                 outline: none;
                 border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
             }
 
-        .btn-login {
-            background: linear-gradient(to right, #667eea, #764ba2);
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px;
             border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background 0.3s, transform 0.1s;
+            transition: transform 0.2s;
         }
 
-            .btn-login:hover {
-                background: linear-gradient(to right, #556ee0, #673fa3);
+            .btn:hover {
                 transform: translateY(-2px);
             }
 
-        .message {
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-            .message.error {
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-
-            .message.success {
-                background-color: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-            }
-
-        .footer-link {
+        .links {
             text-align: center;
             margin-top: 20px;
-            font-size: 14px;
         }
 
-            .footer-link a {
+            .links a {
                 color: #667eea;
                 text-decoration: none;
-                font-weight: 600;
             }
 
-                .footer-link a:hover {
-                    text-decoration: underline;
-                }
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
 
-            h1 {
-                font-size: 24px;
-            }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <i class="fas fa-mug-hot"></i>
+            <i>🔐</i>
+            <h1>تسجيل الدخول</h1>
+            <p class="subtitle">مرحباً بعودتك! سجل دخول إلى حسابك</p>
         </div>
-        <h1>تسجيل الدخول</h1>
-        <p class="subtitle">أهلاً بعودتك! أدخل بياناتك للمتابعة.</p>
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
-                <input type="email" id="email" required placeholder="أدخل بريدك الإلكتروني">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="ادخل بريدك الإلكتروني" required>
             </div>
+
             <div class="form-group">
-                <label for="password"><i class="fas fa-lock"></i> كلمة السر</label>
-                <input type="password" id="password" required placeholder="أدخل كلمة السر">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" placeholder="ادخل كلمة المرور" required>
             </div>
-            <button type="button" class="btn-login" onclick="loginUser()"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+
+            <button type="button" class="btn" onclick="loginUser()">تسجيل الدخول</button>
+
+            <div id="message" class="message"></div>
+
+            <div class="links">
+                <p>ليس لديك حساب؟ <a href="register.html">أنشئ حساب جديد</a></p>
+            </div>
         </form>
-
-        <div id="message" class="message" style="display: none;"></div>
-
-        <div class="footer-link">
-            ليس لديك حساب؟ <a href="register.html">أنشئ حساباً جديداً</a>
-        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
+        // *** تم التوحيد إلى المشروع الصحيح ***
         const firebaseConfig = {
-            apiKey: "AIzaSyCu4ged4p8GzaQo4DFbY_sthYWHSvSYqpU",
-            authDomain: "cafeteria-students-app.firebaseapp.com",
-            databaseURL: "https://cafeteria-students-app-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "cafeteria-students-app",
-            storageBucket: "cafeteria-students-app.appspot.com",
-            messagingSenderId: "338557210649",
-            appId: "1:338557210649:web:ba36c4623b4677ca585a88"
+            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+            authDomain: "cafeteria-app-82268.firebaseapp.com",
+            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cafeteria-app-82268",
+            storageBucket: "cafeteria-app-82268.appspot.com",
+            messagingSenderId: "457381739769",
+            appId: "1:457381739769:web:409cb927ef54368cb3f628"
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-        const { signInWithEmailAndPassword } = firebase.auth;
 
-        const loginUser = async () => {
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // التحقق إذا كان المستخدم مسجل دخوله بالفعل
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // إذا كان مسجلاً، انقله مباشرة إلى القائمة
+                window.location.href = 'menu.html';
+            }
+        });
+
+        window.loginUser = async function () {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
             const messageDiv = document.getElementById('message');
-            messageDiv.style.display = 'block';
 
             if (!email || !password) {
                 showMessage('⚠️ يرجى ملء جميع الحقول', 'error');
@@ -210,21 +199,27 @@
             showMessage('⏳ جاري تسجيل الدخول...', 'success');
 
             try {
-                // 1. تفعيل تسجيل الدخول الدائم (Persistent Login)
+                // *** 1. تفعيل تسجيل الدخول الدائم ***
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // 2. تخزين وقت آخر دخول في قاعدة البيانات
-                const now = new Date().toISOString();
-                await db.ref('users/' + user.uid).update({
-                    lastLoginTime: now
+                // *** 2. قراءة آخر دخول (إذا كان موجوداً) وتخزينه للعرض في صفحة القائمة ***
+                const snapshot = await database.ref('users/' + user.uid).once('value');
+                const userData = snapshot.val();
+                if (userData && userData.lastLoginTime) {
+                    // تخزين آخر دخول في الـ localStorage لتراه صفحة القائمة
+                    localStorage.setItem('lastLoginTime', userData.lastLoginTime);
+                }
+
+                // *** 3. تحديث وقت الدخول الحالي في قاعدة البيانات (للمرة القادمة) ***
+                await database.ref('users/' + user.uid).update({
+                    lastLoginTime: new Date().toISOString()
                 });
 
                 showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
 
-                // تحويل المستخدم بعد تسجيل الدخول الناجح
                 setTimeout(() => {
                     window.location.href = 'menu.html';
                 }, 1000);
@@ -233,18 +228,16 @@
                 let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        errorMessage = '❌ لم يتم العثور على حساب بهذا البريد';
-                        break;
                     case 'auth/wrong-password':
-                        errorMessage = '❌ كلمة المرور غير صحيحة';
+                    case 'auth/invalid-credential': // خطأ أحدث يجمع الاثنين
+                        errorMessage = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
                         break;
                     case 'auth/invalid-email':
                         errorMessage = '❌ البريد الإلكتروني غير صحيح';
                         break;
                     default:
-                        // إظهار رسالة خطأ أكثر وضوحاً في وضع التشغيل
-                        errorMessage = '❌ فشل تسجيل الدخول. تأكد من بريدك وكلمة المرور.';
-                        // يمكنك إظهار error.message للمطورين: console.error(error.message);
+                        console.error(error); // للمطور
+                        errorMessage = '❌ فشل تسجيل الدخول، يرجى المحاولة لاحقاً';
                 }
                 showMessage(errorMessage, 'error');
             }
@@ -257,15 +250,6 @@
             messageDiv.style.display = 'block';
         }
 
-        // 3. التحقق إذا كان المستخدم مسجلاً دخوله بالفعل وتحويله مباشرة
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // إذا كان المستخدم مسجلاً دخوله بالفعل، يتم تحويله إلى صفحة القائمة
-                window.location.href = 'menu.html';
-            }
-        });
-
-        // تسجيل الدخول عند الضغط على Enter
         document.getElementById('password').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') loginUser();
         });
