@@ -465,7 +465,7 @@
   // التحقق من تسجيل الدخول
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
-      window.location.href = "login.html"; // إعادة التوجيه إذا لم يسجل الدخول
+      window.location.href = "index.html"; // إعادة التوجيه إذا لم يسجل الدخول
     } else {
       console.log("المستخدم مسجل الدخول:", user.email);
     }
