@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* (نفس الـ CSS الموجود لديك، لم يتم تغييره) */
         :root {
             --primary-color: #c62828;
             --primary-light: #ff5f52;
@@ -429,283 +430,255 @@
         </div>
 
         <div class="orders-container" id="ordersContainer">
-            <!-- سيتم تعبئتها بالجافاسكريبت -->
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCu4ged4p8GzaQo4DFbY_sthYWHSvSYqpU",
-    authDomain: "cafeteria-students-app.firebaseapp.com",
-    databaseURL: "https://cafeteria-students-app-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cafeteria-students-app",
-    storageBucket: "cafeteria-students-app.appspot.com",
-    messagingSenderId: "338557210649",
-    appId: "1:338557210649:web:ba36c4623b4677ca585a88"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+        // *** تم التوحيد إلى المشروع الصحيح ***
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+            authDomain: "cafeteria-app-82268.firebaseapp.com",
+            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cafeteria-app-82268",
+            storageBucket: "cafeteria-app-82268.appspot.com",
+            messagingSenderId: "457381739769",
+            appId: "1:457381739769:web:409cb927ef54368cb3f628"
+        };
 
-  const ordersContainer = document.getElementById("ordersContainer");
-  const statusFilter = document.getElementById("statusFilter");
-  const searchOrder = document.getElementById("searchOrder");
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-  // إحصائيات الطلبات
-  const totalOrdersElement = document.getElementById("totalOrders");
-  const pendingOrdersElement = document.getElementById("pendingOrders");
-  const completedOrdersElement = document.getElementById("completedOrders");
+        // (باقي الكود الخاص بصفحة الأدمن يبقى كما هو، لأنه يقرأ من قاعدة البيانات)
+        // ...
+        const ordersContainer = document.getElementById("ordersContainer");
+        const statusFilter = document.getElementById("statusFilter");
+        const searchOrder = document.getElementById("searchOrder");
 
-  let allOrders = [];
+        // إحصائيات الطلبات
+        const totalOrdersElement = document.getElementById("totalOrders");
+        const pendingOrdersElement = document.getElementById("pendingOrders");
+        const completedOrdersElement = document.getElementById("completedOrders");
 
-  // تحميل وعرض الطلبات
-  db.ref("orders").on("value", snapshot => {
-    ordersContainer.innerHTML = "";
-    allOrders = [];
-    let totalOrders = 0;
-    let pendingOrders = 0;
-    let completedOrders = 0;
+        let allOrders = [];
 
-    if (snapshot.exists()) {
-      snapshot.forEach(child => {
-        const order = child.val();
-        const id = child.key;
-        allOrders.push({ id, ...order });
+        // تحميل وعرض الطلبات
+        db.ref("orders").on("value", snapshot => {
+            ordersContainer.innerHTML = "";
+            allOrders = [];
+            let totalOrders = 0;
+            let pendingOrders = 0;
+            let completedOrders = 0;
 
-        // تحديث الإحصائيات
-        totalOrders++;
-        if (order.status === "قيد المعالجة" || order.status === "جاري التحضير") {
-          pendingOrders++;
-        } else if (order.status === "تم التسليم") {
-          completedOrders++;
-        }
-      });
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    const order = child.val();
+                    const id = child.key;
+                    allOrders.push({ id, ...order });
 
-      // تحديث عناصر الإحصائيات
-      totalOrdersElement.textContent = totalOrders;
-      pendingOrdersElement.textContent = pendingOrders;
-      completedOrdersElement.textContent = completedOrders;
+                    // تحديث الإحصائيات
+                    totalOrders++;
+                    if (order.status === "قيد المعالجة" || order.status === "جاري التحضير") {
+                        pendingOrders++;
+                    } else if (order.status === "تم التسليم") {
+                        completedOrders++;
+                    }
+                });
 
-      // تطبيق الفلترة
-      applyFilters();
-    } else {
-      showEmptyState();
-    }
-  });
+                // تحديث عناصر الإحصائيات
+                totalOrdersElement.textContent = totalOrders;
+                pendingOrdersElement.textContent = pendingOrders;
+                completedOrdersElement.textContent = completedOrders;
 
-  // تطبيق الفلترة
-  function applyFilters() {
-    const statusValue = statusFilter.value;
-    const searchValue = searchOrder.value.trim();
-
-    const filteredOrders = allOrders.filter(order => {
-      const statusMatch = statusValue === "all" || order.status === statusValue;
-      const searchMatch = !searchValue || order.code.toString().includes(searchValue);
-      return statusMatch && searchMatch;
-    });
-
-    displayOrders(filteredOrders);
-  }
-
-  // عرض الطلبات
-  function displayOrders(orders) {
-    ordersContainer.innerHTML = "";
-
-    if (orders.length === 0) {
-      showEmptyState();
-      return;
-    }
-
-    orders.forEach(order => {
-      const itemsList = order.items.map(item => `
-        <li>
-          <div class="item-name">
-            <span>${item.name}</span>
-          </div>
-          <div>
-            <span>₪${item.price}</span>
-            ${item.extras?.length ?
-              `<div class="item-extras">${item.extras.join(", ")}</div>` :
-              ''}
-          </div>
-        </li>
-      `).join("");
-
-      // تحديد فئة الحالة
-      let statusClass = "status-pending";
-      if (order.status === "جاري التحضير") statusClass = "status-processing";
-      else if (order.status === "جاهز") statusClass = "status-ready";
-      else if (order.status === "تم التسليم") statusClass = "status-completed";
-
-      const card = document.createElement("div");
-      card.className = "order-card";
-      card.innerHTML = `
-        <div class="order-header">
-          <div class="order-code">
-            <i class="fas fa-receipt"></i> الطلب #${order.code}
-          </div>
-          <div class="order-status ${statusClass}">
-            ${order.status}
-          </div>
-        </div>
-
-        <div class="order-body">
-          <div class="order-info">
-            <div class="info-item">
-              <span class="info-label">الطالب</span>
-              <span class="info-value">${order.studentName || "غير محدد"}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">وقت الاستلام</span>
-              <span class="info-value">${order.pickupTime}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">المجموع</span>
-              <span class="info-value">₪${order.total}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">طريقة الدفع</span>
-              <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
-            </div>
-          </div>
-
-          ${order.notes ? `
-            <div class="info-item">
-              <span class="info-label">ملاحظات</span>
-              <span class="info-value">${order.notes}</span>
-            </div>
-          ` : ''}
-
-          <div class="order-items">
-            <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
-            <ul class="item-list">
-              ${itemsList}
-            </ul>
-          </div>
-
-          <div class="order-actions">
-            <select class="status-select" id="status-${order.id}">
-              <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
-              <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
-              <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
-              <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
-            </select>
-
-            <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
-              <i class="fas fa-sync-alt"></i> تحديث
-            </button>
-
-            <button class="btn btn-success" onclick="markAsDelivered('${order.id}')">
-              <i class="fas fa-check-circle"></i> تم التسليم
-            </button>
-
-            <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">
-              <i class="fas fa-trash"></i> حذف
-            </button>
-          </div>
-        </div>
-      `;
-
-      ordersContainer.appendChild(card);
-    });
-  }
-
-  // عرض حالة فارغة
-  function showEmptyState() {
-    ordersContainer.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-clipboard-list"></i>
-        <h3>لا توجد طلبات</h3>
-        <p>لم يتم العثور على أي طلبات حتى الآن</p>
-      </div>
-    `;
-
-    // إعادة تعيين الإحصائيات
-    totalOrdersElement.textContent = "0";
-    pendingOrdersElement.textContent = "0";
-    completedOrdersElement.textContent = "0";
-  }
-
-  // الحصول على نص طريقة الدفع
-  function getPaymentMethodText(method) {
-    const methods = {
-      'cash': 'الدفع نقداً',
-      'card': 'بطاقة ائتمان',
-      'mobile': 'محفظة إلكترونية'
-    };
-    return methods[method] || method || 'غير محدد';
-  }
-
-  // تحديث حالة الطلب
-  function updateStatus(orderId) {
-    const newStatus = document.getElementById("status-" + orderId).value;
-    db.ref("orders/" + orderId).update({ status: newStatus })
-      .then(() => {
-        showNotification(`✅ تم تحديث حالة الطلب إلى "${newStatus}"`, "success");
-      })
-      .catch(error => {
-        showNotification("❌ فشل في تحديث حالة الطلب", "error");
-        console.error("Error:", error);
-      });
-  }
-
-  // حذف الطلب
-  function deleteOrder(orderId) {
-    if (confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
-      db.ref("orders/" + orderId).remove()
-        .then(() => {
-          showNotification("✅ تم حذف الطلب بنجاح", "success");
-        })
-        .catch(error => {
-          showNotification("❌ فشل في حذف الطلب", "error");
-          console.error("Error:", error);
+                // تطبيق الفلترة
+                applyFilters();
+            } else {
+                showEmptyState();
+            }
         });
-    }
-  }
 
-  // تم التسليم
-  function markAsDelivered(orderId) {
-    db.ref("orders/" + orderId).update({ status: "تم التسليم" })
-      .then(() => {
-        showNotification("✅ تم تحديث حالة الطلب إلى 'تم التسليم'", "success");
-      })
-      .catch(error => {
-        showNotification("❌ فشل في تحديث حالة الطلب", "error");
-        console.error("Error:", error);
-      });
-  }
+        // تطبيق الفلترة
+        function applyFilters() {
+            const statusValue = statusFilter.value;
+            const searchValue = searchOrder.value.trim();
 
-  // إظهار إشعار
-  function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
-      color: ${type === 'error' ? '#721c24' : '#155724'};
-      padding: 15px 25px;
-      border-radius: 50px;
-      box-shadow: var(--shadow);
-      z-index: 10000;
-      font-weight: bold;
-      animation: fadeInOut 3s ease;
-      border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
-    `;
+            const filteredOrders = allOrders.filter(order => {
+                const statusMatch = statusValue === "all" || order.status === statusValue;
+                const searchMatch = !searchValue || (order.code && order.code.toString().includes(searchValue));
+                return statusMatch && searchMatch;
+            });
 
-    document.body.appendChild(notification);
+            displayOrders(filteredOrders);
+        }
 
-    setTimeout(() => {
-      notification.remove();
-    }, 3000);
-  }
+        // عرض الطلبات
+        function displayOrders(orders) {
+            ordersContainer.innerHTML = "";
 
-  // إضافة مستمعات الأحداث للفلاتر
-  statusFilter.addEventListener('change', applyFilters);
-  searchOrder.addEventListener('input', applyFilters);
+            if (orders.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            orders.forEach(order => {
+                const itemsList = (order.items || order.cart || []).map(item => `
+                <li>
+                <div class="item-name">
+                    <span>${item.name}</span>
+                </div>
+                <div>
+                    <span>₪${item.price}</span>
+                    ${item.extras?.length ?
+                        `<div class="item-extras">${item.extras.join(", ")}</div>` :
+                        ''}
+                </div>
+                </li>
+            `).join("");
+
+                // تحديد فئة الحالة
+                let statusClass = "status-pending";
+                if (order.status === "جاري التحضير") statusClass = "status-processing";
+                else if (order.status === "جاهز") statusClass = "status-ready";
+                else if (order.status === "تم التسليم") statusClass = "status-completed";
+
+                const card = document.createElement("div");
+                card.className = "order-card";
+                card.innerHTML = `
+                <div class="order-header">
+                <div class="order-code">
+                    <i class="fas fa-receipt"></i> الطلب #${order.code || 'N/A'}
+                </div>
+                <div class="order-status ${statusClass}">
+                    ${order.status}
+                </div>
+                </div>
+
+                <div class="order-body">
+                <div class="order-info">
+                    <div class="info-item">
+                    <span class="info-label">الطالب</span>
+                    <span class="info-value">${order.studentName || "غير محدد"}</span>
+                    </div>
+                    <div class="info-item">
+                    <span class="info-label">وقت الاستلام</span>
+                    <span class="info-value">${order.pickupTime}</span>
+                    </div>
+                    <div class="info-item">
+                    <span class="info-label">المجموع</span>
+                    <span class="info-value">₪${order.total}</span>
+                    </div>
+                    <div class="info-item">
+                    <span class="info-label">طريقة الدفع</span>
+                    <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
+                    </div>
+                </div>
+
+                ${order.notes ? `
+                    <div class="info-item">
+                    <span class="info-label">ملاحظات</span>
+                    <span class="info-value">${order.notes}</span>
+                    </div>
+                ` : ''}
+
+                <div class="order-items">
+                    <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
+                    <ul class="item-list">
+                    ${itemsList}
+                    </ul>
+                </div>
+
+                <div class="order-actions">
+                    <select class="status-select" id="status-${order.id}">
+                    <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
+                    <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
+                    <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
+                    <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
+                    </select>
+
+                    <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
+                    <i class="fas fa-sync-alt"></i> تحديث
+                    </button>
+
+                    <button class="btn btn-success" onclick="markAsDelivered('${order.id}')">
+                    <i class="fas fa-check-circle"></i> تم التسليم
+                    </button>
+
+                    <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">
+                    <i class="fas fa-trash"></i> حذف
+                    </button>
+                </div>
+                </div>
+            `;
+
+                ordersContainer.appendChild(card);
+            });
+        }
+
+        // عرض حالة فارغة
+        function showEmptyState() {
+            ordersContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>لا توجد طلبات</h3>
+                <p>لم يتم العثور على أي طلبات حتى الآن</p>
+            </div>
+            `;
+            totalOrdersElement.textContent = "0";
+            pendingOrdersElement.textContent = "0";
+            completedOrdersElement.textContent = "0";
+        }
+
+        function getPaymentMethodText(method) {
+            const methods = { 'cash': 'الدفع نقداً', 'card': 'بطاقة ائتمان', 'mobile': 'محفظة إلكترونية' };
+            return methods[method] || method || 'غير محدد';
+        }
+
+        function updateStatus(orderId) {
+            const newStatus = document.getElementById("status-" + orderId).value;
+            db.ref("orders/" + orderId).update({ status: newStatus })
+                .then(() => { showNotification(`✅ تم تحديث حالة الطلب إلى "${newStatus}"`, "success"); })
+                .catch(error => { showNotification("❌ فشل في تحديث حالة الطلب", "error"); });
+        }
+
+        function deleteOrder(orderId) {
+            if (confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
+                db.ref("orders/" + orderId).remove()
+                    .then(() => { showNotification("✅ تم حذف الطلب بنجاح", "success"); })
+                    .catch(error => { showNotification("❌ فشل في حذف الطلب", "error"); });
+            }
+        }
+
+        function markAsDelivered(orderId) {
+            db.ref("orders/" + orderId).update({ status: "تم التسليم" })
+                .then(() => { showNotification("✅ تم تحديث حالة الطلب إلى 'تم التسليم'", "success"); })
+                .catch(error => { showNotification("❌ فشل في تحديث حالة الطلب", "error"); });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
+            color: ${type === 'error' ? '#721c24' : '#155724'};
+            padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
+            z-index: 10000; font-weight: bold; animation: fadeInOut 3s ease;
+            border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => { notification.remove(); }, 3000);
+        }
+
+        // تعريف لـ animation
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = `@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(-50%, -20px); } 10%, 90% { opacity: 1; transform: translate(-50%, 0); } }`;
+        document.head.appendChild(styleSheet);
+
+
+        statusFilter.addEventListener('change', applyFilters);
+        searchOrder.addEventListener('input', applyFilters);
     </script>
 </body>
 </html>
