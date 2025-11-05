@@ -1,535 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>قائمة الطعام</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #c62828;
-            --primary-light: #ff5f52;
-            --primary-dark: #8e0000;
-            --secondary-color: #ffb74d;
-            --accent-color: #ff9800;
-            --light-bg: #fff8f0;
-            --card-bg: #ffffff;
-            --text-dark: #3e2723;
-            --text-light: #5d4037;
-            --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            text-align: right;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-            .logo i {
-                font-size: 2rem;
-            }
-
-
-        /* --- كود منطقة المستخدم الجديد --- */
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-info {
-            display: none; /* ابدأ مخفياً */
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-            padding-left: 15px;
-            border-left: 1px solid rgba(255,255,255,0.3);
-        }
-
-        #usernameDisplay {
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        #logoutBtn {
-            background-color: var(--secondary-color);
-            color: var(--text-dark);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-            #logoutBtn:hover {
-                background-color: var(--accent-color);
-            }
-
-
-        /* --- نهاية كود منطقة المستخدم --- */
-        .cart-link {
-            background-color: white;
-            color: var(--primary-color);
-            padding: 10px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-            .cart-link:hover {
-                background-color: var(--secondary-color);
-                transform: translateY(-2px);
-            }
-
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            padding: 15px 10px;
-            gap: 10px;
-            background-color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 80px; /* يجب أن يتطابق مع ارتفاع الهيدر تقريباً */
-            z-index: 90;
-        }
-
-        .category-btn {
-            background-color: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 50px;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-        }
-
-            .category-btn.active, .category-btn:hover {
-                background-color: var(--primary-color);
-                color: white;
-            }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .section-title {
-            color: var(--primary-color);
-            margin: 30px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px dashed var(--secondary-color);
-            font-size: 1.8rem;
-        }
-
-        .menu-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .meal-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-
-            .meal-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 12px 20px rgba(198, 40, 40, 0.2);
-            }
-
-            .meal-card img {
-                width: 100%;
-                height: 180px;
-                object-fit: cover;
-                transition: var(--transition);
-            }
-
-            .meal-card:hover img {
-                transform: scale(1.05);
-            }
-
-        .meal-content {
-            padding: 15px;
-        }
-
-        .meal-card h3 {
-            color: var(--text-dark);
-            margin-bottom: 8px;
-            font-size: 1.3rem;
-        }
-
-        .meal-card p {
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-size: 0.9rem; /* تصغير الوصف قليلاً */
-        }
-
-        .price {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-
-
-
-
-
-        /* ستايل العروض الخاصة */
-        .offer-text {
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            font-weight: bold;
-            margin-top: -10px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .meal-card button {
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: var(--transition);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .meal-card button:hover {
-                background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
-                transform: translateY(-2px);
-            }
-
-        .badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: var(--secondary-color);
-            color: var(--text-dark);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.8rem;
-        }
-
-
-        /* --- Modal Styling (Popup) --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 200;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.3s;
-            position: relative;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .close-btn {
-            color: var(--text-light);
-            float: left;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            left: 20px;
-            top: 15px;
-        }
-
-            .close-btn:hover,
-            .close-btn:focus {
-                color: var(--primary-color);
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-        .modal-content h2 {
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .modal-content h3 {
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-            font-size: 1.1rem;
-        }
-
-        .size-options input[type="radio"] {
-            display: none;
-        }
-
-        .size-options label {
-            display: inline-block;
-            padding: 10px 15px;
-            border: 2px solid var(--secondary-color);
-            border-radius: 8px;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: bold;
-            color: var(--text-dark);
-        }
-
-        .size-options input[type="radio"]:checked + label {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-dark);
-        }
-
-        .extras-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-            .extras-list label {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background-color: var(--light-bg);
-                padding: 8px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background-color 0.2s;
-                font-size: 0.95rem;
-            }
-
-                .extras-list label:hover {
-                    background-color: #ffe0b2;
-                }
-
-        #totalPriceDisplay {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-dark);
-            text-align: center;
-        }
-
-        .modal-footer {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-            .modal-footer button {
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                padding: 12px 25px;
-                border-radius: 50px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: var(--transition);
-                flex-grow: 1;
-            }
-
-                .modal-footer button:hover {
-                    background-color: var(--primary-dark);
-                }
-
-        #quantityControl {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            #quantityControl button {
-                background-color: var(--secondary-color);
-                color: var(--text-dark);
-                border: none;
-                padding: 5px 15px;
-                border-radius: 50%;
-                font-size: 1.2rem;
-                cursor: pointer;
-                transition: var(--transition);
-                width: 40px;
-                height: 40px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-                #quantityControl button:hover {
-                    background-color: var(--accent-color);
-                }
-
-        #quantityDisplay {
-            font-size: 1.2rem;
-            font-weight: bold;
-            min-width: 25px;
-            text-align: center;
-        }
-
-
-
-
-
-        #notesInput {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-top: 10px;
-            box-sizing: border-box;
-            resize: vertical;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-
-
-        /* --- ستايل الإشعارات (جديد) --- */
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: var(--shadow);
-            z-index: 10000;
-            font-weight: bold;
-            animation: fadeInOut 3s ease;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0;
-                transform: translate(-50%, -20px);
-            }
-
-            10%, 90% {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-        /* --- نهاية ستايل الإشعارات --- */
-
-
-        @media (max-width: 768px) {
-            .header-content {
-                padding: 0 10px;
-            }
-
-            .logo {
-                font-size: 1.2rem;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            .menu-container {
-                grid-template-columns: 1fr;
-            }
-
-            .extras-list {
-                grid-template-columns: 1fr;
-            }
-
-            .cart-link {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-
-            #usernameDisplay {
-                font-size: 0.8rem;
-            }
-        }
-    </style>
-</head>
 <body>
 
     <header>
@@ -553,14 +21,661 @@
 
     <nav class="categories" id="categoriesNav">
         <button class="category-btn active" data-category="all">الكل</button>
-    </nav>
+    <button class="category-btn" data-category="main">وجبات رئيسية</button><button class="category-btn" data-category="italian">مأكولات إيطالية</button><button class="category-btn" data-category="home">أكل بيتي</button><button class="category-btn" data-category="salads">سلطات</button><button class="category-btn" data-category="sandwiches">ساندويتشات</button><button class="category-btn" data-category="pastries">معجنات</button><button class="category-btn" data-category="extras">إضافات منفردة</button><button class="category-btn" data-category="drinks">مشروبات</button></nav>
 
-    <main class="container" id="menuContainer">
-    </main>
+    <main class="container" id="menuContainer"><h2 class="section-title">وجبات رئيسية</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=SHAWARMA" alt="شاورما">
+                            <div class="meal-content">
+                                <h3>شاورما</h3>
+                                <p>شرائح لحم متبلة ومطهوة على السيخ، تقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 20 شيكل</span>
+                                <button onclick="openExtrasModal('شاورما')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=SCHNITZEL" alt="شنيتسل">
+                            <div class="meal-content">
+                                <h3>شنيتسل</h3>
+                                <p>قطع دجاج متبلة ومقلية بالبقسماط، تقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 20 شيكل</span>
+                                <button onclick="openExtrasModal('شنيتسل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=CHICKEN+BREAST" alt="صدر دجاج">
+                            <div class="meal-content">
+                                <h3>صدر دجاج</h3>
+                                <p>صدر دجاج مشوي على الجريل، خفيف ولذيذ، يقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 20 شيكل</span>
+                                <button onclick="openExtrasModal('صدر دجاج')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=BURGER" alt="برجر">
+                            <div class="meal-content">
+                                <h3>برجر</h3>
+                                <p>لحم بقر مفروم طازج ومشوي، يقدم في خبز خاص.</p>
+                                
+                                <span class="price">ابتداءً من 25 شيكل</span>
+                                <button onclick="openExtrasModal('برجر')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=KABAB" alt="كباب">
+                            <div class="meal-content">
+                                <h3>كباب</h3>
+                                <p>لحم متبل ومشوي على الفحم، يقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 25 شيكل</span>
+                                <button onclick="openExtrasModal('كباب')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=SAUSAGE" alt="نقنيق">
+                            <div class="meal-content">
+                                <h3>نقنيق</h3>
+                                <p>نقانق مقلية أو مشوية، سريعة ولذيذة، تقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 10 شيكل</span>
+                                <button onclick="openExtrasModal('نقنيق')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=FALAFEL" alt="فلافل">
+                            <div class="meal-content">
+                                <h3>فلافل</h3>
+                                <p>كرات فلافل مقلية مقرمشة، نباتية، تقدم في خبز من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 10 شيكل</span>
+                                <button onclick="openExtrasModal('فلافل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">مأكولات إيطالية</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=POTATO+BECHAMEL" alt="بطاطا بشميل">
+                            <div class="meal-content">
+                                <h3>بطاطا بشميل</h3>
+                                <p>بطاطا مخبوزة بصلصة البشاميل الغنية والجبنة.</p>
+                                
+                                <span class="price">ابتداءً من 30 شيكل</span>
+                                <button onclick="openExtrasModal('بطاطا بشميل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=PIZZA" alt="بيتسا">
+                            <div class="meal-content">
+                                <h3>بيتسا</h3>
+                                <p>عجينة إيطالية بصلصة الطماطم والجبنة وإضافات من اختيارك.</p>
+                                
+                                <span class="price">ابتداءً من 15 شيكل</span>
+                                <button onclick="openExtrasModal('بيتسا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=RAVIOLI+BECHAMEL" alt="رفيولي بشميل">
+                            <div class="meal-content">
+                                <h3>رفيولي بشميل</h3>
+                                <p>عجينة الباستا محشوة، مغطاة بصلصة البشاميل.</p>
+                                
+                                <span class="price">ابتداءً من 30 شيكل</span>
+                                <button onclick="openExtrasModal('رفيولي بشميل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=CHICKEN+BECHAMEL" alt="صدر دجاج بشميل">
+                            <div class="meal-content">
+                                <h3>صدر دجاج بشميل</h3>
+                                <p>صدر دجاج مطبوخ بصلصة البشاميل.</p>
+                                
+                                <span class="price">ابتداءً من 30 شيكل</span>
+                                <button onclick="openExtrasModal('صدر دجاج بشميل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">أكل بيتي</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=MUSAKHAN" alt="مسحب بالفرن">
+                            <div class="meal-content">
+                                <h3>مسحب بالفرن</h3>
+                                <p>دجاج مسحب مطبوخ ببطء في الفرن.</p>
+                                
+                                <span class="price">40 شيكل</span>
+                                <button onclick="openExtrasModal('مسحب بالفرن')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=GOULASH" alt="جولش">
+                            <div class="meal-content">
+                                <h3>جولش</h3>
+                                <p>طعام تقليدي من اللحم والخضار المطبوخ ببطء.</p>
+                                
+                                <span class="price">40 شيكل</span>
+                                <button onclick="openExtrasModal('جولش')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=VEAL+SLICES" alt="شرائح عجل بالفرن">
+                            <div class="meal-content">
+                                <h3>شرائح عجل بالفرن</h3>
+                                <p>شرائح لحم العجل الطرية مطهوة بالفرن.</p>
+                                
+                                <span class="price">40 شيكل</span>
+                                <button onclick="openExtrasModal('شرائح عجل بالفرن')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=CHICKEN+SLICES" alt="شرائح دجاج بالفرن">
+                            <div class="meal-content">
+                                <h3>شرائح دجاج بالفرن</h3>
+                                <p>شرائح الدجاج المتبلة ومطهوة بالفرن.</p>
+                                
+                                <span class="price">40 شيكل</span>
+                                <button onclick="openExtrasModal('شرائح دجاج بالفرن')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">سلطات</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=FATTOUSH" alt="فتوش بالجبن">
+                            <div class="meal-content">
+                                <h3>فتوش بالجبن</h3>
+                                <p>سلطة فتوش تقليدية مع قطع من الجبن.</p>
+                                
+                                <span class="price">ابتداءً من 13 شيكل</span>
+                                <button onclick="openExtrasModal('فتوش بالجبن')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=TABOULEH" alt="تبولة">
+                            <div class="meal-content">
+                                <h3>تبولة</h3>
+                                <p>سلطة شرق أوسطية منعشة من البقدونس والبرغل.</p>
+                                
+                                <span class="price">ابتداءً من 13 شيكل</span>
+                                <button onclick="openExtrasModal('تبولة')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=ARABIC+SALAD" alt="سلطة عربية">
+                            <div class="meal-content">
+                                <h3>سلطة عربية</h3>
+                                <p>خضار موسمية مقطعة ناعماً مع صوص الليمون.</p>
+                                
+                                <span class="price">ابتداءً من 13 شيكل</span>
+                                <button onclick="openExtrasModal('سلطة عربية')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=CHICKEN+SALAD" alt="سلطة صدر دجاج">
+                            <div class="meal-content">
+                                <h3>سلطة صدر دجاج</h3>
+                                <p>سلطة خضراء مع قطع صدر دجاج مشوي.</p>
+                                
+                                <span class="price">ابتداءً من 20 شيكل</span>
+                                <button onclick="openExtrasModal('سلطة صدر دجاج')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=TUNA+SALAD" alt="سلطة طونا">
+                            <div class="meal-content">
+                                <h3>سلطة طونا</h3>
+                                <p>سلطة خضراء مع التونة.</p>
+                                
+                                <span class="price">ابتداءً من 20 شيكل</span>
+                                <button onclick="openExtrasModal('سلطة طونا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">ساندويتشات</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=OMLETTE" alt="عجه">
+                            <div class="meal-content">
+                                <h3>عجه</h3>
+                                <p>ساندويتش بيض مقلي بالخضار.</p>
+                                
+                                <span class="price">12 شيكل</span>
+                                <button onclick="openExtrasModal('عجه')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=PASTRAMA" alt="بستراما">
+                            <div class="meal-content">
+                                <h3>بستراما</h3>
+                                <p>ساندويتش شرائح لحم البستراما البارد.</p>
+                                
+                                <span class="price">10 شيكل</span>
+                                <button onclick="openExtrasModal('بستراما')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=LABNEH" alt="لبنة">
+                            <div class="meal-content">
+                                <h3>لبنة</h3>
+                                <p>ساندويتش باللبنة وزيت الزيتون.</p>
+                                
+                                <span class="price">10 شيكل</span>
+                                <button onclick="openExtrasModal('لبنة')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=CHEESE+SANDWICH" alt="جبنة صفراء">
+                            <div class="meal-content">
+                                <h3>جبنة صفراء</h3>
+                                <p>ساندويتش بالجبنة الصفراء.</p>
+                                
+                                <span class="price">10 شيكل</span>
+                                <button onclick="openExtrasModal('جبنة صفراء')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=TOAST+LABNEH" alt="توست لبنة">
+                            <div class="meal-content">
+                                <h3>توست لبنة</h3>
+                                <p>توست محمص باللبنة.</p>
+                                
+                                <span class="price">12 شيكل</span>
+                                <button onclick="openExtrasModal('توست لبنة')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=TOAST+TUNA" alt="توست طونه">
+                            <div class="meal-content">
+                                <h3>توست طونه</h3>
+                                <p>توست محمص بالتونة.</p>
+                                
+                                <span class="price">12 شيكل</span>
+                                <button onclick="openExtrasModal('توست طونه')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=DRUZE+WRAP" alt="لفة درزية">
+                            <div class="meal-content">
+                                <h3>لفة درزية</h3>
+                                <p>خبز الصاج مع الإضافات.</p>
+                                
+                                <span class="price">13 شيكل</span>
+                                <button onclick="openExtrasModal('لفة درزية')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">معجنات</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=PIZZA+PASTRY" alt="معجنات بيتزا">
+                            <div class="meal-content">
+                                <h3>معجنات بيتزا</h3>
+                                <p>معجنات بحشوة البيتزا.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات بيتزا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=ZAATAR+PASTRY" alt="معجنات زعتر">
+                            <div class="meal-content">
+                                <h3>معجنات زعتر</h3>
+                                <p>معجنات بالزعتر وزيت الزيتون.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات زعتر')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=BEEF+PASTRY" alt="معجنات لحمه عجل">
+                            <div class="meal-content">
+                                <h3>معجنات لحمه عجل</h3>
+                                <p>معجنات بحشوة لحم العجل.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات لحمه عجل')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=CHICKEN+PASTRY" alt="معجنات لحمه جاج">
+                            <div class="meal-content">
+                                <h3>معجنات لحمه جاج</h3>
+                                <p>معجنات بحشوة لحم الدجاج.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات لحمه جاج')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=SPINACH+PASTRY" alt="معجنات سبانخ">
+                            <div class="meal-content">
+                                <h3>معجنات سبانخ</h3>
+                                <p>معجنات بالسبانخ والليمون.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات سبانخ')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=TUNA+PASTRY" alt="معجنات طونه">
+                            <div class="meal-content">
+                                <h3>معجنات طونه</h3>
+                                <p>معجنات بحشوة التونة.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات طونه')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=HOTDOG+PASTRY" alt="معجنات نقنيق">
+                            <div class="meal-content">
+                                <h3>معجنات نقنيق</h3>
+                                <p>معجنات بحشوة النقانق.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات نقنيق')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=KIBBEH" alt="كبة">
+                            <div class="meal-content">
+                                <h3>كبة</h3>
+                                <p>كرات الكبة المقلية.</p>
+                                
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('كبة')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=MEAT+CIGAR" alt="سجاريوت لحمه">
+                            <div class="meal-content">
+                                <h3>سجاريوت لحمه</h3>
+                                <p>لفائف باللحم.</p>
+                                <span class="offer-text">عرض: 3 بـ 10 شيكل</span>
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('سجاريوت لحمه')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=POTATO+CIGAR" alt="سجاريوت بطاطا">
+                            <div class="meal-content">
+                                <h3>سجاريوت بطاطا</h3>
+                                <p>لفائف بالبطاطا.</p>
+                                <span class="offer-text">عرض: 3 بـ 10 شيكل</span>
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('سجاريوت بطاطا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=CHEESE+PASTRY" alt="معجنات جبنه بيضا">
+                            <div class="meal-content">
+                                <h3>معجنات جبنه بيضا</h3>
+                                <p>معجنات بحشوة الجبنة البيضاء.</p>
+                                <span class="offer-text">عرض: 4 بـ 10 شيكل</span>
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات جبنه بيضا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=OLIVE+PASTRY" alt="معجنات زيتون">
+                            <div class="meal-content">
+                                <h3>معجنات زيتون</h3>
+                                <p>معجنات بالزيتون.</p>
+                                <span class="offer-text">عرض: 4 بـ 10 شيكل</span>
+                                <span class="price">4 شيكل</span>
+                                <button onclick="openExtrasModal('معجنات زيتون')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">إضافات منفردة</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=FRIES" alt="بطاطا">
+                            <div class="meal-content">
+                                <h3>بطاطا</h3>
+                                <p>بطاطا مقلية مقرمشة.</p>
+                                
+                                <span class="price">ابتداءً من 7 شيكل</span>
+                                <button onclick="openExtrasModal('بطاطا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div><h2 class="section-title">مشروبات</h2><div class="menu-container"><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=COLD+DRINK" alt="اي مشروب بارد">
+                            <div class="meal-content">
+                                <h3>اي مشروب بارد</h3>
+                                <p>مشروب غازي أو عصير معلب (6 شيكل).</p>
+                                
+                                <span class="price">6 شيكل</span>
+                                <button onclick="openExtrasModal('اي مشروب بارد')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=HOGOMOGO" alt="HogoMogo">
+                            <div class="meal-content">
+                                <h3>HogoMogo</h3>
+                                <p>مشروب طاقة / عصير خاص.</p>
+                                
+                                <span class="price">10 شيكل</span>
+                                <button onclick="openExtrasModal('HogoMogo')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=FUZETEA" alt="فيوزتي">
+                            <div class="meal-content">
+                                <h3>فيوزتي</h3>
+                                <p>شاي مثلج معلب.</p>
+                                
+                                <span class="price">8 شيكل</span>
+                                <button onclick="openExtrasModal('فيوزتي')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=REDBULL" alt="ريدبول">
+                            <div class="meal-content">
+                                <h3>ريدبول</h3>
+                                <p>مشروب طاقة ريدبول.</p>
+                                
+                                <span class="price">8 شيكل</span>
+                                <button onclick="openExtrasModal('ريدبول')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=OLVERA" alt="اولفيرا">
+                            <div class="meal-content">
+                                <h3>اولفيرا</h3>
+                                <p>مشروب أوليفيرا.</p>
+                                
+                                <span class="price">8 شيكل</span>
+                                <button onclick="openExtrasModal('اولفيرا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=XL" alt="اكس ال">
+                            <div class="meal-content">
+                                <h3>اكس ال</h3>
+                                <p>مشروب طاقة XL.</p>
+                                
+                                <span class="price">5 شيكل</span>
+                                <button onclick="openExtrasModal('اكس ال')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=BLUE" alt="بلو">
+                            <div class="meal-content">
+                                <h3>بلو</h3>
+                                <p>مشروب طاقة Blue.</p>
+                                
+                                <span class="price">5 شيكل</span>
+                                <button onclick="openExtrasModal('بلو')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=WATER" alt="ماء">
+                            <div class="meal-content">
+                                <h3>ماء</h3>
+                                <p>ماء معدني أو مياه شرب.</p>
+                                
+                                <span class="price">5 شيكل</span>
+                                <button onclick="openExtrasModal('ماء')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=SAHLAB" alt="سحلب">
+                            <div class="meal-content">
+                                <h3>سحلب</h3>
+                                <p>مشروب ساخن تقليدي.</p>
+                                
+                                <span class="price">ابتداءً من 10 شيكل</span>
+                                <button onclick="openExtrasModal('سحلب')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/c62828/white?text=LEMONADE" alt="ليمونادا">
+                            <div class="meal-content">
+                                <h3>ليمونادا</h3>
+                                <p>عصير ليمون منعش.</p>
+                                
+                                <span class="price">ابتداءً من 7 شيكل</span>
+                                <button onclick="openExtrasModal('ليمونادا')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff9800/3e2723?text=ESPRESSO" alt="اسبرسو">
+                            <div class="meal-content">
+                                <h3>اسبرسو</h3>
+                                <p>قهوة مركزة.</p>
+                                
+                                <span class="price">6 شيكل</span>
+                                <button onclick="openExtrasModal('اسبرسو')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    إضافة مباشرة
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ff5f52/white?text=NESCAFE" alt="نسكافيه">
+                            <div class="meal-content">
+                                <h3>نسكافيه</h3>
+                                <p>قهوة بالحليب.</p>
+                                
+                                <span class="price">ابتداءً من 6 شيكل</span>
+                                <button onclick="openExtrasModal('نسكافيه')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/ffb74d/3e2723?text=HAFOUCH" alt="هفوخ">
+                            <div class="meal-content">
+                                <h3>هفوخ</h3>
+                                <p>كابتشينو.</p>
+                                
+                                <span class="price">ابتداءً من 6 شيكل</span>
+                                <button onclick="openExtrasModal('هفوخ')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div><div class="meal-card">
+                            <img src="https://placehold.co/600x400/8e0000/white?text=TEA" alt="شاي">
+                            <div class="meal-content">
+                                <h3>شاي</h3>
+                                <p>شاي ساخن.</p>
+                                
+                                <span class="price">ابتداءً من 5 شيكل</span>
+                                <button onclick="openExtrasModal('شاي')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    اطلب بتخصيص
+                                </button>
+                            </div>
+                        </div></div></main>
 
     <div id="extrasModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <span class="close-btn" onclick="closeModal()">×</span>
             <h2 id="modalMealName"></h2>
 
             <div id="sizeSection">
@@ -597,7 +712,6 @@
         // =========================================
 
         const MEAL_DESCRIPTIONS = {
-            // وجبات رئيسية
             "شاورما": "شرائح لحم متبلة ومطهوة على السيخ، تقدم في خبز من اختيارك.",
             "شنيتسل": "قطع دجاج متبلة ومقلية بالبقسماط، تقدم في خبز من اختيارك.",
             "صدر دجاج": "صدر دجاج مشوي على الجريل، خفيف ولذيذ، يقدم في خبز من اختيارك.",
@@ -605,27 +719,19 @@
             "كباب": "لحم متبل ومشوي على الفحم، يقدم في خبز من اختيارك.",
             "نقنيق": "نقانق مقلية أو مشوية، سريعة ولذيذة، تقدم في خبز من اختيارك.",
             "فلافل": "كرات فلافل مقلية مقرمشة، نباتية، تقدم في خبز من اختيارك.",
-
-            // مأكولات إيطالية
             "بطاطا بشميل": "بطاطا مخبوزة بصلصة البشاميل الغنية والجبنة.",
             "بيتسا": "عجينة إيطالية بصلصة الطماطم والجبنة وإضافات من اختيارك.",
             "رفيولي بشميل": "عجينة الباستا محشوة، مغطاة بصلصة البشاميل.",
             "صدر دجاج بشميل": "صدر دجاج مطبوخ بصلصة البشاميل.",
-
-            // أكل بيتي
             "مسحب بالفرن": "دجاج مسحب مطبوخ ببطء في الفرن.",
             "جولش": "طعام تقليدي من اللحم والخضار المطبوخ ببطء.",
             "شرائح عجل بالفرن": "شرائح لحم العجل الطرية مطهوة بالفرن.",
             "شرائح دجاج بالفرن": "شرائح الدجاج المتبلة ومطهوة بالفرن.",
-
-            // سلطات
             "فتوش بالجبن": "سلطة فتوش تقليدية مع قطع من الجبن.",
             "تبولة": "سلطة شرق أوسطية منعشة من البقدونس والبرغل.",
             "سلطة عربية": "خضار موسمية مقطعة ناعماً مع صوص الليمون.",
             "سلطة صدر دجاج": "سلطة خضراء مع قطع صدر دجاج مشوي.",
             "سلطة طونا": "سلطة خضراء مع التونة.",
-
-            // ساندويتشات (سعر ثابت)
             "عجه": "ساندويتش بيض مقلي بالخضار.",
             "بستراما": "ساندويتش شرائح لحم البستراما البارد.",
             "لبنة": "ساندويتش باللبنة وزيت الزيتون.",
@@ -633,8 +739,6 @@
             "توست لبنة": "توست محمص باللبنة.",
             "توست طونه": "توست محمص بالتونة.",
             "لفة درزية": "خبز الصاج مع الإضافات.",
-
-            // معجنات
             "معجنات بيتزا": "معجنات بحشوة البيتزا.",
             "معجنات زعتر": "معجنات بالزعتر وزيت الزيتون.",
             "معجنات لحمه عجل": "معجنات بحشوة لحم العجل.",
@@ -647,8 +751,6 @@
             "سجاريوت بطاطا": "لفائف بالبطاطا.",
             "معجنات جبنه بيضا": "معجنات بحشوة الجبنة البيضاء.",
             "معجنات زيتون": "معجنات بالزيتون.",
-
-            // مشروبات
             "سحلب": "مشروب ساخن تقليدي.",
             "ليمونادا": "عصير ليمون منعش.",
             "اسبرسو": "قهوة مركزة.",
@@ -663,18 +765,14 @@
             "اكس ال": "مشروب طاقة XL.",
             "بلو": "مشروب طاقة Blue.",
             "ماء": "ماء معدني أو مياه شرب.",
-
-            // إضافات
             "بطاطا": "بطاطا مقلية مقرمشة.",
-
-            // ملاحظة حول العروض الخاصة (لا يتم تطبيقها آلياً في القائمة الحالية، ولكن مسجلة)
             "سجاريوت لحمه (عرض)": "3 بـ 10 شيكل",
             "سجاريوت بطاطا (عرض)": "3 بـ 10 شيكل",
             "معجنات جبنه بيضا (عرض)": "4 بـ 10 شيكل",
             "معجنات زيتون (عرض)": "4 بـ 10 شيكل",
         };
 
-        // قائمة الإضافات الشاملة (للوجبات الرئيسية والساندويتشات)
+        // قائمة الإضافات الشاملة
         const MAIN_EXTRAS_LIST = [
             "سلطة عربية", "حمص", "ملفوف مايونيز", "ملفوف أحمر",
             "ملفوف أبيض", "خيار مكبوس", "بندورة", "بصل",
@@ -787,7 +885,7 @@
             { name: "سلطة صدر دجاج", category: "salads", img: "https://placehold.co/600x400/8e0000/white?text=CHICKEN+SALAD", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
             { name: "سلطة طونا", category: "salads", img: "https://placehold.co/600x400/c62828/white?text=TUNA+SALAD", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
 
-            // 🥪 ساندويتشات (Sandwiches) - سعر ثابت أو مع إضافات
+            // 🥪 ساندويتشات (Sandwiches)
             { name: "عجه", category: "sandwiches", price: 12, img: "https://placehold.co/600x400/ff9800/3e2723?text=OMLETTE", extras: MAIN_EXTRAS_LIST },
             { name: "بستراما", category: "sandwiches", price: 10, img: "https://placehold.co/600x400/ff5f52/white?text=PASTRAMA", extras: MAIN_EXTRAS_LIST },
             { name: "لبنة", category: "sandwiches", price: 10, img: "https://placehold.co/600x400/ffb74d/3e2723?text=LABNEH", extras: MAIN_EXTRAS_LIST },
@@ -810,7 +908,7 @@
             { name: "معجنات جبنه بيضا", category: "pastries", price: 4, img: "https://placehold.co/600x400/ffb74d/3e2723?text=CHEESE+PASTRY", offer: "عرض: 4 بـ 10 شيكل" },
             { name: "معجنات زيتون", category: "pastries", price: 4, img: "https://placehold.co/600x400/8e0000/white?text=OLIVE+PASTRY", offer: "عرض: 4 بـ 10 شيكل" },
 
-            // 🍟 إضافات (Extras) - تُعرض كوجبة منفردة
+            // 🍟 إضافات (Extras)
             { name: "بطاطا", category: "extras", img: "https://placehold.co/600x400/c62828/white?text=FRIES", sizes: { "صغير": 7, "كبير": 10 }, extras: [] },
 
             // 🥤 مشروبات (Drinks)
@@ -830,7 +928,6 @@
             { name: "شاي", category: "drinks", img: "https://placehold.co/600x400/8e0000/white?text=TEA", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } },
         ];
 
-
         // =========================================
         // III. GLOBAL STATE (الحالة العالمية)
         // =========================================
@@ -844,7 +941,6 @@
         // IV. HELPER FUNCTIONS (الدوال المساعدة)
         // =========================================
 
-        // دالة تحويل اسم الفئة من الانجليزية للعربية
         function translateCategory(category) {
             const translations = {
                 "main": "وجبات رئيسية",
@@ -865,13 +961,6 @@
 
         function calculateTotalPrice() {
             let total = basePrice;
-            const extraCheckboxes = document.querySelectorAll('#extrasList input:checked');
-
-            // حالياً لا توجد إضافات مدفوعة، لكن نتركها لمرونة الكود
-            // for (const checkbox of extraCheckboxes) {
-            //     total += parseFloat(checkbox.dataset.price || 0);
-            // }
-
             const finalPrice = total * quantity;
             document.getElementById('totalPriceDisplay').textContent = `السعر الإجمالي: ${finalPrice.toFixed(0)} شيكل`;
             return finalPrice;
@@ -898,39 +987,31 @@
 
         function closeModal() {
             document.getElementById('extrasModal').style.display = 'none';
-            selectedMeal = null; // إعادة تعيين الوجبة المختارة
-            quantity = 1; // إعادة تعيين الكمية
-            basePrice = 0; // إعادة تعيين السعر الأساسي
+            selectedMeal = null;
+            quantity = 1;
+            basePrice = 0;
             document.getElementById('quantityDisplay').textContent = 1;
             document.getElementById('notesInput').value = '';
         }
 
-        // *** (جديد) دالة الإشعارات ***
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
             notification.textContent = message;
-            notification.className = 'notification'; // استخدام الكلاس من الـ CSS
-
+            notification.className = 'notification';
             if (type === 'error') {
                 notification.style.background = 'var(--primary-dark)';
             }
-
             document.body.appendChild(notification);
-
-            // إزالة الإشعار بعد 3 ثواني
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            setTimeout(() => { notification.remove(); }, 3000);
         }
 
         // =========================================
         // V. UI BUILDING FUNCTIONS (بناء واجهة المستخدم)
         // =========================================
 
-        // 1. إنشاء أزرار الفئات
         function createCategoryButtons() {
             const categoriesNav = document.getElementById('categoriesNav');
-            const categories = [...new Set(meals.map(meal => meal.category))]; // استخراج الفئات الفريدة
+            const categories = [...new Set(meals.map(meal => meal.category))];
 
             categories.forEach(category => {
                 const button = document.createElement('button');
@@ -942,7 +1023,6 @@
             });
         }
 
-        // 2. بناء قائمة الطعام الرئيسية
         function displayMeals(filteredMeals) {
             const menuContainer = document.getElementById('menuContainer');
             menuContainer.innerHTML = '';
@@ -969,32 +1049,29 @@
                     const card = document.createElement('div');
                     card.className = 'meal-card';
 
-                    // تحديد السعر المعروض
                     let priceDisplay;
                     if (meal.price) {
                         priceDisplay = `${meal.price} شيكل`;
                     } else if (meal.sizes) {
-                        // عرض أصغر سعر كـ "ابتداءً من"
                         const minPrice = Math.min(...Object.values(meal.sizes));
                         priceDisplay = `ابتداءً من ${minPrice} شيكل`;
                     } else {
-                        priceDisplay = "يرجاء السؤال";
+                        priceDisplay = "يرجى السؤال";
                     }
 
-                    // بناء محتوى البطاقة
                     card.innerHTML = `
-                                        <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
-                                        <div class="meal-content">
-                                            <h3>${meal.name}</h3>
-                                            <p>${getMealDescription(meal.name)}</p>
-                                            ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
-                                            <span class="price">${priceDisplay}</span>
-                                            <button onclick="openExtrasModal('${meal.name}')">
-                                                <i class="fa-solid fa-cart-plus"></i>
-                                                ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
-                                            </button>
-                                        </div>
-                                    `;
+                            <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
+                            <div class="meal-content">
+                                <h3>${meal.name}</h3>
+                                <p>${getMealDescription(meal.name)}</p>
+                                ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
+                                <span class="price">${priceDisplay}</span>
+                                <button onclick="openExtrasModal('${meal.name}')">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
+                                </button>
+                            </div>
+                        `;
                     mealGrid.appendChild(card);
                 });
 
@@ -1002,7 +1079,6 @@
             }
         }
 
-        // 3. فلترة الوجبات حسب الفئة
         function filterMeals(category, clickedButton) {
             const buttons = document.querySelectorAll('.category-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -1015,14 +1091,12 @@
             displayMeals(filtered);
         }
 
-        // 4. فتح نافذة الإضافات والتخصيص
         function openExtrasModal(mealName) {
             selectedMeal = meals.find(m => m.name === mealName);
             if (!selectedMeal) return;
 
             document.getElementById('modalMealName').textContent = selectedMeal.name;
 
-            // --- معالجة الأحجام (Sizes) ---
             const sizeSection = document.getElementById('sizeSection');
             const sizeOptionsContainer = document.getElementById('sizeOptions');
             sizeOptionsContainer.innerHTML = '';
@@ -1072,7 +1146,6 @@
 
             updatePriceOnSizeChange(defaultPrice);
 
-            // --- معالجة الإضافات (Extras) ---
             const extrasSection = document.getElementById('extrasSection');
             const extrasListContainer = document.getElementById('extrasList');
             extrasListContainer.innerHTML = '';
@@ -1101,80 +1174,66 @@
 
             document.getElementById('extrasModal').style.display = 'block';
 
-            // إذا كانت وجبة بسيطة وليس لها تخصيص، نغلق النافذة ونضيفها مباشرة
             const needsCustomization = hasSizes || (selectedMeal.extras && selectedMeal.extras.length > 0);
             if (!needsCustomization && !selectedMeal.price && !selectedMeal.sizes) {
-                // في حالة عدم وجود سعر ثابت أو أحجام، لن يحدث هذا المفترض بناءً على القائمة الجديدة، لكن كحماية
                 closeModal();
-                addToCart(true); // إضافة مباشرة
+                addToCart(true);
             }
         }
 
-        // 5. الإضافة إلى السلة (*** تم التعديل ***)
+        // 🔥 الإصلاح: دالة الإضافة إلى السلة المعدلة
         function addToCart(skipModal = false) {
             if (!selectedMeal) return;
 
             let itemDetails = {
                 name: selectedMeal.name,
-                category: translateCategory(selectedMeal.category),
-                quantity: quantity,
-                basePrice: basePrice,
+                price: basePrice,
+                img: selectedMeal.img || 'https://placehold.co/600x400',
+                size: selectedSize,
                 extras: [],
                 notes: document.getElementById('notesInput').value.trim(),
-                size: selectedSize,
-                img: selectedMeal.img || 'https://placehold.co/600x400',
-                price: basePrice
+                id: Date.now() + Math.random()
             };
 
-            // تحديد السعر النهائي
-            itemDetails.price = calculateTotalPrice() / quantity; // سعر الوحدة بعد إضافة الإضافات (إذا كانت موجودة)
-
             if (!skipModal) {
-                // جمع الإضافات المختارة
                 const extraCheckboxes = document.querySelectorAll('#extrasList input:checked');
                 extraCheckboxes.forEach(checkbox => {
                     itemDetails.extras.push(checkbox.value);
                 });
 
-                // التحقق من اختيار الحجم إذا كان مطلوباً
                 if (selectedMeal.sizes && !selectedSize) {
-                    // *** (تعديل) استخدام الإشعار بدل الـ alert ***
                     showNotification('الرجاء اختيار الحجم أولاً', 'error');
                     return;
                 }
-
                 closeModal();
             } else {
-                // إذا كانت إضافة مباشرة (لا حجم ولا إضافات)، نأخذ السعر الثابت
                 itemDetails.price = selectedMeal.price;
                 itemDetails.size = 'حجم عادي';
             }
 
-            // إضافة العنصر إلى الـ Local Storage
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            // 🔥 الإصلاح: استخدام الهيكل الصحيح الذي تتوقعه صفحة السلة
+            let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
 
-            // تكرار الإضافة حسب الكمية
-            for (let i = 0; i < itemDetails.quantity; i++) {
-                // هنا ننسخ التفاصيل لكل وحدة (مهمة للعروض لاحقاً)
-                cart.push({
+            // إضافة العنصر إلى السلة
+            for (let i = 0; i < quantity; i++) {
+                order.cart.push({
                     ...itemDetails,
-                    quantity: 1, // الكمية دائماً 1 في السلة، نعتمد على عدد العناصر
-                    basePrice: itemDetails.price,
-                    id: Date.now() + Math.random() // معرف فريد للعنصر
+                    id: itemDetails.id + '-' + i
                 });
             }
 
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount(cart.length);
+            // 🔥 الإصلاح: حفظ باستخدام المفتاح الصحيح
+            localStorage.setItem("order", JSON.stringify(order));
 
-            // *** (تعديل) استخدام الإشعار بدل الـ alert ***
+            // تحديث العداد
+            updateCartCount(order.cart.length);
             showNotification(`✅ تم إضافة ${itemDetails.name} (${itemDetails.size})`);
         }
 
-        // 6. تحديث عداد السلة
+        // 🔥 الإصلاح: دالة تحديث عداد السلة المعدلة
         function updateCartCount(count) {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            document.getElementById('cartCount').textContent = count || cart.length;
+            const order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+            document.getElementById('cartCount').textContent = count || order.cart.length;
         }
 
         // =========================================
@@ -1186,10 +1245,8 @@
             filterMeals('all', document.querySelector('.category-btn[data-category="all"]'));
             updateCartCount();
 
-            // إدارة حالة تسجيل الدخول (Username management)
             const username = localStorage.getItem('username');
             const userInfoDiv = document.getElementById('userInfo');
-            const loginLink = document.getElementById('loginLink');
 
             if (username) {
                 document.getElementById('usernameDisplay').textContent = username;
@@ -1198,10 +1255,9 @@
 
             document.getElementById('logoutBtn').onclick = () => {
                 localStorage.removeItem('username');
-                window.location.reload(); // أو توجيه لصفحة تسجيل الدخول
+                window.location.reload();
             };
 
-            // إغلاق المودال عند النقر خارجها
             window.onclick = function (event) {
                 if (event.target == document.getElementById('extrasModal')) {
                     closeModal();
@@ -1210,7 +1266,6 @@
         }
 
         initialize();
-
     </script>
+
 </body>
-</html>
