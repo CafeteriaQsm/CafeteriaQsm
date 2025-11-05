@@ -20,7 +20,10 @@
     --transition: all 0.3s ease;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction:rtl; text-align:right; background-color:var(--light-bg); color:var(--text-dark); line-height:1.6; }
+
+  /* أخفي الصفحة حتى يتم التحقق */
+  body { visibility: hidden; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction:rtl; text-align:right; background-color:var(--light-bg); color:var(--text-dark); line-height:1.6; }
+
   header { background:linear-gradient(135deg,var(--primary-color),var(--primary-dark)); color:white; padding:20px 0; box-shadow:0 4px 12px rgba(0,0,0,0.1); position:sticky; top:0; z-index:100; }
   .header-content { max-width:1200px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
   .logo { display:flex; align-items:center; gap:10px; font-size:1.5rem; font-weight:bold; }
@@ -134,10 +137,14 @@
 
   let currentUserUID = null;
 
-  // التحقق من تسجيل الدخول
+  // التحقق من تسجيل الدخول مع إظهار الصفحة بعد التأكد
   firebase.auth().onAuthStateChanged(user => {
-    if (!user) window.location.href = "index.html";
-    else currentUserUID = user.uid;
+    if (!user) {
+      window.location.href = "index.html";
+    } else {
+      currentUserUID = user.uid;
+      document.body.style.visibility = "visible"; // عرض الصفحة بعد التأكد
+    }
   });
 
   // ===== بيانات الوجبات =====
@@ -165,12 +172,14 @@
     const div = document.createElement("div");
     div.className = "meal-card";
     div.innerHTML = `
-      ${meal.hasExtras ? '<span class="badge">+</span>' : ''}
+            ${meal.hasExtras ? '<span class="badge">+</span>' : ''}
       <img src="${meal.img}" alt="${meal.name}">
       <div class="meal-content">
         <h3>${meal.name}</h3>
         <span class="price">${meal.price} شيكل</span>
-        <button onclick="${meal.hasExtras ? `openExtrasModal('${meal.name}', ${meal.price})` : `addToCart('${meal.name}', ${meal.price}, [])`}"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+        <button onclick="${meal.hasExtras ? `openExtrasModal('${meal.name}', ${meal.price})` : `addToCart('${meal.name}', ${meal.price}, [])`}">
+          <i class="fas fa-cart-plus"></i> أضف للسلة
+        </button>
       </div>
     `;
     document.getElementById(sections[meal.category]).appendChild(div);
@@ -194,7 +203,9 @@
     document.getElementById("extrasModal").style.display = "block";
   }
 
-  function closeModal() { document.getElementById("extrasModal").style.display = "none"; }
+  function closeModal() {
+    document.getElementById("extrasModal").style.display = "none";
+  }
 
   function confirmAddToCart() {
     const checkboxes = document.querySelectorAll("#extrasContainer input:checked");
@@ -231,3 +242,4 @@
 
 </body>
 </html>
+
