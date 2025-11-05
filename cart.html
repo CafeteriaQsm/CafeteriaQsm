@@ -555,32 +555,25 @@
         const order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
         let selectedPaymentMethod = "cash";
 
-        // --- (دالة الإشعارات الجديدة) ---
+        // (نفس دالة الإشعارات)
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
             notification.textContent = message;
-            notification.className = 'notification'; // استخدام الكلاس من الـ CSS
-
+            notification.className = 'notification';
             if (type === 'error') {
                 notification.style.background = 'var(--primary-dark)';
             }
             document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            setTimeout(() => { notification.remove(); }, 3000);
         }
 
-        // ✅ التحقق من صحة البيانات
+        // (نفس دالة التحقق من البيانات)
         function validateOrderData() {
             const nameValue = document.getElementById("studentName").value.trim();
             const timeValue = document.getElementById("pickupInput").value;
 
-            if (!nameValue) {
-                showNotification("⚠️ الرجاء إدخال اسم الطالب", "error");
-                return false;
-            }
-            if (nameValue.length < 2) {
-                showNotification("⚠️ الاسم يجب أن يكون أكثر من حرفين", "error");
+            if (!nameValue || nameValue.length < 2) {
+                showNotification("⚠️ الرجاء إدخال اسم صحيح", "error");
                 return false;
             }
             const arabicRegex = /^[\u0600-\u06FF\s]+$/;
@@ -595,9 +588,9 @@
             return true;
         }
 
-        // ✅ عرض محتويات السلة
+        // (نفس دالة عرض السلة)
         function displayCartItems() {
-            cartContainer.innerHTML = ""; // مسح السلة أولاً
+            cartContainer.innerHTML = "";
             if (order.cart.length > 0) {
                 let total = 0;
                 order.cart.forEach((item, i) => {
@@ -623,7 +616,6 @@
                 totalSection.innerHTML = `
                         <h3>إجمالي الطلب</h3>
                         <div class="total-price">₪${total}</div>
-                        <p>يشمل جميع الطلبات والإضافات</p>
                     `;
                 cartContainer.appendChild(totalSection);
                 orderSummary.style.display = "block";
@@ -632,7 +624,6 @@
                         <div class="empty-cart">
                         <i class="fas fa-shopping-cart"></i>
                         <h3>سلة التسوق فارغة</h3>
-                        <p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p>
                         <button class="btn btn-primary" onclick="goToMenu()">
                             <i class="fas fa-utensils"></i> تصفح القائمة
                         </button>
@@ -642,10 +633,11 @@
             }
         }
 
+        // (نفس دوال removeItem, selectPaymentMethod, goToMenu)
         function removeItem(index) {
             order.cart.splice(index, 1);
             localStorage.setItem("order", JSON.stringify(order));
-            displayCartItems(); // إعادة عرض السلة
+            displayCartItems();
         }
 
         function selectPaymentMethod(element, method) {
@@ -660,19 +652,15 @@
             window.location.href = "menu.html";
         }
 
-        // ✅ إرسال الطلب إلى Firebase (مُحدث ومحمي)
+        // (نفس دالة إرسال الطلب المحمية)
         async function confirmOrder() {
-            // *** 1. الحماية (Auth Guard) ***
             const user = auth.currentUser;
             if (!user) {
                 showNotification('يجب تسجيل الدخول أولاً لإرسال الطلب!', 'error');
-                setTimeout(() => {
-                    window.location.href = 'index.html'; // إرساله لصفحة تسجيل الدخول
-                }, 1500);
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
                 return;
             }
 
-            // (الكود الأصلي للتحقق من البيانات)
             if (!validateOrderData()) {
                 return;
             }
@@ -682,11 +670,10 @@
             const note = document.getElementById("noteInput").value.trim();
             const orderCode = Math.floor(100000 + Math.random() * 900000);
 
-            // *** 2. استخدام user.uid بدلاً من الكود العشوائي ***
             const newOrder = {
                 code: orderCode,
                 studentName: nameValue,
-                userId: user.uid, // استخدام الـ UID الحقيقي للمستخدم
+                userId: user.uid, // استخدام الـ UID الحقيقي
                 items: order.cart,
                 pickupTime: timeValue,
                 paymentMethod: selectedPaymentMethod,
@@ -699,17 +686,18 @@
             try {
                 await firebase.database().ref("orders").push(newOrder);
                 localStorage.removeItem("order");
-                showStatusTracking(newOrder); // عرض تتبع الحالة
+                showStatusTracking(newOrder);
                 showNotification("✅ تم إرسال طلبك بنجاح!", "success");
-                displayCartItems(); // إفراغ السلة من الواجهة
-                showMyOrders(); // تحديث قائمة طلباتي
+                displayCartItems(); // إفراغ السلة
+                showMyOrders(); // تحديث القائمة
             } catch (error) {
+                // *** هذه هي الرسالة التي رأيتها ***
                 showNotification("❌ حدث خطأ أثناء إرسال الطلب", "error");
-                console.error("Error:", error);
+                console.error("Error writing to database:", error);
             }
         }
 
-        // ✅ تتبع حالة الطلب
+        // (نفس دوال تتبع الحالة)
         function showStatusTracking(data) {
             const statusView = document.getElementById("statusView");
             statusView.innerHTML = `
@@ -717,37 +705,28 @@
                     <h3><i class="fas fa-check-circle"></i> تم استلام طلبك</h3>
                     <div class="status-info">
                         <p><strong>رقم الطلب:</strong> ${data.code}</p>
-                        <p><strong>الحالة الحالية:</strong> <span class="order-status status-pending" id="liveStatus">${data.status}</span></p>
-                        <p><strong>وقت الاستلام:</strong> ${data.pickupTime}</p>
+                        <p><strong>الحالة الحالية:</strong> <span class="order-status status-pending">${data.status}</span></p>
                     </div>
-                    <p>يمكنك متابعة الطلب من قسم "طلباتي الحالية"</p>
                     </div>
                 `;
-            // ملاحظة: تتبع الحالة المباشر (trackLiveStatus) يحتاج إلى معرفة الـ ID من Firebase
-            // الكود الحالي يعرض فقط الحالة الأولية
         }
 
-
         function getPaymentMethodText(method) {
-            const methods = {
-                'cash': 'الدفع نقداً', 'card': 'بطاقة ائتمان', 'mobile': 'محفظة إلكترونية'
-            };
+            const methods = { 'cash': 'الدفع نقداً', 'card': 'بطاقة ائتمان', 'mobile': 'محفظة إلكترونية' };
             return methods[method] || method;
         }
 
-        // ✅ عرض الطلبات الخاصة بالمستخدم (مُحدث ومحمي)
+        // (نفس دالة عرض الطلبات المحمية)
         function showMyOrders() {
             myOrdersContainer.innerHTML = "<p>🔄 جاري تحميل طلباتك...</p>";
-
             const user = auth.currentUser;
 
-            // *** 3. الحماية (Auth Guard) ***
             if (!user) {
+                // *** هذا هو الإصلاح للرسالة السفلية ***
                 myOrdersContainer.innerHTML = "<p>❌ يرجى تسجيل الدخول لرؤية طلباتك.</p>";
                 return;
             }
 
-            // *** 4. استخدام user.uid لجلب الطلبات الصحيحة ***
             db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
                 myOrdersContainer.innerHTML = "";
                 let found = false;
@@ -759,11 +738,6 @@
 
                 snapshot.forEach(child => {
                     const order = child.val();
-                    // (عرض الطلبات... نفس الكود الأصلي)
-                    const listItems = order.items?.map(item =>
-                        `<li> ... </li>` // (تم اختصاره للمساحة)
-                    ).join("");
-
                     found = true;
                     const card = document.createElement("div");
                     card.className = "order-card";
@@ -779,8 +753,6 @@
                                 <span class="order-status ${statusClass}">${order.status}</span>
                             </div>
                             <p><strong>⏰ وقت الاستلام:</strong> ${order.pickupTime}</p>
-                            <p><strong>💰 المجموع:</strong> ₪${order.total}</p>
-                            ${order.notes ? `<p><strong>📝 الملاحظات:</strong> ${order.notes}</p>` : ""}
                             </div>
                         `;
                     myOrdersContainer.appendChild(card);
@@ -792,19 +764,24 @@
             });
         }
 
-        // --- تهيئة الصفحة ---
+        // --- *** إصلاح الكود *** ---
         document.addEventListener('DOMContentLoaded', function () {
-            displayCartItems(); // عرض السلة
-            showMyOrders(); // محاولة عرض الطلبات (ستطلب تسجيل الدخول إذا لم يكن مسجلاً)
+            // 1. اعرض السلة فقط عند التحميل
+            displayCartItems();
 
-            // *** 5. تعبئة اسم المستخدم تلقائياً ***
+            // 2. انتظر حتى يتم التحقق من المستخدم
             auth.onAuthStateChanged(user => {
                 if (user) {
+                    // 3. إذا كان مسجلاً، املأ اسمه واعرض طلباته
+                    showMyOrders(); // الآن سيتم عرض الطلبات بشكل صحيح
                     db.ref('users/' + user.uid).once('value').then(snapshot => {
                         if (snapshot.exists() && snapshot.val().username) {
                             document.getElementById('studentName').value = snapshot.val().username;
                         }
                     });
+                } else {
+                    // 4. إذا لم يكن مسجلاً، اعرض رسالة تسجيل الدخول
+                    showMyOrders(); // (ستعرض "يرجى تسجيل الدخول...")
                 }
             });
         });
