@@ -133,7 +133,7 @@
             background-color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             position: sticky;
-            top: 80px; /* يجب أن يتطابق مع ارتفاع الهيدר تقريباً */
+            top: 80px; /* يجب أن يتطابق مع ارتفاع الهيدر تقريباً */
             z-index: 90;
         }
 
@@ -537,7 +537,7 @@
             <div class="logo">
                 <i class="fa-solid fa-utensils"></i>
                 <span>كافيتيريا الكلية</span>
-                </div>
+            </div>
             <div class="user-actions">
                 <div class="user-info" id="userInfo">
                     <span>مرحباً، <span id="usernameDisplay"></span>!</span>
@@ -978,23 +978,23 @@
                         const minPrice = Math.min(...Object.values(meal.sizes));
                         priceDisplay = `ابتداءً من ${minPrice} شيكل`;
                     } else {
-                        priceDisplay = "يرجى السؤال";
+                        priceDisplay = "يرجاء السؤال";
                     }
 
                     // بناء محتوى البطاقة
                     card.innerHTML = `
-                                    <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
-                                    <div class="meal-content">
-                                        <h3>${meal.name}</h3>
-                                        <p>${getMealDescription(meal.name)}</p>
-                                        ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
-                                        <span class="price">${priceDisplay}</span>
-                                        <button onclick="openExtrasModal('${meal.name}')">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                            ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
-                                        </button>
-                                    </div>
-                                `;
+                                        <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
+                                        <div class="meal-content">
+                                            <h3>${meal.name}</h3>
+                                            <p>${getMealDescription(meal.name)}</p>
+                                            ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
+                                            <span class="price">${priceDisplay}</span>
+                                            <button onclick="openExtrasModal('${meal.name}')">
+                                                <i class="fa-solid fa-cart-plus"></i>
+                                                ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
+                                            </button>
+                                        </div>
+                                    `;
                     mealGrid.appendChild(card);
                 });
 
@@ -1121,7 +1121,9 @@
                 basePrice: basePrice,
                 extras: [],
                 notes: document.getElementById('notesInput').value.trim(),
-                size: selectedSize
+                size: selectedSize,
+                img: selectedMeal.img || 'https://placehold.co/600x400',
+                price: basePrice
             };
 
             // تحديد السعر النهائي
@@ -1157,7 +1159,8 @@
                 cart.push({
                     ...itemDetails,
                     quantity: 1, // الكمية دائماً 1 في السلة، نعتمد على عدد العناصر
-                    basePrice: itemDetails.price
+                    basePrice: itemDetails.price,
+                    id: Date.now() + Math.random() // معرف فريد للعنصر
                 });
             }
 
@@ -1170,7 +1173,8 @@
 
         // 6. تحديث عداد السلة
         function updateCartCount(count) {
-            document.getElementById('cartCount').textContent = count || (JSON.parse(localStorage.getItem('cart')) || []).length;
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.getElementById('cartCount').textContent = count || cart.length;
         }
 
         // =========================================
