@@ -118,9 +118,18 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+let currentUserId = null;
+
+// إزالة إعادة التوجيه - المستخدم يمكنه البقاء في الصفحة حتى بدون تسجيل دخول
 firebase.auth().onAuthStateChanged(user => {
-    if(!user){ window.location.href="index.html"; }
-    else { initCart(user.uid); }
+    if(user) {
+        currentUserId = user.uid;
+        initCart(user.uid);
+    } else {
+        currentUserId = null;
+        // بدلاً من إعادة التوجيه، نعرض رسالة للمستخدم
+        initCart(null);
+    }
 });
 
 function initCart(userId){
@@ -153,7 +162,16 @@ function initCart(userId){
         cartContainer.appendChild(totalSection);
         orderSummary.style.display="block";
     } else {
-        cartContainer.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><h3>السلة فارغة</h3><button class="btn btn-primary" onclick="goToMenu()">تصفح القائمة</button></div>`;
+        cartContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--primary-light); margin-bottom: 20px;"></i>
+                <h3>السلة فارغة</h3>
+                <p>لم تقم بإضافة أي عناصر إلى سلة التسوق بعد</p>
+                <button class="btn btn-primary" onclick="goToMenu()" style="margin-top: 20px;">
+                    <i class="fas fa-utensils"></i> تصفح القائمة
+                </button>
+            </div>
+        `;
     }
 
     window.removeItem = function(index){
@@ -168,16 +186,29 @@ function initCart(userId){
         event.currentTarget.classList.add("selected");
     }
 
-    window.goToMenu = function(){ window.location.href="menu.html"; }
+    window.goToMenu = function(){ 
+        window.location.href="menu.html"; 
+    }
 
     window.confirmOrder = function(){
+        // التحقق من تسجيل الدخول قبل إرسال الطلب
+        if(!currentUserId) {
+            alert("⚠️ الرجاء تسجيل الدخول أولاً لإرسال الطلب");
+            window.location.href = "index.html";
+            return;
+        }
+
         const nameValue = document.getElementById("studentName").value.trim();
         const timeValue = document.getElementById("pickupInput").value;
         const noteValue = document.getElementById("noteInput").value.trim();
-        if(!nameValue || !timeValue){ alert("⚠️ الرجاء تعبئة جميع الحقول المطلوبة"); return; }
+        
+        if(!nameValue || !timeValue){ 
+            alert("⚠️ الرجاء تعبئة جميع الحقول المطلوبة"); 
+            return; 
+        }
 
         const newOrder = {
-            userId,
+            userId: currentUserId,
             name: nameValue,
             time: timeValue,
             note: noteValue,
@@ -187,14 +218,29 @@ function initCart(userId){
             timestamp: Date.now()
         };
 
+        // إرسال الطلب إلى قاعدة البيانات - مربوط مع صفحة الأدمن
         db.ref("orders").push(newOrder)
-            .then(()=>{ alert("✅ تم إرسال الطلب بنجاح!"); localStorage.removeItem("order"); location.reload(); })
-            .catch(err=>{ console.error(err); alert("❌ حدث خطأ: "+err.message); });
+            .then(()=>{ 
+                alert("✅ تم إرسال الطلب بنجاح!"); 
+                localStorage.removeItem("order"); 
+                location.reload(); 
+            })
+            .catch(err=>{ 
+                console.error(err); 
+                alert("❌ حدث خطأ أثناء إرسال الطلب: "+err.message); 
+            });
     }
 
     window.showMyOrders = function(){
+        // التحقق من تسجيل الدخول قبل عرض الطلبات
+        if(!currentUserId) {
+            alert("⚠️ الرجاء تسجيل الدخول أولاً لعرض طلباتك");
+            window.location.href = "index.html";
+            return;
+        }
+
         myOrdersContainer.innerHTML="";
-        const ordersRef = db.ref("orders").orderByChild("userId").equalTo(userId);
+        const ordersRef = db.ref("orders").orderByChild("userId").equalTo(currentUserId);
         ordersRef.on("value", snapshot=>{
             myOrdersContainer.innerHTML="";
             const data = snapshot.val();
@@ -206,14 +252,16 @@ function initCart(userId){
                         <p><strong>الاسم:</strong> ${orderItem.name}</p>
                         <p><strong>وقت الاستلام:</strong> ${orderItem.time}</p>
                         <p><strong>طريقة الدفع:</strong> ${orderItem.payment}</p>
-                        <p><strong>حالة الطلب:</strong> <span class="order-status status-${orderItem.status}">${orderItem.status}</span></p>
+                        <p><strong>حالة الطلب:</strong> <span class="order-status ${orderItem.status}">${orderItem.status}</span></p>
                         <ul class="order-item-list">
                             ${orderItem.cart.map(ci=>`<li><img src="${ci.img}" alt="${ci.name}"/><span>${ci.name} - ₪${ci.price}</span></li>`).join("")}
                         </ul>
                     `;
                     myOrdersContainer.appendChild(div);
                 });
-            } else { myOrdersContainer.innerHTML="<p>لا توجد طلبات حالية.</p>"; }
+            } else { 
+                myOrdersContainer.innerHTML="<p style='text-align: center; padding: 20px;'>لا توجد طلبات حالية.</p>"; 
+            }
         });
     }
 }
