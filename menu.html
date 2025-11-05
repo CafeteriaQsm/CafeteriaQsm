@@ -133,7 +133,7 @@
             background-color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             position: sticky;
-            top: 80px; /* يجب أن يتطابق مع ارتفاع الهيدر تقريباً */
+            top: 80px; /* يجب أن يتطابق مع ارتفاع الهيدר تقريباً */
             z-index: 90;
         }
 
@@ -467,7 +467,7 @@
             font-size: 0.9rem;
         }
 
-        
+
         /* --- ستايل الإشعارات (جديد) --- */
         .notification {
             position: fixed;
@@ -489,13 +489,14 @@
                 opacity: 0;
                 transform: translate(-50%, -20px);
             }
+
             10%, 90% {
                 opacity: 1;
                 transform: translate(-50%, 0);
             }
         }
         /* --- نهاية ستايل الإشعارات --- */
-        
+
 
         @media (max-width: 768px) {
             .header-content {
@@ -535,8 +536,8 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fa-solid fa-utensils"></i>
-                <span>مطعم الأوائل</span>
-            </div>
+                <span>كافيتيريا الكلية</span>
+                </div>
             <div class="user-actions">
                 <div class="user-info" id="userInfo">
                     <span>مرحباً، <span id="usernameDisplay"></span>!</span>
@@ -913,9 +914,9 @@
             if (type === 'error') {
                 notification.style.background = 'var(--primary-dark)';
             }
-            
+
             document.body.appendChild(notification);
-            
+
             // إزالة الإشعار بعد 3 ثواني
             setTimeout(() => {
                 notification.remove();
@@ -982,18 +983,18 @@
 
                     // بناء محتوى البطاقة
                     card.innerHTML = `
-                                <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
-                                <div class="meal-content">
-                                    <h3>${meal.name}</h3>
-                                    <p>${getMealDescription(meal.name)}</p>
-                                    ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
-                                    <span class="price">${priceDisplay}</span>
-                                    <button onclick="openExtrasModal('${meal.name}')">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                        ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
-                                    </button>
-                                </div>
-                            `;
+                                    <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
+                                    <div class="meal-content">
+                                        <h3>${meal.name}</h3>
+                                        <p>${getMealDescription(meal.name)}</p>
+                                        ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ''}
+                                        <span class="price">${priceDisplay}</span>
+                                        <button onclick="openExtrasModal('${meal.name}')">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                            ${meal.sizes || (meal.extras && meal.extras.length > 0) ? 'اطلب بتخصيص' : 'إضافة مباشرة'}
+                                        </button>
+                                    </div>
+                                `;
                     mealGrid.appendChild(card);
                 });
 
@@ -1162,7 +1163,7 @@
 
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount(cart.length);
-            
+
             // *** (تعديل) استخدام الإشعار بدل الـ alert ***
             showNotification(`✅ تم إضافة ${itemDetails.name} (${itemDetails.size})`);
         }
