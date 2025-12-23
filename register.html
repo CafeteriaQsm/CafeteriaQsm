@@ -1,320 +1,308 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب - كافيتيريا الجامعة</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب - كافيتيريا الجامعة</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-            direction: rtl;
-            min-height: 100vh;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      direction: rtl;
+      min-height: 100vh;
+    }
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        .signup-form {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 450px;
-        }
+    .signup-form {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .header { text-align: center; margin-bottom: 30px; }
+    .emoji { font-size: 50px; margin-bottom: 15px; display: block; }
 
-        .emoji {
-            font-size: 50px;
-            margin-bottom: 15px;
-            display: block;
-        }
+    h2 { color: #333; font-size: 28px; margin-bottom: 10px; }
+    .subtitle { color: #666; font-size: 16px; margin-bottom: 5px; }
 
-        h2 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
+    .form-group { margin-bottom: 25px; }
 
-        .subtitle {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 600;
+    }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+    input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e1e1e1;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-        }
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
 
-        input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
+    .phone-input { display: flex; align-items: center; }
+    .country-code {
+      background: #f8f9fa;
+      padding: 15px;
+      border: 2px solid #e1e1e1;
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+      color: #555;
+      font-weight: 600;
+      min-width: 80px;
+      text-align: center;
+    }
 
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-        }
+    .phone-input input { border-radius: 0 8px 8px 0; flex: 1; }
 
-        .phone-input {
-            display: flex;
-            align-items: center;
-        }
+    .signup-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
 
-        .country-code {
-            background: #f8f9fa;
-            padding: 15px;
-            border: 2px solid #e1e1e1;
-            border-right: none;
-            border-radius: 8px 0 0 8px;
-            color: #555;
-            font-weight: 600;
-            min-width: 80px;
-            text-align: center;
-        }
+    .signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+    }
 
-        .phone-input input {
-            border-radius: 0 8px 8px 0;
-            flex: 1;
-        }
+    .signup-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
 
-        .signup-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            margin-bottom: 20px;
-        }
+    .login-link {
+      text-align: center;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e1e1e1;
+    }
 
-            .signup-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-            }
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .login-link a:hover { color: #764ba2; text-decoration: underline; }
 
-            .signup-btn:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-                transform: none;
-                box-shadow: none;
-            }
+    .message {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
 
-        .login-link {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e1e1e1;
-        }
+    .message.success {
+      display: block;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
 
-            .login-link a {
-                color: #667eea;
-                text-decoration: none;
-                font-weight: 600;
-                transition: color 0.3s ease;
-            }
+    .message.error {
+      display: block;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
 
-                .login-link a:hover {
-                    color: #764ba2;
-                    text-decoration: underline;
-                }
+    .loading { opacity: 0.7; pointer-events: none; }
 
-        .message {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-            .message.success {
-                background: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-            }
-
-            .message.error {
-                background: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        @media(max-width:480px) {
-            .signup-form {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            .emoji {
-                font-size: 40px;
-            }
-
-            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
-                padding: 12px;
-            }
-        }
-    </style>
+    @media(max-width:480px) {
+      .signup-form { padding: 30px 20px; margin: 10px; }
+      h2 { font-size: 24px; }
+      .emoji { font-size: 40px; }
+      input[type="text"], input[type="email"], input[type="password"], input[type="tel"] { padding: 12px; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="signup-form">
-            <div class="header">
-                <span class="emoji">☕🎓</span>
-                <h2>أنشئ حسابك</h2>
-                <p class="subtitle">وانضم إلى كافيتيريا جامعتنا 🚀</p>
-            </div>
-
-            <form id="signupForm">
-                <div class="form-group">
-                    <label for="username">👤 اسم المستخدم</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">📧 البريد الإلكتروني</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">🔒 كلمة السر</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">📞 رقم الهاتف</label>
-                    <div class="phone-input">
-                        <span class="country-code">+972</span>
-                        <input type="tel" id="phone" name="phone" placeholder="5xxxxxxxx" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="signup-btn">🎉 إنشاء الحساب</button>
-
-                <div class="login-link">
-                    <p>هل لديك حساب بالفعل؟ <a href="index.html">سجل الدخول هنا 🎯</a></p>
-                </div>
-
-                <div id="message" class="message"></div>
-            </form>
-        </div>
+<div class="container">
+  <div class="signup-form">
+    <div class="header">
+      <span class="emoji">☕🎓</span>
+      <h2>أنشئ حسابك</h2>
+      <p class="subtitle">وانضم إلى كافيتيريا جامعتنا 🚀</p>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="username">👤 اسم المستخدم</label>
+        <input type="text" id="username" name="username" required>
+      </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-            authDomain: "cafeteria-app-82268.firebaseapp.com",
-            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "cafeteria-app-82268",
-            storageBucket: "cafeteria-app-82268.appspot.com",
-            messagingSenderId: "457381739769",
-            appId: "1:457381739769:web:409cb927ef54368cb3f628"
-        };
+      <div class="form-group">
+        <label for="email">📧 البريد الإلكتروني</label>
+        <input type="email" id="email" name="email" required>
+      </div>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
+      <div class="form-group">
+        <label for="password">🔒 كلمة السر</label>
+        <input type="password" id="password" name="password" required>
+      </div>
 
-        document.getElementById('signupForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
+      <div class="form-group">
+        <label for="phone">📞 رقم الهاتف</label>
+        <div class="phone-input">
+          <span class="country-code">+972</span>
+          <input type="tel" id="phone" name="phone" placeholder="5xxxxxxxx" required>
+        </div>
+      </div>
 
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const phone = '+972' + document.getElementById('phone').value.replace(/^0+/, '');
+      <button type="submit" class="signup-btn">🎉 إنشاء الحساب</button>
 
-            const signupBtn = document.querySelector('.signup-btn');
-            const messageDiv = document.getElementById('message');
+      <div class="login-link">
+        <p>هل لديك حساب بالفعل؟ <a href="index.html">سجل الدخول هنا 🎯</a></p>
+      </div>
 
-            signupBtn.disabled = true;
-            signupBtn.textContent = '⏳ جاري إنشاء الحساب...';
-            document.getElementById('signupForm').classList.add('loading');
+      <div id="message" class="message"></div>
+    </form>
+  </div>
+</div>
 
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-                await db.ref('users/' + user.uid).set({
-                    username: username,
-                    email: email,
-                    phone: phone,
-                    createdAt: new Date().toISOString(),
-                    verified: false
-                });
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+    authDomain: "cafeteria-app-82268.firebaseapp.com",
+    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cafeteria-app-82268",
+    storageBucket: "cafeteria-app-82268.appspot.com",
+    messagingSenderId: "457381739769",
+    appId: "1:457381739769:web:409cb927ef54368cb3f628"
+  };
 
-                await user.sendEmailVerification();
+  // ✅ حماية من تكرار initializeApp
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-                messageDiv.textContent = '✅ تم إنشاء الحساب! سيتم تحويلك إلى صفحة تسجيل الدخول...';
-                messageDiv.className = 'message success';
-                document.getElementById('signupForm').reset();
+  const auth = firebase.auth();
+  const db = firebase.database();
 
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2500);
+  function showMsg(text, type) {
+    const messageDiv = document.getElementById("message");
+    messageDiv.textContent = text;
+    messageDiv.className = "message " + type;
+  }
 
-            } catch (error) {
-                console.error(error);
-                let errorMessage = '❌ حدث خطأ أثناء إنشاء الحساب';
-                if (error.code === 'auth/email-already-in-use') errorMessage = '📧 هذا البريد الإلكتروني مستخدم بالفعل';
-                else if (error.code === 'auth/weak-password') errorMessage = '🔒 كلمة السر ضعيفة، يجب أن تكون 6 أحرف على الأقل';
-                else if (error.code === 'auth/invalid-email') errorMessage = '📧 بريد إلكتروني غير صالح';
+  document.getElementById('signupForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-                messageDiv.textContent = errorMessage;
-                messageDiv.className = 'message error';
-            } finally {
-                signupBtn.disabled = false;
-                signupBtn.textContent = '🎉 إنشاء الحساب';
-                document.getElementById('signupForm').classList.remove('loading');
-            }
-        });
-    </script>
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const phoneRaw = document.getElementById('phone').value.trim();
+
+    // ✅ تحقق بسيط قبل الإرسال
+    if (!username || username.length < 2) {
+      showMsg("⚠️ اكتب اسم مستخدم صحيح", "error");
+      return;
+    }
+    if (!email) {
+      showMsg("⚠️ اكتب بريد إلكتروني", "error");
+      return;
+    }
+    if (!password || password.length < 6) {
+      showMsg("⚠️ كلمة السر لازم تكون 6 أحرف على الأقل", "error");
+      return;
+    }
+    // 5xxxxxxxx (إسرائيل)
+    const phoneDigits = phoneRaw.replace(/\D/g, "").replace(/^0+/, "");
+    if (!/^5\d{8}$/.test(phoneDigits)) {
+      showMsg("⚠️ رقم الهاتف لازم يكون بالشكل: 5xxxxxxxx", "error");
+      return;
+    }
+
+    const phone = "+972" + phoneDigits;
+
+    const signupBtn = document.querySelector('.signup-btn');
+    signupBtn.disabled = true;
+    signupBtn.textContent = '⏳ جاري إنشاء الحساب...';
+    document.getElementById('signupForm').classList.add('loading');
+
+    try {
+      // ✅ إنشاء الحساب (يسجّل دخول تلقائيًا)
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      // ✅ خزّن بيانات المستخدم في DB
+      await db.ref('users/' + user.uid).set({
+        username: username,
+        email: email,
+        phone: phone,
+        createdAt: new Date().toISOString(),
+        verified: user.emailVerified || false
+      });
+
+      // ✅ حتى صفحة menu.html تظهر الاسم مثل كودك الحالي
+      localStorage.setItem("username", username);
+
+      // ✅ (اختياري) ارسال تحقق ايميل بدون ما يوقف التحويل
+      user.sendEmailVerification().catch(() => {});
+
+      showMsg("✅ تم إنشاء الحساب! جاري تحويلك إلى القائمة...", "success");
+
+      // ✅ تحويل مباشر للمنيو
+      setTimeout(() => {
+        window.location.href = 'menu.html';
+      }, 900);
+
+    } catch (error) {
+      console.error("Signup error:", error);
+
+      let errorMessage = '❌ حدث خطأ أثناء إنشاء الحساب';
+      if (error.code === 'auth/email-already-in-use') errorMessage = '📧 هذا البريد الإلكتروني مستخدم بالفعل';
+      else if (error.code === 'auth/weak-password') errorMessage = '🔒 كلمة السر ضعيفة، يجب أن تكون 6 أحرف على الأقل';
+      else if (error.code === 'auth/invalid-email') errorMessage = '📧 بريد إلكتروني غير صالح';
+      else if ((error.message || "").toLowerCase().includes("permission")) errorMessage = "⛔ قاعدة البيانات تمنع إنشاء المستخدم (Rules)";
+
+      showMsg(errorMessage, "error");
+    } finally {
+      signupBtn.disabled = false;
+      signupBtn.textContent = '🎉 إنشاء الحساب';
+      document.getElementById('signupForm').classList.remove('loading');
+    }
+  });
+</script>
 
 </body>
 </html>
