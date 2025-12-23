@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
+<html lang="ar"><head>
   <meta charset="UTF-8">
   <title>سلة الطلبات</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -367,18 +365,18 @@
       </div>
     </div>
 
-    <div class="order-form" id="orderSummary" style="display:none;">
+    <div class="order-form" id="orderSummary" style="display: none;">
       <h3><i class="fas fa-user-edit"></i> معلومات الطلب</h3>
 
       <div class="form-group">
         <label for="studentName"><i class="fas fa-user"></i> اسم الطالب *</label>
-        <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية">
+        <input type="text" id="studentName" required="" placeholder="أدخل اسمك الكامل بالعربية">
         <small style="color: var(--text-light); font-size: 0.8rem;">يجب أن يكون اسم عربي صحيح</small>
       </div>
 
       <div class="form-group">
         <label for="pickupInput"><i class="fas fa-clock"></i> وقت الاستلام *</label>
-        <input type="time" id="pickupInput" required>
+        <input type="time" id="pickupInput" required="">
       </div>
 
       <div class="form-group">
@@ -401,7 +399,6 @@
           <i class="fas fa-arrow-right"></i> الرجوع للقائمة
         </button>
 
-        <!-- ✅ زر تأكيد 10 ثواني -->
         <button id="sendOrderBtn" class="btn btn-primary" onclick="startOrderConfirmation()">
           <i class="fas fa-paper-plane"></i> إرسال الطلب
         </button>
@@ -442,10 +439,8 @@
     let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
     let selectedPaymentMethod = "cash";
 
-    // ✅ منع سبام إرسال
     let isSubmittingOrder = false;
 
-    // ✅ تأكيد 10 ثواني
     let confirmMode = false;
     let confirmSecondsLeft = 0;
     let confirmIntervalId = null;
@@ -480,16 +475,28 @@
       return true;
     }
 
-    // ✅ تطبيع بيانات العنصر: quantity + unitPrice + lineTotal + خيارات
+    // ✅ تطبيع بيانات العنصر: quantity + unitPrice + lineTotal (يدعم العروض)
+    // - لو العنصر جاي من عروض المنيو وفيه totalPrice => نستخدمه كمجموع نهائي
+    // - غير هيك => unitPrice * quantity
     function normalizeCartItem(item) {
       const qty = Number(item.quantity ?? item.qty ?? 1) || 1;
+
+      // سعر القطعة
       const unitPrice = Number(item.unitPrice ?? item.price ?? 0) || 0;
+
+      // ✅ مجموع السطر
+      let lineTotal = 0;
+      if (item.totalPrice != null && !isNaN(Number(item.totalPrice))) {
+        lineTotal = Number(item.totalPrice);
+      } else {
+        lineTotal = unitPrice * qty;
+      }
 
       return {
         ...item,
         quantity: qty,
         unitPrice: unitPrice,
-        lineTotal: unitPrice * qty,
+        lineTotal: lineTotal,
       };
     }
 
@@ -568,21 +575,17 @@
       window.location.href = "menu.html";
     }
 
-    // ✅ تنظيف الصفحة بعد الإرسال
     function clearCartPageAfterSend() {
       order = { cart: [] };
       localStorage.removeItem("order");
       displayCartItems();
 
-      // نظف الحقول (خلي الاسم زي ما هو)
       document.getElementById("noteInput").value = "";
       document.getElementById("pickupInput").value = "";
 
-      // إلغاء وضع التأكيد لو شغال
       cancelOrderConfirmation(true);
     }
 
-    // ✅ إدارة زر التأكيد 10 ثواني
     function setSendButtonText(text, disabled = false) {
       const btn = document.getElementById("sendOrderBtn");
       if (!btn) return;
@@ -605,7 +608,6 @@
       if (!silent) showNotification("تم إلغاء التأكيد", "error");
     }
 
-    // أول ضغطة: يبدأ العدّاد، ثاني ضغطة: يرسل فورًا
     function startOrderConfirmation() {
       if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
         showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
@@ -626,13 +628,11 @@
         return;
       }
 
-      // إذا كان بالفعل في وضع التأكيد => هذه ضغطة ثانية => إرسال فورًا
       if (confirmMode) {
-        submitOrder(); // إرسال فوري
+        submitOrder();
         return;
       }
 
-      // دخول وضع التأكيد
       confirmMode = true;
       confirmSecondsLeft = 10;
 
@@ -650,13 +650,11 @@
       }, 1000);
 
       confirmTimeoutId = setTimeout(() => {
-        submitOrder(); // إرسال تلقائي بعد 10 ثواني
+        submitOrder();
       }, 10000);
     }
 
-    // ✅ الإرسال الحقيقي (مع القفل + منع سبام + إرسال الخيارات)
     async function submitOrder() {
-      // امنع تكرار الإرسال
       if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
         showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
         return;
@@ -676,7 +674,6 @@
         return;
       }
 
-      // ✅ اقفل الزر ووقف التأكيد
       isSubmittingOrder = true;
       localStorage.setItem("orderSubmitting", "1");
 
@@ -718,7 +715,6 @@
       };
 
       try {
-        // ✅ منع إرسال ثاني بسرعة (20 ثانية)
         const now = Date.now();
         const last = Number(localStorage.getItem("lastOrderSentAt") || 0);
         if (now - last < 20000) {
@@ -726,10 +722,8 @@
         }
 
         await db.ref("orders").push(newOrder);
-
         localStorage.setItem("lastOrderSentAt", String(now));
 
-        // ✅ نظف الصفحة فورًا
         clearCartPageAfterSend();
 
         showStatusTracking(newOrder);
@@ -821,11 +815,10 @@
       });
     });
 
-    // لو المستخدم خرج من الصفحة وهو في وضع التأكيد نلغي المؤقتات
     window.addEventListener("beforeunload", () => {
       if (confirmIntervalId) clearInterval(confirmIntervalId);
       if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
     });
   </script>
-</body>
-</html>
+
+</body></html>
