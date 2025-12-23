@@ -1,726 +1,688 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>لوحة تحكم الأدمن - إدارة الطلبات</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #c62828;
-            --primary-light: #ff5f52;
-            --primary-dark: #8e0000;
-            --secondary-color: #ffb74d;
-            --accent-color: #ff9800;
-            --light-bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-dark: #2c3e50;
-            --text-light: #5d6d7e;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --info-color: #3498db;
-            --danger-color: #e74c3c;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+  <meta charset="UTF-8" />
+  <title>لوحة تحكم الأدمن - إدارة الطلبات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    :root {
+      --primary-color: #c62828;
+      --primary-light: #ff5f52;
+      --primary-dark: #8e0000;
+      --secondary-color: #ffb74d;
+      --accent-color: #ff9800;
+      --light-bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50;
+      --text-light: #5d6d7e;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --info-color: #3498db;
+      --danger-color: #e74c3c;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .admin-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 20px 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      direction: rtl;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .admin-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-            .logo i {
-                font-size: 2rem;
-            }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
 
-        .admin-stats {
-            display: flex;
-            gap: 15px;
-        }
+    .logo i { font-size: 2rem; }
 
-        .stat-item {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
+    .admin-stats { display: flex; gap: 15px; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .stat-item {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
 
-        .page-title {
-            color: var(--primary-color);
-            margin: 20px 0;
-            text-align: center;
-            font-size: 2rem;
-        }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        .filters {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-        }
+    .page-title {
+      color: var(--primary-color);
+      margin: 20px 0;
+      text-align: center;
+      font-size: 2rem;
+    }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+    .filters {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
 
-            .filter-group label {
-                font-weight: 600;
-                color: var(--text-dark);
-                font-size: 0.9rem;
-            }
+    .filter-group { display: flex; flex-direction: column; gap: 8px; }
 
-            .filter-group select, .filter-group input {
-                padding: 10px 15px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-size: 1rem;
-                min-width: 150px;
-            }
+    .filter-group label {
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
 
-        .orders-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
+    .filter-group select, .filter-group input {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      min-width: 150px;
+    }
 
-        .order-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
+    .orders-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+    }
 
-            .order-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            }
+    .order-card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
 
-        .order-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .order-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
 
-        .order-code {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
+    .order-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .order-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
+    .order-code { font-weight: bold; font-size: 1.2rem; }
 
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
+    .order-status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
 
-        .status-processing {
-            background-color: #cce7ff;
-            color: #004085;
-        }
+    .status-pending { background-color: #fff3cd; color: #856404; }
+    .status-processing { background-color: #cce7ff; color: #004085; }
+    .status-ready { background-color: #d1edff; color: #0c5460; }
+    .status-completed { background-color: #d4edda; color: #155724; }
 
-        .status-ready {
-            background-color: #d1edff;
-            color: #0c5460;
-        }
+    .order-body { padding: 20px; }
 
-        .status-completed {
-            background-color: #d4edda;
-            color: #155724;
-        }
+    .order-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
 
-        .order-body {
-            padding: 20px;
-        }
+    .info-item { display: flex; flex-direction: column; gap: 5px; }
+    .info-label { font-size: 0.85rem; color: var(--text-light); }
+    .info-value { font-weight: 600; }
 
-        .order-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
+    .order-items { margin: 15px 0; }
 
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+    .order-items h4 {
+      margin-bottom: 10px;
+      color: var(--text-dark);
+      border-bottom: 1px dashed #eee;
+      padding-bottom: 5px;
+    }
 
-        .info-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
+    .item-list {
+      list-style: none;
+      max-height: 170px;
+      overflow-y: auto;
+      padding: 5px;
+    }
 
-        .info-value {
-            font-weight: 600;
-        }
+    .item-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 10px;
+    }
 
-        .order-items {
-            margin: 15px 0;
-        }
+    .item-list li:last-child { border-bottom: none; }
 
-            .order-items h4 {
-                margin-bottom: 10px;
-                color: var(--text-dark);
-                border-bottom: 1px dashed #eee;
-                padding-bottom: 5px;
-            }
+    .item-name { display: flex; flex-direction: column; gap: 4px; }
 
-        .item-list {
-            list-style: none;
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 5px;
-        }
+    .item-extras {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
 
-            .item-list li {
-                display: flex;
-                justify-content: space-between;
-                padding: 8px 0;
-                border-bottom: 1px solid #f0f0f0;
-            }
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
 
-                .item-list li:last-child {
-                    border-bottom: none;
-                }
+    .btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex: 1;
+    }
 
-        .item-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .btn-primary { background-color: var(--info-color); color: white; }
+    .btn-primary:hover { background-color: #2980b9; }
 
-        .item-extras {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-top: 3px;
-        }
+    .btn-success { background-color: var(--success-color); color: white; }
+    .btn-success:hover { background-color: #219653; }
 
-        .order-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+    .btn-danger { background-color: var(--danger-color); color: white; }
+    .btn-danger:hover { background-color: #c0392b; }
 
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            flex: 1;
-        }
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
 
-        .btn-primary {
-            background-color: var(--info-color);
-            color: white;
-        }
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--primary-light);
+      margin-bottom: 20px;
+    }
 
-            .btn-primary:hover {
-                background-color: #2980b9;
-            }
+    .empty-state h3 { color: var(--text-dark); margin-bottom: 10px; }
+    .empty-state p { color: var(--text-light); }
 
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
+    .status-select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
 
-            .btn-success:hover {
-                background-color: #219653;
-            }
+    .pickup-time {
+      background-color: #e7f3ff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-right: 4px solid var(--info-color);
+      margin: 10px 0;
+    }
 
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
+    .time-label { font-weight: bold; color: var(--info-color); margin-bottom: 5px; }
+    .time-value { font-size: 1.1rem; font-weight: bold; }
 
-            .btn-danger:hover {
-                background-color: #c0392b;
-            }
+    @media (max-width: 768px) {
+      .orders-container { grid-template-columns: 1fr; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .filter-group { width: 100%; }
+      .order-info { grid-template-columns: 1fr; }
+      .admin-stats { flex-wrap: wrap; justify-content: center; }
+      .header-content { flex-direction: column; gap: 15px; }
+    }
 
-        .btn-warning {
-            background-color: var(--warning-color);
-            color: white;
-        }
-
-            .btn-warning:hover {
-                background-color: #e67e22;
-            }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px 20px;
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-        }
-
-            .empty-state i {
-                font-size: 4rem;
-                color: var(--primary-light);
-                margin-bottom: 20px;
-            }
-
-            .empty-state h3 {
-                color: var(--text-dark);
-                margin-bottom: 10px;
-            }
-
-            .empty-state p {
-                color: var(--text-light);
-            }
-
-        .status-select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-
-        /* إضافة ستايل للوقت المهم */
-        .pickup-time {
-            background-color: #e7f3ff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border-right: 4px solid var(--info-color);
-            margin: 10px 0;
-        }
-
-        .time-label {
-            font-weight: bold;
-            color: var(--info-color);
-            margin-bottom: 5px;
-        }
-
-        .time-value {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .orders-container {
-                grid-template-columns: 1fr;
-            }
-
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-group {
-                width: 100%;
-            }
-
-            .order-info {
-                grid-template-columns: 1fr;
-            }
-
-            .admin-stats {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .order-actions {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+    @media (max-width: 480px) {
+      .order-actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
 </head>
+
 <body>
 
-    <div class="admin-header">
-        <div class="header-content">
-            <div class="logo">
-                <i class="fas fa-user-shield"></i>
-                <span>لوحة تحكم الأدمن</span>
-            </div>
-            <div class="admin-stats">
-                <div class="stat-item">
-                    <i class="fas fa-shopping-cart"></i> <span id="totalOrders">0</span> طلبات
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-clock"></i> <span id="pendingOrders">0</span> قيد المعالجة
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-check-circle"></i> <span id="completedOrders">0</span> مكتملة
-                </div>
-            </div>
+  <div class="admin-header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-user-shield"></i>
+        <span>لوحة تحكم الأدمن</span>
+      </div>
+      <div class="admin-stats">
+        <div class="stat-item">
+          <i class="fas fa-shopping-cart"></i> <span id="totalOrders">0</span> طلبات
         </div>
+        <div class="stat-item">
+          <i class="fas fa-clock"></i> <span id="pendingOrders">0</span> قيد المعالجة
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-check-circle"></i> <span id="completedOrders">0</span> مكتملة
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 class="page-title">
+      <i class="fas fa-clipboard-list"></i> إدارة الطلبات
+    </h1>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label for="statusFilter">فلترة حسب الحالة</label>
+        <select id="statusFilter">
+          <option value="all">جميع الطلبات</option>
+          <option value="قيد المعالجة">قيد المعالجة</option>
+          <option value="جاري التحضير">جاري التحضير</option>
+          <option value="جاهز">جاهز</option>
+          <option value="تم التسليم">تم التسليم</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="searchOrder">بحث برقم الطلب</label>
+        <input type="text" id="searchOrder" placeholder="أدخل رقم الطلب" />
+      </div>
     </div>
 
-    <div class="container">
-        <h1 class="page-title">
-            <i class="fas fa-clipboard-list"></i> إدارة الطلبات
-        </h1>
+    <div class="orders-container" id="ordersContainer"></div>
+  </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label for="statusFilter">فلترة حسب الحالة</label>
-                <select id="statusFilter">
-                    <option value="all">جميع الطلبات</option>
-                    <option value="قيد المعالجة">قيد المعالجة</option>
-                    <option value="جاري التحضير">جاري التحضير</option>
-                    <option value="جاهز">جاهز</option>
-                    <option value="تم التسليم">تم التسليم</option>
-                </select>
-            </div>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-            <div class="filter-group">
-                <label for="searchOrder">بحث برقم الطلب</label>
-                <input type="text" id="searchOrder" placeholder="أدخل رقم الطلب">
-            </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+      authDomain: "cafeteria-app-82268.firebaseapp.com",
+      databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "cafeteria-app-82268",
+      storageBucket: "cafeteria-app-82268.appspot.com",
+      messagingSenderId: "457381739769",
+      appId: "1:457381739769:web:409cb927ef54368cb3f628"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const ordersContainer = document.getElementById("ordersContainer");
+    const statusFilter = document.getElementById("statusFilter");
+    const searchOrder = document.getElementById("searchOrder");
+
+    const totalOrdersElement = document.getElementById("totalOrders");
+    const pendingOrdersElement = document.getElementById("pendingOrders");
+    const completedOrdersElement = document.getElementById("completedOrders");
+
+    let allOrders = [];
+
+    // ===== helpers =====
+    function safeNum(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function parsePickupToMinutes(t) {
+      // t like "09:30"
+      if (!t || typeof t !== "string" || !t.includes(":")) return 999999; // اخر اشي
+      const [hh, mm] = t.split(":").map(x => parseInt(x, 10));
+      if (!Number.isFinite(hh) || !Number.isFinite(mm)) return 999999;
+      return hh * 60 + mm;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'غير محدد';
+      try {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      } catch (e) {
+        return 'غير محدد';
+      }
+    }
+
+    function getPaymentMethodText(method) {
+      const methods = { 'cash': 'الدفع نقداً', 'card': 'بطاقة ائتمان', 'mobile': 'محفظة إلكترونية' };
+      return methods[method] || method || 'غير محدد';
+    }
+
+    function getStudentName(order) {
+      // ✅ حل مشكلة "ليش الطلاب ببينوش"
+      return (order.studentName || order.username || order.name || order.customerName || "").trim() || "غير محدد";
+    }
+
+    function getItemQty(item) {
+      return safeNum(item.quantity ?? item.qty ?? 1) || 1;
+    }
+
+    function getItemLineTotal(item) {
+      const qty = getItemQty(item);
+
+      // افضل اشي: lineTotal
+      const lt = Number(item.lineTotal);
+      if (Number.isFinite(lt) && lt > 0) return lt;
+
+      // ثاني: unitPrice * qty
+      const up = Number(item.unitPrice);
+      if (Number.isFinite(up) && up > 0) return up * qty;
+
+      // ثالث: price * qty (للتوافق مع بيانات قديمة)
+      const p = Number(item.price);
+      if (Number.isFinite(p) && p > 0) return p * qty;
+
+      return 0;
+    }
+
+    function getItemUnitPrice(item) {
+      const up = Number(item.unitPrice);
+      if (Number.isFinite(up) && up > 0) return up;
+      const p = Number(item.price);
+      if (Number.isFinite(p) && p > 0) return p;
+      return 0;
+    }
+
+    function buildItemMetaLine(item) {
+      const parts = [];
+      if (item.size && String(item.size).trim()) parts.push(`الحجم: ${item.size}`);
+      if (item.breadType && String(item.breadType).trim()) parts.push(`الخبز: ${item.breadType}`);
+      return parts.join(" - ");
+    }
+
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+        background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
+        color: ${type === 'error' ? '#721c24' : '#155724'};
+        padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
+        z-index: 10000; font-weight: bold; animation: fadeInOut 3s ease;
+        border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => { notification.remove(); }, 3000);
+    }
+
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = `@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(-50%, -20px); } 10%, 90% { opacity: 1; transform: translate(-50%, 0); } }`;
+    document.head.appendChild(styleSheet);
+
+    function showEmptyState() {
+      ordersContainer.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-clipboard-list"></i>
+          <h3>لا توجد طلبات</h3>
+          <p>لم يتم العثور على أي طلبات حتى الآن</p>
         </div>
+      `;
+      totalOrdersElement.textContent = "0";
+      pendingOrdersElement.textContent = "0";
+      completedOrdersElement.textContent = "0";
+    }
 
-        <div class="orders-container" id="ordersContainer">
-        </div>
-    </div>
+    // ===== live load =====
+    db.ref("orders").on("value", snapshot => {
+      allOrders = [];
+      let totalOrders = 0;
+      let pendingOrders = 0;
+      let completedOrders = 0;
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <script>
-        // *** تم التوحيد إلى المشروع الصحيح ***
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-            authDomain: "cafeteria-app-82268.firebaseapp.com",
-            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "cafeteria-app-82268",
-            storageBucket: "cafeteria-app-82268.appspot.com",
-            messagingSenderId: "457381739769",
-            appId: "1:457381739769:web:409cb927ef54368cb3f628"
-        };
+      if (snapshot.exists()) {
+        snapshot.forEach(child => {
+          const order = child.val() || {};
+          const id = child.key;
+          allOrders.push({ id, ...order });
 
-        // تهيئة Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // العناصر
-        const ordersContainer = document.getElementById("ordersContainer");
-        const statusFilter = document.getElementById("statusFilter");
-        const searchOrder = document.getElementById("searchOrder");
-
-        // إحصائيات الطلبات
-        const totalOrdersElement = document.getElementById("totalOrders");
-        const pendingOrdersElement = document.getElementById("pendingOrders");
-        const completedOrdersElement = document.getElementById("completedOrders");
-
-        let allOrders = [];
-
-        // 🚀 تحميل وعرض الطلبات مباشرةً بدون تحقق من تسجيل الدخول (كما طلبت) 🚀
-        // ملاحظة: هذا يتطلب قواعد أمان مفتوحة على Firebase.
-        db.ref("orders").on("value", snapshot => {
-            ordersContainer.innerHTML = "";
-            allOrders = [];
-            let totalOrders = 0;
-            let pendingOrders = 0;
-            let completedOrders = 0;
-
-            if (snapshot.exists()) {
-                snapshot.forEach(child => {
-                    const order = child.val();
-                    const id = child.key;
-                    allOrders.push({ id, ...order });
-
-                    // تحديث الإحصائيات
-                    totalOrders++;
-                    // "قيد المعالجة" و "جاري التحضير" يعتبران قيد الانتظار
-                    if (order.status === "قيد المعالجة" || order.status === "جاري التحضير" || order.status === "جاهز") {
-                        pendingOrders++;
-                    } else if (order.status === "تم التسليم") {
-                        completedOrders++;
-                    }
-                });
-
-                // تحديث عناصر الإحصائيات
-                totalOrdersElement.textContent = totalOrders;
-                pendingOrdersElement.textContent = pendingOrders;
-                completedOrdersElement.textContent = completedOrders;
-
-                // تطبيق الفلترة
-                applyFilters();
-            } else {
-                showEmptyState(false); // لا يوجد طلبات
-            }
+          totalOrders++;
+          if (order.status === "قيد المعالجة" || order.status === "جاري التحضير" || order.status === "جاهز") pendingOrders++;
+          else if (order.status === "تم التسليم") completedOrders++;
         });
 
-        // تطبيق الفلترة
-        function applyFilters() {
-            const statusValue = statusFilter.value;
-            const searchValue = searchOrder.value.trim();
+        totalOrdersElement.textContent = totalOrders;
+        pendingOrdersElement.textContent = pendingOrders;
+        completedOrdersElement.textContent = completedOrders;
 
-            const filteredOrders = allOrders.filter(order => {
-                const statusMatch = statusValue === "all" || order.status === statusValue;
-                const searchMatch = !searchValue || (order.code && order.code.toString().includes(searchValue));
-                return statusMatch && searchMatch;
-            });
+        applyFilters();
+      } else {
+        showEmptyState();
+      }
+    });
 
-            displayOrders(filteredOrders);
-        }
+    function applyFilters() {
+      const statusValue = statusFilter.value;
+      const searchValue = searchOrder.value.trim();
 
-        // عرض الطلبات
-        function displayOrders(orders) {
-            ordersContainer.innerHTML = "";
+      let filteredOrders = allOrders.filter(order => {
+        const statusMatch = statusValue === "all" || order.status === statusValue;
+        const searchMatch = !searchValue || (order.code && order.code.toString().includes(searchValue));
+        return statusMatch && searchMatch;
+      });
 
-            if (orders.length === 0) {
-                showEmptyState(false);
-                return;
-            }
+      // ✅ ترتيب حسب وقت الاستلام الأبكر أولاً
+      filteredOrders.sort((a, b) => {
+        const am = parsePickupToMinutes(a.pickupTime);
+        const bm = parsePickupToMinutes(b.pickupTime);
+        if (am !== bm) return am - bm;
 
-            orders.forEach(order => {
-                const itemsList = (order.items || order.cart || []).map(item => `
-                    <li>
-                    <div class="item-name">
-                        <span>${item.name} x${item.quantity || 1}</span> </div>
-                    <div>
-                        <span>₪${item.price * (item.quantity || 1)}</span>
-                        ${item.extras && item.extras.length ?
-                        `<div class="item-extras">${item.extras.join(", ")}</div>` :
-                        ''}
-                    </div>
-                    </li>
-                `).join("");
+        // لو نفس الوقت: رتب حسب timestamp
+        const at = new Date(a.timestamp || 0).getTime();
+        const bt = new Date(b.timestamp || 0).getTime();
+        return at - bt;
+      });
 
-                // تحديد فئة الحالة
-                let statusClass = "status-pending";
-                if (order.status === "جاري التحضير") statusClass = "status-processing";
-                else if (order.status === "جاهز") statusClass = "status-ready";
-                else if (order.status === "تم التسليم") statusClass = "status-completed";
+      displayOrders(filteredOrders);
+    }
 
-                const card = document.createElement("div");
-                card.className = "order-card";
-                card.innerHTML = `
-                    <div class="order-header">
-                    <div class="order-code">
-                        <i class="fas fa-receipt"></i> الطلب #${order.code || 'N/A'}
-                    </div>
-                    <div class="order-status ${statusClass}">
-                        ${order.status}
-                    </div>
-                    </div>
+    function displayOrders(orders) {
+      ordersContainer.innerHTML = "";
 
-                    <div class="order-body">
-                    <!-- 🔥 إضافة وقت الاستلام المطلوب بشكل بارز 🔥 -->
-                    <div class="pickup-time">
-                        <div class="time-label">
-                            <i class="fas fa-clock"></i> وقت الاستلام المطلوب
-                        </div>
-                        <div class="time-value">
-                            ${order.pickupTime || 'غير محدد'}
-                        </div>
-                    </div>
+      if (!orders || orders.length === 0) {
+        showEmptyState();
+        return;
+      }
 
-                    <div class="order-info">
-                        <div class="info-item">
-                        <span class="info-label">الطالب</span>
-                        <span class="info-value">${order.studentName || "غير محدد"}</span>
-                        </div>
-                        <div class="info-item">
-                        <span class="info-label">وقت الطلب</span>
-                        <span class="info-value">${formatDate(order.timestamp) || 'N/A'}</span>
-                        </div>
-                        <div class="info-item">
-                        <span class="info-label">المجموع</span>
-                        <span class="info-value">₪${order.total}</span>
-                        </div>
-                        <div class="info-item">
-                        <span class="info-label">طريقة الدفع</span>
-                        <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
-                        </div>
-                    </div>
+      orders.forEach(order => {
+        const items = (order.items || order.cart || []);
+        const itemsList = items.map(item => {
+          const qty = getItemQty(item);
+          const unit = getItemUnitPrice(item);
+          const lineTotal = getItemLineTotal(item);
 
-                    ${order.notes ? `
-                        <div class="info-item">
-                        <span class="info-label">ملاحظات</span>
-                        <span class="info-value">${order.notes}</span>
-                        </div>
-                    ` : ''}
+          const meta = buildItemMetaLine(item);
+          const extrasLine = (item.extras && item.extras.length) ? `الإضافات: ${item.extras.join(", ")}` : "";
 
-                    <div class="order-items">
-                        <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
-                        <ul class="item-list">
-                        ${itemsList}
-                        </ul>
-                    </div>
+          const extraHtml = (meta || extrasLine) ? `
+            <div class="item-extras">
+              ${meta ? meta : ""}
+              ${meta && extrasLine ? "<br>" : ""}
+              ${extrasLine ? extrasLine : ""}
+            </div>
+          ` : "";
 
-                    <div class="order-actions">
-                        <select class="status-select" id="status-${order.id}">
-                        <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
-                        <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
-                        <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
-                        <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
-                        </select>
+          return `
+            <li>
+              <div class="item-name">
+                <div><span>${item.name || "عنصر"} x${qty}</span></div>
+                ${extraHtml}
+              </div>
+              <div style="text-align:left; min-width:120px;">
+                <div style="font-weight:700;">₪${lineTotal}</div>
+                <div class="item-extras">سعر الوحدة: ₪${unit}</div>
+              </div>
+            </li>
+          `;
+        }).join("");
 
-                        <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
-                        <i class="fas fa-sync-alt"></i> تحديث
-                        </button>
+        let statusClass = "status-pending";
+        if (order.status === "جاري التحضير") statusClass = "status-processing";
+        else if (order.status === "جاهز") statusClass = "status-ready";
+        else if (order.status === "تم التسليم") statusClass = "status-completed";
 
-                        <button class="btn btn-success" onclick="markAsDelivered('${order.id}')">
-                        <i class="fas fa-check-circle"></i> تم التسليم
-                        </button>
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.innerHTML = `
+          <div class="order-header">
+            <div class="order-code">
+              <i class="fas fa-receipt"></i> الطلب #${order.code || 'N/A'}
+            </div>
+            <div class="order-status ${statusClass}">
+              ${order.status || "قيد المعالجة"}
+            </div>
+          </div>
 
-                        <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">
-                        <i class="fas fa-trash"></i> حذف
-                        </button>
-                    </div>
-                    </div>
-                `;
+          <div class="order-body">
+            <div class="pickup-time">
+              <div class="time-label">
+                <i class="fas fa-clock"></i> وقت الاستلام المطلوب
+              </div>
+              <div class="time-value">
+                ${order.pickupTime || 'غير محدد'}
+              </div>
+            </div>
 
-                ordersContainer.appendChild(card);
-                // تحديث قائمة المنسدلة لتعكس الحالة الحالية
-                document.getElementById(`status-${order.id}`).value = order.status;
-            });
-        }
+            <div class="order-info">
+              <div class="info-item">
+                <span class="info-label">الطالب</span>
+                <span class="info-value">${getStudentName(order)}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">وقت الطلب</span>
+                <span class="info-value">${formatDate(order.timestamp)}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">المجموع</span>
+                <span class="info-value">₪${safeNum(order.total)}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">طريقة الدفع</span>
+                <span class="info-value">${getPaymentMethodText(order.paymentMethod)}</span>
+              </div>
+            </div>
 
-        // تحويل وقت الطابع الزمني (timestamp) إلى تنسيق مقروء (اختياري)
-        function formatDate(timestamp) {
-            if (!timestamp) return 'غير محدد';
-            try {
-                const date = new Date(timestamp);
-                return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            } catch (e) {
-                return 'N/A';
-            }
-        }
+            ${order.notes ? `
+              <div class="info-item" style="margin-top:10px;">
+                <span class="info-label">ملاحظات</span>
+                <span class="info-value">${order.notes}</span>
+              </div>
+            ` : ''}
 
-        // عرض حالة فارغة
-        function showEmptyState() {
-            ordersContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-clipboard-list"></i>
-                    <h3>لا توجد طلبات</h3>
-                    <p>لم يتم العثور على أي طلبات حتى الآن</p>
-                </div>
-                `;
-            totalOrdersElement.textContent = "0";
-            pendingOrdersElement.textContent = "0";
-            completedOrdersElement.textContent = "0";
-        }
+            <div class="order-items">
+              <h4><i class="fas fa-utensils"></i> العناصر المطلوبة</h4>
+              <ul class="item-list">
+                ${itemsList || `<li><div class="item-name">لا توجد عناصر</div><div>₪0</div></li>`}
+              </ul>
+            </div>
 
-        function getPaymentMethodText(method) {
-            const methods = { 'cash': 'الدفع نقداً', 'card': 'بطاقة ائتمان', 'mobile': 'محفظة إلكترونية' };
-            return methods[method] || method || 'غير محدد';
-        }
+            <div class="order-actions">
+              <select class="status-select" id="status-${order.id}">
+                <option value="قيد المعالجة" ${order.status === "قيد المعالجة" ? "selected" : ""}>قيد المعالجة</option>
+                <option value="جاري التحضير" ${order.status === "جاري التحضير" ? "selected" : ""}>جاري التحضير</option>
+                <option value="جاهز" ${order.status === "جاهز" ? "selected" : ""}>جاهز</option>
+                <option value="تم التسليم" ${order.status === "تم التسليم" ? "selected" : ""}>تم التسليم</option>
+              </select>
 
-        function updateStatus(orderId) {
-            const newStatus = document.getElementById("status-" + orderId).value;
-            db.ref("orders/" + orderId).update({ status: newStatus })
-                .then(() => { showNotification(`✅ تم تحديث حالة الطلب إلى "${newStatus}"`, "success"); })
-                .catch(error => { showNotification("❌ فشل في تحديث حالة الطلب", "error"); });
-        }
+              <button class="btn btn-primary" onclick="updateStatus('${order.id}')">
+                <i class="fas fa-sync-alt"></i> تحديث
+              </button>
 
-        function deleteOrder(orderId) {
-            if (confirm("هل أنت متأكد أنك تريد حذف هذا الطلب؟")) {
-                db.ref("orders/" + orderId).remove()
-                    .then(() => { showNotification("✅ تم حذف الطلب بنجاح", "success"); })
-                    .catch(error => { showNotification("❌ فشل في حذف الطلب", "error"); });
-            }
-        }
+              <button class="btn btn-success" onclick="markAsDelivered('${order.id}', '${order.code || ""}')">
+                <i class="fas fa-check-circle"></i> تم التسليم
+              </button>
 
-        function markAsDelivered(orderId) {
-            db.ref("orders/" + orderId).update({ status: "تم التسليم" })
-                .then(() => { showNotification("✅ تم تحديث حالة الطلب إلى 'تم التسليم'", "success"); })
-                .catch(error => { showNotification("❌ فشل في تحديث حالة الطلب", "error"); });
-        }
+              <button class="btn btn-danger" onclick="deleteOrder('${order.id}', '${order.code || ""}')">
+                <i class="fas fa-trash"></i> حذف
+              </button>
+            </div>
+          </div>
+        `;
+        ordersContainer.appendChild(card);
 
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-                background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
-                color: ${type === 'error' ? '#721c24' : '#155724'};
-                padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
-                z-index: 10000; font-weight: bold; animation: fadeInOut 3s ease;
-                border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
-                `;
-            document.body.appendChild(notification);
-            setTimeout(() => { notification.remove(); }, 3000);
-        }
+        const sel = document.getElementById(`status-${order.id}`);
+        if (sel && order.status) sel.value = order.status;
+      });
+    }
 
-        // تعريف لـ animation
-        const styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = `@keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translate(-50%, -20px); } 10%, 90% { opacity: 1; transform: translate(-50%, 0); } }`;
-        document.head.appendChild(styleSheet);
+    function updateStatus(orderId) {
+      const sel = document.getElementById("status-" + orderId);
+      const newStatus = sel ? sel.value : "قيد المعالجة";
 
-        statusFilter.addEventListener('change', applyFilters);
-        searchOrder.addEventListener('input', applyFilters);
-    </script>
+      db.ref("orders/" + orderId).update({ status: newStatus })
+        .then(() => showNotification(`✅ تم تحديث حالة الطلب إلى "${newStatus}"`, "success"))
+        .catch(() => showNotification("❌ فشل في تحديث حالة الطلب", "error"));
+    }
+
+    function deleteOrder(orderId, code) {
+      const ok = confirm(`هل أنت متأكد أنك تريد حذف الطلب ${code ? "#" + code : ""} ؟`);
+      if (!ok) return;
+
+      db.ref("orders/" + orderId).remove()
+        .then(() => showNotification("✅ تم حذف الطلب بنجاح", "success"))
+        .catch(() => showNotification("❌ فشل في حذف الطلب", "error"));
+    }
+
+    // ✅ زر تم التسليم: تأكيد ثم تحديث الحالة ثم تأكيد حذف من عند المستخدم + الأدمن
+    function markAsDelivered(orderId, code) {
+      const ok1 = confirm(`تأكيد: هل تريد وضع الطلب ${code ? "#" + code : ""} كـ "تم التسليم"؟`);
+      if (!ok1) return;
+
+      db.ref("orders/" + orderId).update({ status: "تم التسليم" })
+        .then(() => {
+          showNotification("✅ تم تحديث الحالة إلى 'تم التسليم'", "success");
+
+          const ok2 = confirm("هل تريد الآن حذف الطلب نهائياً؟ (سيختفي من عند المستخدم ومن لوحة الأدمن)");
+          if (!ok2) return;
+
+          return db.ref("orders/" + orderId).remove()
+            .then(() => showNotification("✅ تم حذف الطلب نهائياً", "success"));
+        })
+        .catch(() => showNotification("❌ فشل في عملية التسليم", "error"));
+    }
+
+    statusFilter.addEventListener('change', applyFilters);
+    searchOrder.addEventListener('input', applyFilters);
+  </script>
+
 </body>
 </html>
