@@ -89,24 +89,7 @@
         #usernameDisplay {
             font-weight: bold;
             font-size: 0.9rem;
-        }
-
-        #logoutBtn {
-            background-color: var(--secondary-color);
-            color: var(--text-dark);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-            #logoutBtn:hover {
-                background-color: var(--accent-color);
-            }
-
+        }           
         .cart-link {
             background-color: white;
             color: var(--primary-color);
@@ -534,7 +517,6 @@
             <div class="user-actions">
                 <div class="user-info" id="userInfo">
                     <span>مرحباً، <span id="usernameDisplay"></span>!</span>
-                    <button id="logoutBtn">تسجيل خروج</button>
                 </div>
 
                 <a href="cart.html" class="cart-link">
@@ -1145,12 +1127,6 @@
       document.getElementById("usernameDisplay").textContent = username;
       userInfoDiv.style.display = "flex";
     }
-
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("username");
-      window.location.reload();
-    };
-
     window.onclick = function (event) {
       if (event.target === document.getElementById("extrasModal")) closeModal();
     };
