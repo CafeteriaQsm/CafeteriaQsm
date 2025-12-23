@@ -696,6 +696,7 @@
         code: orderCode,
         studentName: nameValue,
         userId: user.uid,
+         phone: user.phoneNumber || "",   // ✅ هون الإضافة
         items: normalizedItems.map(it => ({
           name: it.name,
           img: it.img,
