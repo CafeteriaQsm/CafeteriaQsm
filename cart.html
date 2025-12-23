@@ -1,8 +1,10 @@
-<html lang="ar"><head>
-  <meta charset="UTF-8">
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
   <title>سلة الطلبات</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
     /* (نفس الـ CSS الموجود لديك، لم يتم تغييره) */
@@ -251,18 +253,6 @@
     .btn-secondary { background-color: #e9ecef; color: var(--text-dark); }
     .btn-secondary:hover { background-color: #dee2e6; transform: translateY(-3px); }
 
-    .btn-outline {
-      background-color: transparent;
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
-    }
-
-    .btn-outline:hover {
-      background-color: var(--primary-color);
-      color: white;
-      transform: translateY(-3px);
-    }
-
     .status-view {
       background-color: var(--card-bg);
       border-radius: 16px;
@@ -298,8 +288,6 @@
       overflow-y: auto;
       padding: 10px;
     }
-
-    .order-item-list { margin-top: 15px; padding-right: 15px; }
 
     .order-status {
       display: inline-block;
@@ -365,18 +353,18 @@
       </div>
     </div>
 
-    <div class="order-form" id="orderSummary" style="display: none;">
+    <div class="order-form" id="orderSummary" style="display:none;">
       <h3><i class="fas fa-user-edit"></i> معلومات الطلب</h3>
 
       <div class="form-group">
         <label for="studentName"><i class="fas fa-user"></i> اسم الطالب *</label>
-        <input type="text" id="studentName" required="" placeholder="أدخل اسمك الكامل بالعربية">
+        <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية">
         <small style="color: var(--text-light); font-size: 0.8rem;">يجب أن يكون اسم عربي صحيح</small>
       </div>
 
       <div class="form-group">
         <label for="pickupInput"><i class="fas fa-clock"></i> وقت الاستلام *</label>
-        <input type="time" id="pickupInput" required="">
+        <input type="time" id="pickupInput" required>
       </div>
 
       <div class="form-group">
@@ -481,10 +469,8 @@
     function normalizeCartItem(item) {
       const qty = Number(item.quantity ?? item.qty ?? 1) || 1;
 
-      // سعر القطعة
       const unitPrice = Number(item.unitPrice ?? item.price ?? 0) || 0;
 
-      // ✅ مجموع السطر
       let lineTotal = 0;
       if (item.totalPrice != null && !isNaN(Number(item.totalPrice))) {
         lineTotal = Number(item.totalPrice);
@@ -571,18 +557,14 @@
       element.classList.add('selected');
     }
 
-    function goToMenu() {
-      window.location.href = "menu.html";
-    }
+    function goToMenu() { window.location.href = "menu.html"; }
 
     function clearCartPageAfterSend() {
       order = { cart: [] };
       localStorage.removeItem("order");
       displayCartItems();
-
       document.getElementById("noteInput").value = "";
       document.getElementById("pickupInput").value = "";
-
       cancelOrderConfirmation(true);
     }
 
@@ -598,12 +580,10 @@
     function cancelOrderConfirmation(silent = false) {
       confirmMode = false;
       confirmSecondsLeft = 0;
-
       if (confirmIntervalId) clearInterval(confirmIntervalId);
       if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
       confirmIntervalId = null;
       confirmTimeoutId = null;
-
       setSendButtonText('<i class="fas fa-paper-plane"></i> إرسال الطلب', false);
       if (!silent) showNotification("تم إلغاء التأكيد", "error");
     }
@@ -622,16 +602,12 @@
       }
 
       if (!validateOrderData()) return;
-
       if (!order.cart || order.cart.length === 0) {
         showNotification("⚠️ سلة الطلبات فارغة", "error");
         return;
       }
 
-      if (confirmMode) {
-        submitOrder();
-        return;
-      }
+      if (confirmMode) { submitOrder(); return; }
 
       confirmMode = true;
       confirmSecondsLeft = 10;
@@ -649,11 +625,10 @@
         }
       }, 1000);
 
-      confirmTimeoutId = setTimeout(() => {
-        submitOrder();
-      }, 10000);
+      confirmTimeoutId = setTimeout(() => { submitOrder(); }, 10000);
     }
 
+    // ✅ الإرسال الحقيقي
     async function submitOrder() {
       if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
         showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
@@ -668,7 +643,6 @@
       }
 
       if (!validateOrderData()) return;
-
       if (!order.cart || order.cart.length === 0) {
         showNotification("⚠️ سلة الطلبات فارغة", "error");
         return;
@@ -692,11 +666,20 @@
 
       const normalizedItems = order.cart.map(normalizeCartItem);
 
+      // ✅✅✅ جلب رقم الهاتف من users/{uid} (بدل user.phoneNumber)
+      let phoneFromDB = "";
+      try {
+        const userSnap = await db.ref("users/" + user.uid).once("value");
+        phoneFromDB = userSnap.val()?.phone || "";
+      } catch (e) {
+        phoneFromDB = "";
+      }
+
       const newOrder = {
         code: orderCode,
         studentName: nameValue,
+        phone: phoneFromDB,            // ✅ هيك الأدمن رح يشوفه
         userId: user.uid,
-         phone: user.phoneNumber || "",   // ✅ هون الإضافة
         items: normalizedItems.map(it => ({
           name: it.name,
           img: it.img,
@@ -718,18 +701,14 @@
       try {
         const now = Date.now();
         const last = Number(localStorage.getItem("lastOrderSentAt") || 0);
-        if (now - last < 20000) {
-          throw new Error("TOO_FAST");
-        }
+        if (now - last < 20000) throw new Error("TOO_FAST");
 
         await db.ref("orders").push(newOrder);
         localStorage.setItem("lastOrderSentAt", String(now));
 
         clearCartPageAfterSend();
-
         showStatusTracking(newOrder);
         showNotification("✅ تم إرسال طلبك بنجاح!", "success");
-
         showMyOrders();
       } catch (error) {
         if (String(error.message || "").includes("TOO_FAST")) {
@@ -821,5 +800,5 @@
       if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
     });
   </script>
-
-</body></html>
+</body>
+</html>
