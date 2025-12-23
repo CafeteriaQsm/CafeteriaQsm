@@ -584,8 +584,13 @@
 
             <div class="order-info">
               <div class="info-item">
-                <span class="info-label">الطالب</span>
-                <span class="info-value">${getStudentName(order)}</span>
+<span class="info-label">الطالب</span>
+<span class="info-value">
+  ${order.studentName || "غير محدد"}
+  <div style="margin-top:6px; color: var(--text-light); font-weight: 600;">
+    <i class="fas fa-phone"></i> ${order.phone || "غير متوفر"}
+  </div>
+</span>
               </div>
               <div class="info-item">
                 <span class="info-label">وقت الطلب</span>
