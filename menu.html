@@ -1,504 +1,661 @@
 <!doctype html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <title>قائمة الطعام</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <title>قائمة الطعام</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <style>
-    :root {
-      --primary-color: #c62828;
-      --primary-light: #ff5f52;
-      --primary-dark: #8e0000;
-      --secondary-color: #ffb74d;
-      --accent-color: #ff9800;
-      --light-bg: #fff8f0;
-      --card-bg: #ffffff;
-      --text-dark: #3e2723;
-      --text-light: #5d4037;
-      --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
-      --transition: all 0.3s ease;
-    }
+    <style>
+        :root {
+            --primary-color: #c62828;
+            --primary-light: #ff5f52;
+            --primary-dark: #8e0000;
+            --secondary-color: #ffb74d;
+            --accent-color: #ff9800;
+            --light-bg: #fff8f0;
+            --card-bg: #ffffff;
+            --text-dark: #3e2723;
+            --text-light: #5d4037;
+            --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
+            --transition: all 0.3s ease;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      direction: rtl;
-      text-align: right;
-      background-color: var(--light-bg);
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
 
-    header {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: white;
-      padding: 20px 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .logo i { font-size: 2rem; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
 
-    .user-actions {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: nowrap;
-    }
+            .logo i {
+                font-size: 2rem;
+            }
 
-    .user-info {
-      display: none;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 5px;
-      padding-left: 15px;
-      border-left: 1px solid rgba(255,255,255,0.3);
-      white-space: nowrap;
-    }
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: nowrap;
+        }
 
-    #usernameDisplay { font-weight: bold; font-size: 0.9rem; }
+        .user-info {
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+            white-space: nowrap;
+        }
 
-    #logoutBtn {
-      background-color: var(--secondary-color);
-      color: var(--text-dark);
-      border: none;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    #logoutBtn:hover { background-color: var(--accent-color); }
+        #usernameDisplay {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
 
-    .cart-link {
-      background-color: white;
-      color: var(--primary-color);
-      padding: 10px 20px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-      white-space: nowrap;
-    }
-    .cart-link:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+        #logoutBtn {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-    /* شريط التصنيفات */
-    .categories {
-      display: flex;
-      overflow-x: auto;
-      padding: 12px 10px;
-      gap: 10px;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      position: sticky;
-      top: 80px;
-      z-index: 90;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-    }
+            #logoutBtn:hover {
+                background-color: var(--accent-color);
+            }
 
-    .category-btn {
-      background-color: white;
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
-      padding: 8px 16px;
-      border-radius: 50px;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 600;
-      flex: 0 0 auto;
-    }
-    .category-btn.active, .category-btn:hover {
-      background-color: var(--primary-color);
-      color: white;
-    }
+        .cart-link {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            white-space: nowrap;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+            .cart-link:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+            }
 
-    .section-title {
-      color: var(--primary-color);
-      margin: 30px 0 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px dashed var(--secondary-color);
-      font-size: 1.8rem;
-    }
+        /* شريط التصنيفات */
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 12px 10px;
+            gap: 10px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 80px;
+            z-index: 90;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
 
-    .menu-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
-    }
+        .category-btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            flex: 0 0 auto;
+        }
 
-    .meal-card {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-    }
-    .meal-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 20px rgba(198, 40, 40, 0.2);
-    }
+            .category-btn.active, .category-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
 
-    .meal-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      transition: var(--transition);
-    }
-    .meal-card:hover img { transform: scale(1.05); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    .meal-content { padding: 15px; }
-    .meal-card h3 { color: var(--text-dark); margin-bottom: 8px; font-size: 1.3rem; }
-    .meal-card p { color: var(--text-light); margin-bottom: 15px; font-size: 0.9rem; }
+        .section-title {
+            color: var(--primary-color);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--secondary-color);
+            font-size: 1.8rem;
+        }
 
-    .price {
-      color: var(--primary-color);
-      font-weight: bold;
-      font-size: 1.2rem;
-      display: block;
-      margin-bottom: 15px;
-    }
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
 
-    .offer-text {
-      font-size: 0.9rem;
-      color: var(--accent-color);
-      font-weight: bold;
-      margin-top: -10px;
-      margin-bottom: 10px;
-      display: block;
-    }
+        .meal-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
 
-    .meal-card button {
-      background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 50px;
-      cursor: pointer;
-      width: 100%;
-      font-weight: bold;
-      font-size: 1rem;
-      transition: var(--transition);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-    .meal-card button:hover {
-      background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
-      transform: translateY(-2px);
-    }
+            .meal-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 20px rgba(198, 40, 40, 0.2);
+            }
 
-    /* --- Modal --- */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 200;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding-top: 60px;
-    }
+            .meal-card img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                transition: var(--transition);
+            }
 
-    .modal-content {
-      background-color: var(--card-bg);
-      margin: 5% auto;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 0.3s;
-      position: relative;
-    }
+            .meal-card:hover img {
+                transform: scale(1.05);
+            }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+        .meal-content {
+            padding: 15px;
+        }
 
-    .close-btn {
-      color: var(--text-light);
-      float: left;
-      font-size: 28px;
-      font-weight: bold;
-      position: absolute;
-      left: 20px;
-      top: 15px;
-    }
-    .close-btn:hover, .close-btn:focus {
-      color: var(--primary-color);
-      text-decoration: none;
-      cursor: pointer;
-    }
+        .meal-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
 
-    .modal-content h2 {
-      border-bottom: 2px solid var(--secondary-color);
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      color: var(--primary-color);
-    }
+        .meal-card p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
 
-    .modal-content h3 {
-      margin-top: 20px;
-      margin-bottom: 10px;
-      color: var(--text-dark);
-      font-size: 1.1rem;
-    }
+        .price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 15px;
+        }
 
-    .size-options input[type="radio"] { display: none; }
-    .size-options label {
-      display: inline-block;
-      padding: 10px 15px;
-      border: 2px solid var(--secondary-color);
-      border-radius: 8px;
-      margin-left: 10px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: bold;
-      color: var(--text-dark);
-      margin-bottom: 8px;
-    }
-    .size-options input[type="radio"]:checked + label {
-      background-color: var(--primary-color);
-      color: white;
-      border-color: var(--primary-dark);
-    }
+        .offer-text {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: block;
+        }
 
-    .extras-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .extras-list label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background-color: var(--light-bg);
-      padding: 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.95rem;
-    }
-    .extras-list label:hover { background-color: #ffe0b2; }
+        .meal-card button {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
 
-    #totalPriceDisplay {
-      margin-top: 20px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--primary-dark);
-      text-align: center;
-    }
+            .meal-card button:hover {
+                background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+                transform: translateY(-2px);
+            }
 
-    .modal-footer {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-    .modal-footer button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: var(--transition);
-      flex-grow: 1;
-      white-space: nowrap;
-    }
-    .modal-footer button:hover { background-color: var(--primary-dark); }
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding-top: 60px;
+        }
 
-    #quantityControl {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
-    #quantityControl button {
-      background-color: var(--secondary-color);
-      color: var(--text-dark);
-      border: none;
-      padding: 5px 15px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: var(--transition);
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 0 0 auto;
-    }
-    #quantityControl button:hover { background-color: var(--accent-color); }
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s;
+            position: relative;
+        }
 
-    #quantityDisplay {
-      font-size: 1.2rem;
-      font-weight: bold;
-      min-width: 25px;
-      text-align: center;
-    }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-    #notesInput {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 10px;
-      resize: vertical;
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--primary-color);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 50px;
-      box-shadow: var(--shadow);
-      z-index: 10000;
-      font-weight: bold;
-      animation: fadeInOut 3s ease;
-    }
+        .close-btn {
+            color: var(--text-light);
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 15px;
+        }
 
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0; transform: translate(-50%, -20px); }
-      10%, 90% { opacity: 1; transform: translate(-50%, 0); }
-    }
+            .close-btn:hover, .close-btn:focus {
+                color: var(--primary-color);
+                text-decoration: none;
+                cursor: pointer;
+            }
 
-    @media (max-width: 768px) {
-      .header-content { padding: 0 10px; }
-      .logo { font-size: 1.2rem; }
-      .container { padding: 10px; }
-      .menu-container { grid-template-columns: 1fr; }
-      .extras-list { grid-template-columns: 1fr; }
-      .cart-link { padding: 8px 15px; font-size: 0.9rem; }
-      #usernameDisplay { font-size: 0.8rem; }
-      .modal-footer { flex-direction: column; align-items: stretch; }
-      #quantityControl { justify-content: center; }
-    }
-  </style>
+        .modal-content h2 {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .modal-content h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .size-options input[type="radio"] {
+            display: none;
+        }
+
+        .size-options label {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .size-options input[type="radio"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .extras-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+            .extras-list label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background-color: var(--light-bg);
+                padding: 8px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                font-size: 0.95rem;
+            }
+
+                .extras-list label:hover {
+                    background-color: #ffe0b2;
+                }
+
+        #totalPriceDisplay {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .modal-footer button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 50px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: var(--transition);
+                flex-grow: 1;
+                white-space: nowrap;
+            }
+
+                .modal-footer button:hover {
+                    background-color: var(--primary-dark);
+                }
+
+        #quantityControl {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 0 0 auto;
+        }
+
+            #quantityControl button {
+                background-color: var(--secondary-color);
+                color: var(--text-dark);
+                border: none;
+                padding: 5px 15px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: var(--transition);
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex: 0 0 auto;
+            }
+
+                #quantityControl button:hover {
+                    background-color: var(--accent-color);
+                }
+
+        #quantityDisplay {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        #notesInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 10px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            font-weight: bold;
+            animation: fadeInOut 3s ease;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+
+            10%, 90% {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 10px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+
+            .extras-list {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-link {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            #usernameDisplay {
+                font-size: 0.8rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #quantityControl {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<header>
-  <div class="header-content">
-    <div class="logo">
-      <i class="fa-solid fa-utensils"></i>
-      <span>كافيتيريا الكلية</span>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fa-solid fa-utensils"></i>
+                <span>كافيتيريا الكلية</span>
+            </div>
+
+            <div class="user-actions">
+                <div class="user-info" id="userInfo">
+                    <span>مرحباً، <span id="usernameDisplay"></span>!</span>
+                    <button id="logoutBtn">تسجيل خروج</button>
+                </div>
+
+                <a href="cart.html" class="cart-link">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    السلة (<span id="cartCount">0</span>)
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ✅ لا تحذف "الكل" ولا التصنيفات -->
+    <nav class="categories" id="categoriesNav">
+        <button class="category-btn active" data-category="all">الكل</button>
+        <button class="category-btn" data-category="main">وجبات رئيسية</button>
+        <button class="category-btn" data-category="italian">مأكولات إيطالية</button>
+        <button class="category-btn" data-category="home">أكل بيتي</button>
+        <button class="category-btn" data-category="salads">سلطات</button>
+        <button class="category-btn" data-category="sandwiches">ساندويتشات</button>
+        <button class="category-btn" data-category="pastries">معجنات</button>
+        <button class="category-btn" data-category="extras">إضافات منفردة</button>
+        <button class="category-btn" data-category="drinks">مشروبات</button>
+    </nav>
+
+    <main class="container" id="menuContainer">
+        <!-- سيتم تعبئتها من JS -->
+    </main>
+
+    <!-- ✅ مودال التخصيص -->
+    <div id="extrasModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <h2 id="modalMealName"></h2>
+
+            <div id="sizeSection">
+                <h3>اختر الحجم والسعر:</h3>
+                <div class="size-options" id="sizeOptions"></div>
+            </div>
+
+            <div id="extrasSection">
+                <h3>اختر الإضافات:</h3>
+                <div class="extras-list" id="extrasList"></div>
+            </div>
+
+            <h3>ملاحظات خاصة (للبيتزا أو غيرها):</h3>
+            <textarea id="notesInput" rows="3" placeholder="ملاحظاتك (مثال: بدون بصل، نصف تونة ونصف زيتون للبيتزا...)"></textarea>
+
+            <div id="totalPriceDisplay">السعر الإجمالي: 0 شيكل</div>
+
+            <div class="modal-footer">
+                <div id="quantityControl">
+                    <button onclick="decreaseQuantity()">-</button>
+                    <span id="quantityDisplay">1</span>
+                    <button onclick="increaseQuantity()">+</button>
+                </div>
+                <button onclick="addToCart()">إضافة إلى السلة</button>
+            </div>
+        </div>
     </div>
 
-    <div class="user-actions">
-      <div class="user-info" id="userInfo">
-        <span>مرحباً، <span id="usernameDisplay"></span>!</span>
-        <button id="logoutBtn">تسجيل خروج</button>
-      </div>
+    <script>
+  // =========================================
+  // ✅ صور الوجبات من الإنترنت حسب الاسم (بدون تغيير أي شيء آخر)
+  // =========================================
+  const FOOD_IMAGES = {
+    "شاورما": "https://play-lh.googleusercontent.com/pzAKN02lPgHvcAi9lkBlpK_AfpvCPsDOVSmisADQuj4Vdp7TVjhRI-Di53CN6mHvyz8",
+    "شنيتسل": "https://files.mishloha.co.il/files/menu_food_pic/thumbnail/FIL_7052277_1687794909775.jpg?v=2",
+    "صدر دجاج": "https://imageproxy.wolt.com/menu/menu-images/shared/71d55962-296a-11ef-b9c6-3e77504ff7f7_________.jpg",
+    "برجر": "https://png.pngtree.com/png-vector/20240829/ourmid/pngtree-delicious-and-testy-cheese-burger-png-image_13659847.png",
+    "كباب": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/c97xr3ykgima67apncghpxpjljmx/%D8%B3%D8%A7%D9%86%D8%AF%D9%88%D8%AA%D8%B4%20%D9%83%D8%A8%D8%A7%D8%A8%20%D9%84%D8%AD%D9%85.png",
+    "نقنيق": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdoM-q5GyCCMwT46PIMiIGK7cAquU9e5ay_A&s",
+    "فلافل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6TRZQ3gbktLu9XZ419DxdfHY_HwFbqMHvSA&s",
+    "بطاطا بشميل": "https://cdnx.premiumread.com/?url=https://alwatannews.net/watanbahrainnews/uploads/images/2025/02/08/3217798.jpg&w=600&q=91&f=webp&t=1.0",
+    "بيتسا": "https://imageproxy.wolt.com/assets/6821ace3d145a32756ffec52",
+    "رفيولي بشميل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuDiOnKYDZIrr9xnA1d6PD0QD-uf1D7jGqWQ&s",
+    "صدر دجاج بشميل": "https://img-global.cpcdn.com/recipes/88e21be5b3b26cf4/200x200cq80/%D8%A7%D9%84%D8%B5%D9%88%D8%B1%D8%A9-%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%8A%D8%A9-%D9%84%D9%88%D8%B5%D9%81%D8%A9%D9%85%D8%B9%D9%83%D8%B1%D9%88%D9%86%D8%A9-%D8%A8%D8%B4%D8%A7%D9%85%D9%8A%D9%84-%D8%B9%D9%84%D9%89-%D8%B7%D8%B1%D9%8A%D9%82%D8%AA%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5%D8%A9.jpg",
+    "مسحب بالفرن": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ1i-s6sskJ8ZnpTo6i59CJJuw7sedjT83UQ&s",
+    "جولش": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4riciWLxbEyrC3Ky8pmVTMrqZ2HAffRUZQ&s",
+    "شرائح عجل بالفرن": "https://modo3.com/thumbs/fit630x300/144006/1479132214/%D9%88%D8%B5%D9%81%D8%A7%D8%AA_%D8%B4%D8%B1%D8%A7%D8%A6%D8%AD_%D8%A7%D9%84%D9%84%D8%AD%D9%85.jpg",
+    "شرائح دجاج بالفرن": "https://www.atyabtabkha.com/uploads/sites/2/2021/10/9cf47e8d266dedf5fbefc0b84438f99645d3de36.jpg",
+    "فتوش بالجبن": "https://img-global.cpcdn.com/recipes/34ad32504b7a8609/400x400cq80/photo.jpg",
+    "تبولة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSENDRA9a3YtpV6eU-HLa2tAWwmEr125FKdGg&s",
+    "سلطة عربية": "https://i.ytimg.com/vi/HlcuerfRLec/maxresdefault.jpg",
+    "سلطة صدر دجاج": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjGmX9AQOe_gUz3r7J4Cxzq9vNINRz_Jh-_w&s",
+    "سلطة طونا": "https://modo3.com/thumbs/fit630x300/2785/1348665722/%D8%B7%D8%B1%D9%8A%D9%82%D8%A9_%D8%B9%D9%85%D9%84_%D8%B3%D9%84%D8%B7%D8%A9_%D8%A7%D9%84%D8%AA%D9%88%D9%86%D8%A7.jpg",
+      "عجه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtb4GQyRrToZo56RJUOb_LzBSxI5BBx-XEQg&s.jpg",
+    "بستراما": "https://i.ytimg.com/vi/MKSNQOuiEvI/maxresdefault.jpg",
+    "لبنة": "https://martendo.net/Images/ProductImages/85435/%D9%84%D8%A8%D9%86%D8%A9%20(3).jpg",
+    "جبنة صفراء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLqr58d33Ug6uDnBag3D5utKCrXUYIBYO9wQ&s",
+    "توست لبنة": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/9e6h6d3qk6t3m6xlugsi6nc1le88/12517bca-2b37-4ab8-893e-a13a06815d89.jpg",
+    "توست طونه": "https://i.ytimg.com/vi/vE-bbJtOWf8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDX7aexQ4F5lvGPczLxZKBsyodisA",
+    "لفة درزية": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYItx5tvMrBqAq-XDTZL1rw0akTavrcULIxA&s",
+    "معجنات بيتزا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk668xZtcXvDjUcmmhy8jqDp2m0X069e12nA&s",
+    "معجنات زعتر": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm2DyQAuSmQ4kYcHQMbF9px_OfMj_6TJcT6w&s",
+    "معجنات لحمه عجل": "https://i.ytimg.com/vi/qNJM64mkGNU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD8trDWFjiYRCP-g55e5SVLbsFOaA",
+    "معجنات لحمه جاج": "https://i.ytimg.com/vi/WRnD-83Ek9A/maxresdefault.jpg",
+    "معجنات سبانخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZuhr_djTzSFQzJIf4tgCA8RyAfyVhlJtv9Q&s",
+    "معجنات طونه": "https://i.ytimg.com/vi/iUe5UyB7Kpg/maxresdefault.jpg",
+    "معجنات نقنيق": "https://kitchen.sayidaty.net/uploads/small/f0/f0afef10320199b9246b4bb8e01e55a7_w750_h750.jpg",
+    "كبة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ZPRn8NhKUOXtHf0KQn05pCk8D5Fxwe-unw&s",
+    "سجاريوت لحمه": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
+    "سجاريوت بطاطا": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
+      "معجنات جبنه بيضا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD_bo_U-O4YPiRn9jmjAz3v1xohllGGWxtQg&s",
+    "معجنات زيتون": "https://www.justfood.tv/big/0fried%20pies%20bites.jpg",
+    "بطاطا": "https://cdn.salla.sa/GYNEpb/9f1f8499-7dfa-4678-877c-0b11caae8be0-1000x476.19047619048-pcxt8teVMlland7SiV2OWz9mP06s4B3Ok3CIM2DV.png",
 
-      <a href="cart.html" class="cart-link">
-        <i class="fa-solid fa-shopping-cart"></i>
-        السلة (<span id="cartCount">0</span>)
-      </a>
-    </div>
-  </div>
-</header>
+    "اي مشروب بارد": "https://png.pngtree.com/png-clipart/20250502/original/pngtree-chilled-glass-of-cold-drink-with-ice-cubes-and-condensation-png-image_20933400.png",
+    "HogoMogo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUpDJhFWq6wLio8g99z9E3luSlz-k1dqYg0A&s",
+    "فيوزتي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeTGhnqJ36aKQ95UAdKnsEIfQ-bDX4lnga-Q&s",
+    "ريدبول": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_2BdDHksLnt3g329lG5nxX2cwxbL8f8yjlA&s",
+    "اولفيرا": "https://blupenguin.co.il/wp-content/uploads/2024/10/%D7%90%D7%9C%D7%95%D7%95%D7%A8%D7%94-%D7%AA%D7%A4%D7%95%D7%97%D7%99%D7%9D-%D7%A7%D7%98%D7%9F-1.webp",
+    "اكس ال": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjObjNqrr1e-82QK-jvno7fXq_GiEnpGxfA&s",
+    "بلو": "https://blupenguin.co.il/wp-content/uploads/2024/10/40.webp",
+    "ماء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXi-POAM8qEfSsEezFtuqKWq8hPfOv7ceRAg&s",
+    "سحلب": "https://modo3.com/thumbs/fit630x300/67190/1446550846/%D9%83%D9%8A%D9%81%D9%8A%D8%A9_%D8%B9%D9%85%D9%84_%D8%A7%D9%84%D8%B3%D8%AD%D9%84%D8%A8.jpg",
+    "ليمونادا": "https://e7.pngegg.com/pngimages/1008/595/png-clipart-limonana-lemonade-fizzy-drinks-coffee-cafe-lemonade-thumbnail.png",
+    "اسبرسو": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo0zdv_B7wW-zAiT7ezHD6GnLPA_Y_ewH0hw&s",
+      "نسكافيه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLktC3gyVM0BXRXg5sq_CiD7aipS0TgrMEbw&s",
+    "هفوخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HUxvVJP8yrBzVusaZxQu_Paijr0LuwaG8w&s",
+    "شاي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7ZTvMXoDaNobEdiJW604ey3ROSHEWD4miQ&s"
+  };
 
-<!-- ✅ لا تحذف "الكل" ولا التصنيفات -->
-<nav class="categories" id="categoriesNav">
-  <button class="category-btn active" data-category="all">الكل</button>
-  <button class="category-btn" data-category="main">وجبات رئيسية</button>
-  <button class="category-btn" data-category="italian">مأكولات إيطالية</button>
-  <button class="category-btn" data-category="home">أكل بيتي</button>
-  <button class="category-btn" data-category="salads">سلطات</button>
-  <button class="category-btn" data-category="sandwiches">ساندويتشات</button>
-  <button class="category-btn" data-category="pastries">معجنات</button>
-  <button class="category-btn" data-category="extras">إضافات منفردة</button>
-  <button class="category-btn" data-category="drinks">مشروبات</button>
-</nav>
-
-<main class="container" id="menuContainer">
-  <!-- سيتم تعبئتها من JS -->
-</main>
-
-<!-- ✅ مودال التخصيص -->
-<div id="extrasModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">×</span>
-    <h2 id="modalMealName"></h2>
-
-    <div id="sizeSection">
-      <h3>اختر الحجم والسعر:</h3>
-      <div class="size-options" id="sizeOptions"></div>
-    </div>
-
-    <div id="extrasSection">
-      <h3>اختر الإضافات:</h3>
-      <div class="extras-list" id="extrasList"></div>
-    </div>
-
-    <h3>ملاحظات خاصة (للبيتزا أو غيرها):</h3>
-    <textarea id="notesInput" rows="3" placeholder="ملاحظاتك (مثال: بدون بصل، نصف تونة ونصف زيتون للبيتزا...)"></textarea>
-
-    <div id="totalPriceDisplay">السعر الإجمالي: 0 شيكل</div>
-
-    <div class="modal-footer">
-      <div id="quantityControl">
-        <button onclick="decreaseQuantity()">-</button>
-        <span id="quantityDisplay">1</span>
-        <button onclick="increaseQuantity()">+</button>
-      </div>
-      <button onclick="addToCart()">إضافة إلى السلة</button>
-    </div>
-  </div>
-</div>
-
-<script>
   // =========================================
   // I. DESCRIPTIONS
   // =========================================
@@ -639,6 +796,11 @@
     { name: "شاي", category: "drinks", img: "https://placehold.co/600x400/8e0000/white?text=TEA", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } }
   ];
 
+  // ✅✅✅ سطر واحد يبدّل صور الـ placeholder حسب الاسم (بدون لمس المصفوفة)
+  meals.forEach(m => {
+    if (FOOD_IMAGES[m.name]) m.img = FOOD_IMAGES[m.name];
+  });
+
   // =========================================
   // III. STATE
   // =========================================
@@ -769,7 +931,8 @@
         }
 
         card.innerHTML = `
-          <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}">
+          <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}"
+               onerror="this.src='https://placehold.co/600x400?text=Image'">
           <div class="meal-content">
             <h3>${meal.name}</h3>
             <p>${getMealDescription(meal.name)}</p>
@@ -994,7 +1157,7 @@
   }
 
   initialize();
-</script>
+    </script>
 
 </body>
 </html>
