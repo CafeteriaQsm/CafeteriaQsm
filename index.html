@@ -2,168 +2,37 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>تسجيل الدخول - كافتيريا</title>
+    <title>تسجيل الدخول - كافتيريا القاسمي</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-            .logo i {
-                font-size: 50px;
-                color: #667eea;
-                margin-bottom: 15px;
-            }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .subtitle {
-            color: #666;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-            input:focus {
-                outline: none;
-                border-color: #667eea;
-            }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-            .btn:hover {
-                transform: translateY(-2px);
-            }
-
-        .links {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-            .links a {
-                color: #667eea;
-                text-decoration: none;
-            }
-
-        .message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-            display: none;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <i>🔐</i>
-            <h1>تسجيل الدخول</h1>
-            <p class="subtitle">مرحباً بعودتك! سجل دخول إلى حسابك</p>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fa-solid fa-utensils"></i>
+                <span>كافيتيريا القاسمي</span>
+            </div>
+            
+            <h1>مرحباً بك</h1>
+            <p class="subtitle">سجل دخولك للاستمتاع بأشهى المأكولات</p>
+
+            <button type="button" class="google-btn" onclick="loginWithGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                تسجيل الدخول عبر Google
+            </button>
+            
+            <div id="message" style="margin-top: 20px; font-weight: 600;"></div>
         </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" placeholder="ادخل بريدك الإلكتروني" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">كلمة المرور</label>
-                <input type="password" id="password" placeholder="ادخل كلمة المرور" required>
-            </div>
-
-            <button type="button" class="btn" onclick="loginUser()">تسجيل الدخول</button>
-
-            <div id="message" class="message"></div>
-
-            <div class="links">
-                <p>ليس لديك حساب؟ <a href="register.html">أنشئ حساب جديد</a></p>
-            </div>
-        </form>
     </div>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
-        // *** تم التوحيد إلى المشروع الصحيح ***
         const firebaseConfig = {
             apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
             authDomain: "cafeteria-app-82268.firebaseapp.com",
@@ -178,81 +47,68 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // التحقق إذا كان المستخدم مسجل دخوله بالفعل
+        // Check if already logged in
         auth.onAuthStateChanged(user => {
             if (user) {
-                // إذا كان مسجلاً، انقله مباشرة إلى القائمة
                 window.location.href = 'menu.html';
             }
         });
 
-        window.loginUser = async function () {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
+        // Google Login Provider
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        window.loginWithGoogle = async function () {
             const messageDiv = document.getElementById('message');
-
-            if (!email || !password) {
-                showMessage('⚠️ يرجى ملء جميع الحقول', 'error');
-                return;
-            }
-
-            showMessage('⏳ جاري تسجيل الدخول...', 'success');
+            messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
+            messageDiv.style.color = 'var(--accent-secondary)';
 
             try {
-                // *** 1. تفعيل تسجيل الدخول الدائم ***
+                // Set persistence
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                
+                // Sign in with Google
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
 
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-
-                // *** 2. قراءة آخر دخول (إذا كان موجوداً) وتخزينه للعرض في صفحة القائمة ***
-                const snapshot = await database.ref('users/' + user.uid).once('value');
+                // Create or update user node in DB
+                const userRef = database.ref('users/' + user.uid);
+                
+                // Fetch existing details
+                const snapshot = await userRef.once('value');
                 const userData = snapshot.val();
+                
+                let updateData = {
+                    lastLoginTime: new Date().toISOString(),
+                    email: user.email,
+                    displayName: user.displayName || "مستخدم جديد",
+                    role: userData && userData.role ? userData.role : "user" // retain admin role if exists
+                };
+
+                await userRef.update(updateData);
+                
                 if (userData && userData.lastLoginTime) {
-                    // تخزين آخر دخول في الـ localStorage لتراه صفحة القائمة
                     localStorage.setItem('lastLoginTime', userData.lastLoginTime);
                 }
 
-                // *** 3. تحديث وقت الدخول الحالي في قاعدة البيانات (للمرة القادمة) ***
-                await database.ref('users/' + user.uid).update({
-                    lastLoginTime: new Date().toISOString()
-                });
-
-                showMessage('✅ تم تسجيل الدخول بنجاح! جاري تحويلك...', 'success');
+                messageDiv.style.color = '#2e7d32'; // Success green
+                messageDiv.textContent = '✅ تم تسجيل الدخول بنجاح! جاري تحويلك...';
 
                 setTimeout(() => {
                     window.location.href = 'menu.html';
                 }, 1000);
 
             } catch (error) {
-                let errorMessage = '❌ حدث خطأ أثناء تسجيل الدخول';
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                    case 'auth/wrong-password':
-                    case 'auth/invalid-credential': // خطأ أحدث يجمع الاثنين
-                        errorMessage = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = '❌ البريد الإلكتروني غير صحيح';
-                        break;
-                    default:
-                        console.error(error); // للمطور
-                        errorMessage = '❌ فشل تسجيل الدخول، يرجى المحاولة لاحقاً';
+                console.error(error);
+                let errorMessage = '❌ حدث خطأ، لم يكتمل تسجيل الدخول';
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage = '❌ تم إغلاق نافذة الدخول قبل إتمام العملية';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage = '❌ فشل الاتصال بالشبكة، يرجى المحاولة لاحقاً';
                 }
-                showMessage(errorMessage, 'error');
+                messageDiv.style.color = 'var(--accent-primary)'; // Error red
+                messageDiv.textContent = errorMessage;
             }
         };
-
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = message;
-            messageDiv.className = 'message ' + type;
-            messageDiv.style.display = 'block';
-        }
-
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') loginUser();
-        });
     </script>
 </body>
 </html>
