@@ -582,7 +582,7 @@
       userOrdersListenerModal = db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
         container.innerHTML = "";
         if (!snapshot.exists()) {
-          container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات سابقة أو حالية.</p>";
+          container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات حالية.</p>";
           return;
         }
         const orders = [];
