@@ -2,507 +2,10 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8" />
-    <title>قائمة الطعام</title>
+    <title>قائمة الطعام - كافيتيريا القاسمي</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --primary-color: #c62828;
-            --primary-light: #ff5f52;
-            --primary-dark: #8e0000;
-            --secondary-color: #ffb74d;
-            --accent-color: #ff9800;
-            --light-bg: #fff8f0;
-            --card-bg: #ffffff;
-            --text-dark: #3e2723;
-            --text-light: #5d4037;
-            --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            text-align: right;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-            .logo i {
-                font-size: 2rem;
-            }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: nowrap;
-        }
-
-        .user-info {
-            display: none;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-            padding-left: 15px;
-            border-left: 1px solid rgba(255,255,255,0.3);
-            white-space: nowrap;
-        }
-
-        #usernameDisplay {
-            font-weight: bold;
-            font-size: 0.9rem;
-        }           
-        .cart-link {
-            background-color: white;
-            color: var(--primary-color);
-            padding: 10px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-            white-space: nowrap;
-        }
-
-            .cart-link:hover {
-                background-color: var(--secondary-color);
-                transform: translateY(-2px);
-            }
-
-        /* شريط التصنيفات */
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            padding: 12px 10px;
-            gap: 10px;
-            background-color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 80px;
-            z-index: 90;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
-
-        .category-btn {
-            background-color: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 50px;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            flex: 0 0 auto;
-        }
-
-            .category-btn.active, .category-btn:hover {
-                background-color: var(--primary-color);
-                color: white;
-            }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .section-title {
-            color: var(--primary-color);
-            margin: 30px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px dashed var(--secondary-color);
-            font-size: 1.8rem;
-        }
-
-        .menu-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .meal-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-
-            .meal-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 12px 20px rgba(198, 40, 40, 0.2);
-            }
-
-            .meal-card img {
-                width: 100%;
-                height: 180px;
-                object-fit: cover;
-                transition: var(--transition);
-            }
-
-            .meal-card:hover img {
-                transform: scale(1.05);
-            }
-
-        .meal-content {
-            padding: 15px;
-        }
-
-        .meal-card h3 {
-            color: var(--text-dark);
-            margin-bottom: 8px;
-            font-size: 1.3rem;
-        }
-
-        .meal-card p {
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-        }
-
-        .price {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        .offer-text {
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            font-weight: bold;
-            margin-top: -10px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .meal-card button {
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: var(--transition);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .meal-card button:hover {
-                background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
-                transform: translateY(-2px);
-            }
-
-        /* --- Modal --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 200;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.3s;
-            position: relative;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .close-btn {
-            color: var(--text-light);
-            float: left;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            left: 20px;
-            top: 15px;
-        }
-
-            .close-btn:hover, .close-btn:focus {
-                color: var(--primary-color);
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-        .modal-content h2 {
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .modal-content h3 {
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-            font-size: 1.1rem;
-        }
-
-        .size-options input[type="radio"] {
-            display: none;
-        }
-
-        .size-options label {
-            display: inline-block;
-            padding: 10px 15px;
-            border: 2px solid var(--secondary-color);
-            border-radius: 8px;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: bold;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .size-options input[type="radio"]:checked + label {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-dark);
-        }
-
-        .extras-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-            .extras-list label {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background-color: var(--light-bg);
-                padding: 8px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background-color 0.2s;
-                font-size: 0.95rem;
-            }
-
-                .extras-list label:hover {
-                    background-color: #ffe0b2;
-                }
-
-        #totalPriceDisplay {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-dark);
-            text-align: center;
-        }
-
-        .modal-footer {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-            .modal-footer button {
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                padding: 12px 25px;
-                border-radius: 50px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: var(--transition);
-                flex-grow: 1;
-                white-space: nowrap;
-            }
-
-                .modal-footer button:hover {
-                    background-color: var(--primary-dark);
-                }
-
-        #quantityControl {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 0 0 auto;
-        }
-
-            #quantityControl button {
-                background-color: var(--secondary-color);
-                color: var(--text-dark);
-                border: none;
-                padding: 5px 15px;
-                border-radius: 50%;
-                font-size: 1.2rem;
-                cursor: pointer;
-                transition: var(--transition);
-                width: 40px;
-                height: 40px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex: 0 0 auto;
-            }
-
-                #quantityControl button:hover {
-                    background-color: var(--accent-color);
-                }
-
-        #quantityDisplay {
-            font-size: 1.2rem;
-            font-weight: bold;
-            min-width: 25px;
-            text-align: center;
-        }
-
-        #notesInput {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-top: 10px;
-            resize: vertical;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: var(--shadow);
-            z-index: 10000;
-            font-weight: bold;
-            animation: fadeInOut 3s ease;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0;
-                transform: translate(-50%, -20px);
-            }
-
-            10%, 90% {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                padding: 0 10px;
-            }
-
-            .logo {
-                font-size: 1.2rem;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            .menu-container {
-                grid-template-columns: 1fr;
-            }
-
-            .extras-list {
-                grid-template-columns: 1fr;
-            }
-
-            .cart-link {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-
-            #usernameDisplay {
-                font-size: 0.8rem;
-            }
-
-            .modal-footer {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            #quantityControl {
-                justify-content: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -511,15 +14,24 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fa-solid fa-utensils"></i>
-                <span>كافيتيريا الكلية</span>
+                <span>كافيتيريا القاسمي</span>
+            </div>
+
+            <div class="nav-links">
+                <a href="menu.html" class="active">القائمة</a>
+                <a href="cart.html">السلة</a>
             </div>
 
             <div class="user-actions">
+                <button class="btn-outline" onclick="openUserOrdersModal()" style="margin-left: 10px; border-color: var(--accent-secondary); color: var(--accent-secondary);">
+                    <i class="fas fa-clipboard-list"></i> طلباتي
+                </button>
+
                 <div class="user-info" id="userInfo">
-                    <span>مرحباً، <span id="usernameDisplay"></span>!</span>
+                    <span>مرحباً، <span id="usernameDisplay"></span></span>
                 </div>
 
-                <a href="cart.html" class="cart-link">
+                <a href="cart.html" class="btn-primary">
                     <i class="fa-solid fa-shopping-cart"></i>
                     السلة (<span id="cartCount">0</span>)
                 </a>
@@ -527,20 +39,42 @@
         </div>
     </header>
 
-    <!-- ✅ لا تحذف "الكل" ولا التصنيفات -->
-    <nav class="categories" id="categoriesNav">
-        <button class="category-btn active" data-category="all">الكل</button>
-        <button class="category-btn" data-category="main">وجبات رئيسية</button>
-        <button class="category-btn" data-category="italian">مأكولات إيطالية</button>
-        <button class="category-btn" data-category="home">أكل بيتي</button>
-        <button class="category-btn" data-category="salads">سلطات</button>
-        <button class="category-btn" data-category="sandwiches">ساندويتشات</button>
-        <button class="category-btn" data-category="pastries">معجنات</button>
-        <button class="category-btn" data-category="extras">إضافات منفردة</button>
-        <button class="category-btn" data-category="drinks">مشروبات</button>
-    </nav>
+    <!-- Hero Section -->
+    <section class="hero container">
+        <div class="hero-content">
+            <h4 class="hero-subtitle">طعم لا يُنسى</h4>
+            <h1 class="hero-title">ليس مجرد طعام، <span>إنها تجربة.</span></h1>
+            <p class="hero-desc">استمتع بأشهى المأكولات المحضرة بعناية من أفضل المكونات الطازجة. اطلب الآن واستمتع بالجودة العالية والمذاق الرفيع في كافيتيريا القاسمي.</p>
+            <div class="hero-actions">
+                <a href="#menuContainer" class="btn-primary" onclick="document.getElementById('menuContainer').scrollIntoView({behavior: 'smooth'})">تصفح القائمة</a>
+                <span style="display:flex; align-items:center; gap:10px; color:var(--text-secondary);">
+                    <i class="fa-solid fa-star" style="color:var(--accent-secondary);"></i> 4.9 تقييم العملاء
+                </span>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-img-container">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop" alt="Delicious Food">
+            </div>
+        </div>
+    </section>
 
-    <main class="container" id="menuContainer">
+    <!-- Categories Navigation -->
+    <div class="categories-wrapper">
+        <nav class="categories" id="categoriesNav">
+            <button class="category-btn active" data-category="all">الكل</button>
+            <button class="category-btn" data-category="main">وجبات رئيسية</button>
+            <button class="category-btn" data-category="italian">مأكولات إيطالية</button>
+            <button class="category-btn" data-category="home">أكل بيتي</button>
+            <button class="category-btn" data-category="salads">سلطات</button>
+            <button class="category-btn" data-category="sandwiches">ساندويتشات</button>
+            <button class="category-btn" data-category="pastries">معجنات</button>
+            <button class="category-btn" data-category="extras">إضافات منفردة</button>
+            <button class="category-btn" data-category="drinks">مشروبات</button>
+        </nav>
+    </div>
+
+    <main class="container menu-section" id="menuContainer">
         <!-- سيتم تعبئتها من JS -->
     </main>
 
@@ -550,12 +84,12 @@
             <span class="close-btn" onclick="closeModal()">×</span>
             <h2 id="modalMealName"></h2>
 
-            <div id="sizeSection">
+            <div id="sizeSection" style="display:none;">
                 <h3>اختر الحجم والسعر:</h3>
                 <div class="size-options" id="sizeOptions"></div>
             </div>
 
-            <div id="extrasSection">
+            <div id="extrasSection" style="display:none;">
                 <h3>اختر الإضافات:</h3>
                 <div class="extras-list" id="extrasList"></div>
             </div>
@@ -568,17 +102,50 @@
             <div class="modal-footer">
                 <div id="quantityControl">
                     <button onclick="decreaseQuantity()">-</button>
-                    <span id="quantityDisplay">1</span>
+                    <div id="quantityDisplay">1</div>
                     <button onclick="increaseQuantity()">+</button>
                 </div>
-                <button onclick="addToCart()">إضافة إلى السلة</button>
+                <button class="btn-primary" onclick="addToCart()">إضافة إلى السلة</button>
             </div>
         </div>
     </div>
 
+    <!-- User Orders Modal -->
+    <div id="userOrdersModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; padding: 20px; overflow-y: auto;">
+        <div style="background: var(--bg-card); max-width: 600px; margin: 40px auto; border-radius: var(--radius-md); padding: 30px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                <h2 style="color: var(--accent-secondary);"><i class="fas fa-clipboard-list"></i> طلباتي السابقة</h2>
+                <button class="btn-outline" onclick="closeUserOrdersModal()" style="padding: 5px 15px; border-color: var(--accent-primary); color: var(--accent-primary);">إغلاق</button>
+            </div>
+            <div id="userOrdersListContainer" style="display: flex; flex-direction: column; gap: 15px;">
+                <p style="color: var(--text-secondary); text-align: center;">جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
     <script>
+  const firebaseConfig = {
+      apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+      authDomain: "cafeteria-app-82268.firebaseapp.com",
+      databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "cafeteria-app-82268",
+      storageBucket: "cafeteria-app-82268.appspot.com",
+      messagingSenderId: "457381739769",
+      appId: "1:457381739769:web:409cb927ef54368cb3f628"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const database = firebase.database();
+
+
   // =========================================
-  // ✅ صور الوجبات من الإنترنت حسب الاسم (بدون تغيير أي شيء آخر)
+  // ✅ صور الوجبات من الإنترنت حسب الاسم
   // =========================================
   const FOOD_IMAGES = {
     "شاورما": "https://play-lh.googleusercontent.com/pzAKN02lPgHvcAi9lkBlpK_AfpvCPsDOVSmisADQuj4Vdp7TVjhRI-Di53CN6mHvyz8",
@@ -713,72 +280,71 @@
   // II. MEALS
   // =========================================
   const meals = [
-    { name: "شاورما", category: "main", img: "https://placehold.co/600x400/8e0000/white?text=SHAWARMA", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "شنيتسل", category: "main", img: "https://placehold.co/600x400/c62828/white?text=SCHNITZEL", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "صدر دجاج", category: "main", img: "https://placehold.co/600x400/ff5f52/white?text=CHICKEN+BREAST", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "برجر", category: "main", img: "https://placehold.co/600x400/ffb74d/3e2723?text=BURGER", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
-    { name: "كباب", category: "main", img: "https://placehold.co/600x400/8e0000/white?text=KABAB", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
-    { name: "نقنيق", category: "main", img: "https://placehold.co/600x400/c62828/white?text=SAUSAGE", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
-    { name: "فلافل", category: "main", img: "https://placehold.co/600x400/ff5f52/white?text=FALAFEL", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
+    { name: "شاورما", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+    { name: "شنيتسل", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+    { name: "صدر دجاج", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+    { name: "برجر", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
+    { name: "كباب", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
+    { name: "نقنيق", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
+    { name: "فلافل", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
 
-    { name: "بطاطا بشميل", category: "italian", img: "https://placehold.co/600x400/ffb74d/3e2723?text=POTATO+BECHAMEL", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
-    { name: "بيتسا", category: "italian", img: "https://placehold.co/600x400/ff9800/3e2723?text=PIZZA", sizes: { "صغير": 15, "كبير": 50 }, extras: PIZZA_EXTRAS_LIST, notes: "يمكن كتابة ملاحظات لتقسيم الإضافات (نصف/نصف) في خانة الملاحظات." },
-    { name: "رفيولي بشميل", category: "italian", img: "https://placehold.co/600x400/8e0000/white?text=RAVIOLI+BECHAMEL", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
-    { name: "صدر دجاج بشميل", category: "italian", img: "https://placehold.co/600x400/c62828/white?text=CHICKEN+BECHAMEL", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+    { name: "بطاطا بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+    { name: "بيتسا", category: "italian", sizes: { "صغير": 15, "كبير": 50 }, extras: PIZZA_EXTRAS_LIST, notes: "يمكن كتابة ملاحظات لتقسيم الإضافات (نصف/نصف) في خانة الملاحظات." },
+    { name: "رفيولي بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+    { name: "صدر دجاج بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
 
-    { name: "مسحب بالفرن", category: "home", price: 40, img: "https://placehold.co/600x400/ff5f52/white?text=MUSAKHAN" },
-    { name: "جولش", category: "home", price: 40, img: "https://placehold.co/600x400/ffb74d/3e2723?text=GOULASH" },
-    { name: "شرائح عجل بالفرن", category: "home", price: 40, img: "https://placehold.co/600x400/8e0000/white?text=VEAL+SLICES" },
-    { name: "شرائح دجاج بالفرن", category: "home", price: 40, img: "https://placehold.co/600x400/c62828/white?text=CHICKEN+SLICES" },
+    { name: "مسحب بالفرن", category: "home", price: 40 },
+    { name: "جولش", category: "home", price: 40 },
+    { name: "شرائح عجل بالفرن", category: "home", price: 40 },
+    { name: "شرائح دجاج بالفرن", category: "home", price: 40 },
 
-    { name: "فتوش بالجبن", category: "salads", img: "https://placehold.co/600x400/ff9800/3e2723?text=FATTOUSH", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "تبولة", category: "salads", img: "https://placehold.co/600x400/ff5f52/white?text=TABOULEH", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "سلطة عربية", category: "salads", img: "https://placehold.co/600x400/ffb74d/3e2723?text=ARABIC+SALAD", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "سلطة صدر دجاج", category: "salads", img: "https://placehold.co/600x400/8e0000/white?text=CHICKEN+SALAD", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
-    { name: "سلطة طونا", category: "salads", img: "https://placehold.co/600x400/c62828/white?text=TUNA+SALAD", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
+    { name: "فتوش بالجبن", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+    { name: "تبولة", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+    { name: "سلطة عربية", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+    { name: "سلطة صدر دجاج", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
+    { name: "سلطة طونا", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
 
-    { name: "عجه", category: "sandwiches", price: 12, img: "https://placehold.co/600x400/ff9800/3e2723?text=OMLETTE", extras: MAIN_EXTRAS_LIST },
-    { name: "بستراما", category: "sandwiches", price: 10, img: "https://placehold.co/600x400/ff5f52/white?text=PASTRAMA", extras: MAIN_EXTRAS_LIST },
-    { name: "لبنة", category: "sandwiches", price: 10, img: "https://placehold.co/600x400/ffb74d/3e2723?text=LABNEH", extras: MAIN_EXTRAS_LIST },
-    { name: "جبنة صفراء", category: "sandwiches", price: 10, img: "https://placehold.co/600x400/8e0000/white?text=CHEESE+SANDWICH", extras: MAIN_EXTRAS_LIST },
-    { name: "توست لبنة", category: "sandwiches", price: 12, img: "https://placehold.co/600x400/c62828/white?text=TOAST+LABNEH", extras: [] },
-    { name: "توست طونه", category: "sandwiches", price: 12, img: "https://placehold.co/600x400/ff9800/3e2723?text=TOAST+TUNA", extras: [] },
-    { name: "لفة درزية", category: "sandwiches", price: 13, img: "https://placehold.co/600x400/ff5f52/white?text=DRUZE+WRAP", extras: ["تبولة"] },
+    { name: "عجه", category: "sandwiches", price: 12, extras: MAIN_EXTRAS_LIST },
+    { name: "بستراما", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+    { name: "لبنة", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+    { name: "جبنة صفراء", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+    { name: "توست لبنة", category: "sandwiches", price: 12, extras: [] },
+    { name: "توست طونه", category: "sandwiches", price: 12, extras: [] },
+    { name: "لفة درزية", category: "sandwiches", price: 13, extras: ["تبولة"] },
 
-    { name: "معجنات بيتزا", category: "pastries", price: 4, img: "https://placehold.co/600x400/ffb74d/3e2723?text=PIZZA+PASTRY" },
-    { name: "معجنات زعتر", category: "pastries", price: 4, img: "https://placehold.co/600x400/8e0000/white?text=ZAATAR+PASTRY" },
-    { name: "معجنات لحمه عجل", category: "pastries", price: 4, img: "https://placehold.co/600x400/c62828/white?text=BEEF+PASTRY" },
-    { name: "معجنات لحمه جاج", category: "pastries", price: 4, img: "https://placehold.co/600x400/ff9800/3e2723?text=CHICKEN+PASTRY" },
-    { name: "معجنات سبانخ", category: "pastries", price: 4, img: "https://placehold.co/600x400/ff5f52/white?text=SPINACH+PASTRY" },
-    { name: "معجنات طونه", category: "pastries", price: 4, img: "https://placehold.co/600x400/ffb74d/3e2723?text=TUNA+PASTRY" },
-    { name: "معجنات نقنيق", category: "pastries", price: 4, img: "https://placehold.co/600x400/8e0000/white?text=HOTDOG+PASTRY" },
-    { name: "كبة", category: "pastries", price: 4, img: "https://placehold.co/600x400/c62828/white?text=KIBBEH" },
+    { name: "معجنات بيتزا", category: "pastries", price: 4 },
+    { name: "معجنات زعتر", category: "pastries", price: 4 },
+    { name: "معجنات لحمه عجل", category: "pastries", price: 4 },
+    { name: "معجنات لحمه جاج", category: "pastries", price: 4 },
+    { name: "معجنات سبانخ", category: "pastries", price: 4 },
+    { name: "معجنات طونه", category: "pastries", price: 4 },
+    { name: "معجنات نقنيق", category: "pastries", price: 4 },
+    { name: "كبة", category: "pastries", price: 4 },
 
     /* ✅ عروض المعجنات */
-    { name: "سجاريوت لحمه", category: "pastries", price: 4, img: "https://placehold.co/600x400/ff9800/3e2723?text=MEAT+CIGAR", offer: "عرض: 3 بـ 10 شيكل" },
-    { name: "سجاريوت بطاطا", category: "pastries", price: 4, img: "https://placehold.co/600x400/ff5f52/white?text=POTATO+CIGAR", offer: "عرض: 3 بـ 10 شيكل" },
-    { name: "معجنات جبنه بيضا", category: "pastries", price: 4, img: "https://placehold.co/600x400/ffb74d/3e2723?text=CHEESE+PASTRY", offer: "عرض: 4 بـ 10 شيكل" },
-    { name: "معجنات زيتون", category: "pastries", price: 4, img: "https://placehold.co/600x400/8e0000/white?text=OLIVE+PASTRY", offer: "عرض: 4 بـ 10 شيكل" },
+    { name: "سجاريوت لحمه", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
+    { name: "سجاريوت بطاطا", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
+    { name: "معجنات جبنه بيضا", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
+    { name: "معجنات زيتون", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
 
-    { name: "بطاطا", category: "extras", img: "https://placehold.co/600x400/c62828/white?text=FRIES", sizes: { "صغير": 7, "كبير": 10 }, extras: [] },
+    { name: "بطاطا", category: "extras", sizes: { "صغير": 7, "كبير": 10 }, extras: [] },
 
-    { name: "اي مشروب بارد", category: "drinks", price: 6, img: "https://placehold.co/600x400/ff9800/3e2723?text=COLD+DRINK" },
-    { name: "HogoMogo", category: "drinks", price: 10, img: "https://placehold.co/600x400/ff5f52/white?text=HOGOMOGO" },
-    { name: "فيوزتي", category: "drinks", price: 8, img: "https://placehold.co/600x400/ffb74d/3e2723?text=FUZETEA" },
-    { name: "ريدبول", category: "drinks", price: 8, img: "https://placehold.co/600x400/8e0000/white?text=REDBULL" },
-    { name: "اولفيرا", category: "drinks", price: 8, img: "https://placehold.co/600x400/c62828/white?text=OLVERA" },
-    { name: "اكس ال", category: "drinks", price: 5, img: "https://placehold.co/600x400/ff9800/3e2723?text=XL" },
-    { name: "بلو", category: "drinks", price: 5, img: "https://placehold.co/600x400/ff5f52/white?text=BLUE" },
-    { name: "ماء", category: "drinks", price: 5, img: "https://placehold.co/600x400/ffb74d/3e2723?text=WATER" },
-    { name: "سحلب", category: "drinks", img: "https://placehold.co/600x400/8e0000/white?text=SAHLAB", sizes: { "صغير": 10, "كبير": 15 } },
-    { name: "ليمونادا", category: "drinks", img: "https://placehold.co/600x400/c62828/white?text=LEMONADE", sizes: { "صغير": 7, "وسط": 10, "كبير": 12 } },
-    { name: "اسبرسو", category: "drinks", price: 6, img: "https://placehold.co/600x400/ff9800/3e2723?text=ESPRESSO" },
-    { name: "نسكافيه", category: "drinks", img: "https://placehold.co/600x400/ff5f52/white?text=NESCAFE", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
-    { name: "هفوخ", category: "drinks", img: "https://placehold.co/600x400/ffb74d/3e2723?text=HAFOUCH", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
-    { name: "شاي", category: "drinks", img: "https://placehold.co/600x400/8e0000/white?text=TEA", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } }
+    { name: "اي مشروب بارد", category: "drinks", price: 6 },
+    { name: "HogoMogo", category: "drinks", price: 10 },
+    { name: "فيوزتي", category: "drinks", price: 8 },
+    { name: "ريدبول", category: "drinks", price: 8 },
+    { name: "اولفيرا", category: "drinks", price: 8 },
+    { name: "اكس ال", category: "drinks", price: 5 },
+    { name: "بلو", category: "drinks", price: 5 },
+    { name: "ماء", category: "drinks", price: 5 },
+    { name: "سحلب", category: "drinks", sizes: { "صغير": 10, "كبير": 15 } },
+    { name: "ليمونادا", category: "drinks", sizes: { "صغير": 7, "وسط": 10, "كبير": 12 } },
+    { name: "اسبرسو", category: "drinks", price: 6 },
+    { name: "نسكافيه", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
+    { name: "هفوخ", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
+    { name: "شاي", category: "drinks", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } }
   ];
 
-  // ✅✅✅ سطر واحد يبدّل صور الـ placeholder حسب الاسم (بدون لمس المصفوفة)
   meals.forEach(m => {
     if (FOOD_IMAGES[m.name]) m.img = FOOD_IMAGES[m.name];
   });
@@ -790,6 +356,13 @@
   let quantity = 1;
   let basePrice = 0;
   let selectedSize = "";
+  let unavailableMeals = {};
+
+  database.ref('settings/unavailable_meals').on('value', snap => {
+    unavailableMeals = snap.val() || {};
+    const activeBtn = document.querySelector('.category-btn.active');
+    if (activeBtn) filterMeals(activeBtn.dataset.category, activeBtn);
+  });
 
   // =========================================
   // IV. HELPERS
@@ -815,13 +388,12 @@
   function showNotification(message, type = "success") {
     const notification = document.createElement("div");
     notification.textContent = message;
-    notification.className = "notification";
-    if (type === "error") notification.style.background = "var(--primary-dark)";
+    notification.className = "notification " + type;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
   }
 
-  // ✅ عروض المعجنات: حساب السعر النهائي حسب الكمية
+  // ✅ عروض المعجنات
   function calcOfferTotal(mealName, unitPrice, qty) {
     const offers = {
       "سجاريوت لحمه": { bundleQty: 3, bundlePrice: 10 },
@@ -838,7 +410,6 @@
     return (bundles * offer.bundlePrice) + (remainder * unitPrice);
   }
 
-  // ✅ السعر في المودال = سعر نهائي (يشمل العرض إن وجد)
   function calculateTotalPrice() {
     const unit = Number(basePrice) || 0;
     const final = calcOfferTotal(selectedMeal?.name || "", unit, quantity);
@@ -912,18 +483,25 @@
           priceDisplay = "يرجى السؤال";
         }
 
+        const isUnavailable = unavailableMeals[meal.name] === true;
+        const addBtnHtml = isUnavailable 
+          ? `<button class="add-btn" style="background: var(--bg-dark); color: var(--text-secondary); cursor: not-allowed;" title="غير متوفر حالياً">
+               <i class="fa-solid fa-ban"></i>
+             </button>`
+          : `<button class="add-btn" onclick="openExtrasModal('${meal.name}')">
+               <i class="fa-solid fa-plus"></i>
+             </button>`;
+
         card.innerHTML = `
-          <img src="${meal.img || 'https://placehold.co/600x400'}" alt="${meal.name}"
-               onerror="this.src='https://placehold.co/600x400?text=Image'">
-          <div class="meal-content">
-            <h3>${meal.name}</h3>
-            <p>${getMealDescription(meal.name)}</p>
-            ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ""}
-            <span class="price">${priceDisplay}</span>
-            <button onclick="openExtrasModal('${meal.name}')">
-              <i class="fa-solid fa-cart-plus"></i>
-              ${(meal.sizes || (meal.extras && meal.extras.length > 0)) ? "اطلب بتخصيص" : "إضافة مباشرة"}
-            </button>
+          <div class="meal-img-wrapper" ${isUnavailable ? 'style="opacity: 0.5; filter: grayscale(1);"' : ''}>
+             <img src="${meal.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'}" alt="${meal.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'">
+          </div>
+          <h3 ${isUnavailable ? 'style="color: var(--text-secondary)"' : ''}>${meal.name}</h3>
+          <p>${getMealDescription(meal.name)}</p>
+          ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ""}
+          <div class="meal-card-footer">
+            <span class="price">${isUnavailable ? '<span style="color:var(--accent-primary); font-size: 0.9rem; font-weight: bold;">غير متوفر</span>' : priceDisplay}</span>
+            ${addBtnHtml}
           </div>
         `;
         mealGrid.appendChild(card);
@@ -949,7 +527,6 @@
     quantity = 1;
     document.getElementById("quantityDisplay").textContent = "1";
     document.getElementById("notesInput").value = "";
-
     document.getElementById("modalMealName").textContent = selectedMeal.name;
 
     const sizeSection = document.getElementById("sizeSection");
@@ -1031,16 +608,14 @@
   }
 
   // =========================================
-  // VI. CART LOGIC (✅ كمية + عرض + سعر نهائي)
+  // VI. CART LOGIC
   // =========================================
   function addToCart() {
     if (!selectedMeal) return;
 
-    // extras
     const extrasPicked = [];
     document.querySelectorAll("#extrasList input:checked").forEach(chk => extrasPicked.push(chk.value));
 
-    // لو فيه sizes لازم يكون مختار
     if (selectedMeal.sizes && !selectedSize) {
       showNotification("الرجاء اختيار الحجم أولاً", "error");
       return;
@@ -1052,22 +627,18 @@
     const itemDetails = {
       id: Date.now() + "-" + Math.random().toString(16).slice(2),
       name: selectedMeal.name,
-      img: selectedMeal.img || "https://placehold.co/600x400",
+      img: selectedMeal.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
       size: selectedSize || "حجم عادي",
       extras: extrasPicked,
       notes: document.getElementById("notesInput").value.trim(),
-
-      // ✅ أهم شي للسلة
       quantity: quantity,
       unitPrice: unitPrice,
       totalPrice: finalTotal,
       lineTotal: finalTotal
     };
 
-    // storage
     let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
 
-    // ✅ لو نفس المنتج + نفس الخيارات، نجمع الكميات بدل ما نعمل عنصر جديد
     const sameIndex = order.cart.findIndex(it =>
       (it.name === itemDetails.name) &&
       (it.size === itemDetails.size) &&
@@ -1096,7 +667,7 @@
     updateCartCount(order.cart.length);
 
     closeModal();
-    showNotification(`✅ تم إضافة ${itemDetails.name} — الكمية: ${quantity}`);
+    showNotification(`تم إضافة ${itemDetails.name}`);
   }
 
   function updateCartCount(count) {
@@ -1108,32 +679,81 @@
   // VII. INIT
   // =========================================
   function initialize() {
-    // اربط أزرار التصنيفات (بدون حذفها)
     document.querySelectorAll(".category-btn").forEach(btn => {
       btn.onclick = () => filterMeals(btn.dataset.category, btn);
     });
 
-    // عرض الكل افتراضياً
     const allBtn = document.querySelector('.category-btn[data-category="all"]');
     filterMeals("all", allBtn);
 
-    // cart count
     updateCartCount();
 
-    // username
-    const username = localStorage.getItem("username");
-    const userInfoDiv = document.getElementById("userInfo");
-    if (username) {
-      document.getElementById("usernameDisplay").textContent = username;
-      userInfoDiv.style.display = "flex";
+  // =========================================
+  // VIII. USER ORDERS
+  // =========================================
+  let userOrdersListener = null;
+
+  function openUserOrdersModal() {
+    const user = auth.currentUser;
+    if (!user) {
+      showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error");
+      return;
     }
-    window.onclick = function (event) {
-      if (event.target === document.getElementById("extrasModal")) closeModal();
-    };
+    document.getElementById("userOrdersModal").style.display = "block";
+    const container = document.getElementById("userOrdersListContainer");
+    container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>جاري تحميل طلباتك...</p>";
+
+    if (userOrdersListener) database.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener);
+
+    userOrdersListener = database.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+      container.innerHTML = "";
+      if (!snapshot.exists()) {
+        container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات سابقة أو حالية.</p>";
+        return;
+      }
+      const orders = [];
+      snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
+      orders.reverse(); // latest first
+
+      orders.forEach(ord => {
+        const card = document.createElement("div");
+        card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 15px; display: flex; justify-content: space-between; align-items: center;";
+        let statusColor = "#ffb74d";
+        if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+        else if (ord.status === "جاهز") statusColor = "#81c784";
+        else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+
+        card.innerHTML = `
+          <div>
+            <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
+          </div>
+          <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 5px 10px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 600;">
+            ${ord.status || "قيد المعالجة"}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    });
   }
 
-  initialize();
-    </script>
+  function closeUserOrdersModal() {
+    document.getElementById("userOrdersModal").style.display = "none";
+    if (userOrdersListener) {
+      const user = auth.currentUser;
+      if(user) database.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener);
+    }
+  }
 
+  window.addEventListener("click", function(event) {
+    const ordersModal = document.getElementById("userOrdersModal");
+    if (event.target === ordersModal) closeUserOrdersModal();
+    const extrasModal = document.getElementById("extrasModal");
+    if (event.target === extrasModal) closeModal();
+  });
+}
+
+initialize();
+    </script>
 </body>
 </html>
