@@ -2,403 +2,127 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <title>سلة الطلبات</title>
+  <title>سلة الطلبات - كافيتيريا القاسمي</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <style>
-    /* (نفس الـ CSS الموجود لديك، لم يتم تغييره) */
-    :root {
-      --primary-color: #c62828;
-      --primary-light: #ff5f52;
-      --primary-dark: #8e0000;
-      --secondary-color: #ffb74d;
-      --accent-color: #ff9800;
-      --light-bg: #fff8f0;
-      --card-bg: #ffffff;
-      --text-dark: #3e2723;
-      --text-light: #5d4037;
-      --shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
-      --transition: all 0.3s ease;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      direction: rtl;
-      background-color: var(--light-bg);
-      color: var(--text-dark);
-      line-height: 1.6;
-      padding: 20px;
-      text-align: right;
-    }
-
-    .header {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 25px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .header h2 { font-size: 1.8rem; margin-bottom: 10px; }
-    .header p { opacity: 0.9; }
-
-    .cart-container { max-width: 800px; margin: 0 auto; }
-
-    .empty-cart {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      padding: 40px 20px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
-
-    .empty-cart i {
-      font-size: 4rem;
-      color: var(--primary-light);
-      margin-bottom: 20px;
-    }
-
-    .empty-cart h3 { color: var(--text-dark); margin-bottom: 10px; }
-    .empty-cart p { color: var(--text-light); margin-bottom: 20px; }
-
-    .order-card {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      margin-bottom: 20px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      transition: var(--transition);
-    }
-
-    .order-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(198, 40, 40, 0.2);
-    }
-
-    .order-card img {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-
-    .order-details { flex-grow: 1; }
-    .order-details h3 { color: var(--text-dark); margin-bottom: 8px; font-size: 1.2rem; }
-    .order-details p { color: var(--text-light); margin-bottom: 5px; }
-
-    .price {
-      color: var(--primary-color);
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-
-    .extras { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
-
-    .remove-btn {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.9rem;
-    }
-
-    .remove-btn:hover { background-color: #f1b0b7; }
-
-    .total-section {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      margin: 25px 0;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .total-section h3 {
-      color: var(--text-dark);
-      margin-bottom: 10px;
-      font-size: 1.3rem;
-    }
-
-    .total-price {
-      color: var(--primary-color);
-      font-weight: bold;
-      font-size: 1.8rem;
-      margin: 10px 0;
-    }
-
-    .order-form {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: var(--shadow);
-    }
-
-    .order-form h3 {
-      color: var(--primary-color);
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px dashed var(--secondary-color);
-      text-align: center;
-    }
-
-    .form-group { margin-bottom: 20px; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--text-dark);
-      font-weight: 600;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--primary-color);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.1);
-    }
-
-    .payment-methods {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .payment-method {
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .payment-method:hover { border-color: var(--primary-light); }
-    .payment-method.selected {
-      border-color: var(--primary-color);
-      background-color: rgba(198, 40, 40, 0.05);
-    }
-
-    .payment-method i {
-      font-size: 1.5rem;
-      margin-bottom: 8px;
-      color: var(--primary-color);
-    }
-
-    .payment-method span {
-      display: block;
-      font-size: 0.9rem;
-      color: var(--text-dark);
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 14px 25px;
-      border: none;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex: 1;
-      min-width: 150px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(198, 40, 40, 0.2);
-    }
-
-    .btn-secondary { background-color: #e9ecef; color: var(--text-dark); }
-    .btn-secondary:hover { background-color: #dee2e6; transform: translateY(-3px); }
-
-    .status-view {
-      background-color: var(--card-bg);
-      border-radius: 16px;
-      padding: 25px;
-      margin: 25px 0;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .status-view h3 { color: var(--primary-color); margin-bottom: 15px; }
-
-    .status-info {
-      background-color: #e7f3ff;
-      border-radius: 12px;
-      padding: 15px;
-      margin: 15px 0;
-    }
-
-    .status-info p { margin-bottom: 10px; }
-
-    .my-orders-section { margin-top: 40px; }
-
-    .my-orders-section h3 {
-      color: var(--primary-color);
-      margin-bottom: 20px;
-      text-align: center;
-      padding-bottom: 10px;
-      border-bottom: 2px dashed var(--secondary-color);
-    }
-
-    .orders-container {
-      max-height: 500px;
-      overflow-y: auto;
-      padding: 10px;
-    }
-
-    .order-status {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .status-pending { background-color: #fff3cd; color: #856404; }
-    .status-processing { background-color: #cce7ff; color: #004085; }
-    .status-ready { background-color: #d1edff; color: #0c5460; }
-    .status-completed { background-color: #d4edda; color: #155724; }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--primary-color);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 50px;
-      box-shadow: var(--shadow);
-      z-index: 10000;
-      font-weight: bold;
-      animation: fadeInOut 3s ease;
-    }
-
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0; transform: translate(-50%, -20px); }
-      10%, 90% { opacity: 1; transform: translate(-50%, 0); }
-    }
-
-    @media (max-width: 768px) {
-      .order-card { flex-direction: column; text-align: center; }
-      .action-buttons { flex-direction: column; }
-      .btn { width: 100%; }
-      .payment-methods { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (max-width: 480px) {
-      .header h2 { font-size: 1.5rem; }
-      .payment-methods { grid-template-columns: 1fr; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="header">
-    <h2><i class="fas fa-shopping-cart"></i> سلة الطلبات</h2>
-    <p>راجع طلباتك وأكمل عملية الشراء</p>
+  <header>
+    <div class="header-content">
+        <div class="logo">
+            <i class="fa-solid fa-utensils"></i>
+            <span>كافيتيريا القاسمي</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="menu.html">القائمة</a>
+            <a href="cart.html" class="active">السلة</a>
+        </div>
+        
+        <div class="user-actions">
+            <button class="btn-outline" onclick="openUserOrdersModal()" style="margin-left: 10px; border-color: var(--accent-secondary); color: var(--accent-secondary);">
+                <i class="fas fa-clipboard-list"></i> طلباتي
+            </button>
+        </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+        <h1>سلة الطلبات</h1>
+        <p>راجع طلباتك وأكمل عملية الشراء</p>
+    </div>
   </div>
 
-  <div class="cart-container">
-    <div id="cartContainer">
-      <div class="empty-cart">
-        <i class="fas fa-shopping-cart"></i>
-        <h3>سلة التسوق فارغة</h3>
-        <button class="btn btn-primary" onclick="goToMenu()">
-          <i class="fas fa-utensils"></i> تصفح القائمة
-        </button>
-      </div>
-    </div>
+  <div class="container">
+    <div class="cart-layout">
+        <!-- Left Column: Cart Items & Form -->
+        <div>
+            <div id="cartContainer">
+                <div class="empty-cart" style="text-align:center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--border-color); margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 10px;">سلة التسوق فارغة</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
+                    <button class="btn-primary" onclick="goToMenu()">
+                        <i class="fas fa-utensils"></i> تصفح القائمة
+                    </button>
+                </div>
+            </div>
 
-    <div class="order-form" id="orderSummary" style="display:none;">
-      <h3><i class="fas fa-user-edit"></i> معلومات الطلب</h3>
+            <!-- Order Form -->
+            <div class="order-form" id="orderSummary" style="display:none; background-color: var(--bg-card); border-radius: var(--radius-md); padding: 30px; margin-top: 30px; border: 1px solid var(--border-color);">
+                <h3 style="font-size: 1.5rem; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; color: var(--accent-secondary);">
+                    <i class="fas fa-user-edit"></i> معلومات الطلب
+                </h3>
 
-      <div class="form-group">
-        <label for="studentName"><i class="fas fa-user"></i> اسم الطالب *</label>
-        <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية">
-        <small style="color: var(--text-light); font-size: 0.8rem;">يجب أن يكون اسم عربي صحيح</small>
-      </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="studentName" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-user"></i> اسم الطالب *</label>
+                    <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit;">
+                    <small style="color: var(--text-secondary); display:block; margin-top:5px; font-size: 0.85rem;">يجب أن يكون اسم عربي صحيح</small>
+                </div>
 
-      <div class="form-group">
-        <label for="pickupInput"><i class="fas fa-clock"></i> وقت الاستلام *</label>
-        <input type="time" id="pickupInput" required>
-      </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="phoneInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-phone"></i> رقم الهاتف *</label>
+                    <input type="tel" id="phoneInput" required placeholder="05X-XXXXXXX" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit; direction: ltr; text-align: right;">
+                </div>
 
-      <div class="form-group">
-        <label><i class="fas fa-credit-card"></i> طريقة الدفع *</label>
-        <div class="payment-methods">
-          <div class="payment-method selected" onclick="selectPaymentMethod(this, 'cash')">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>الدفع نقداً</span>
-          </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="pickupInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام *</label>
+                    <input type="time" id="pickupInput" required style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:10px; color:var(--text-secondary);"><i class="fas fa-credit-card"></i> طريقة الدفع *</label>
+                    <div class="payment-methods" style="display: flex; gap: 15px;">
+                        <div class="payment-method selected" onclick="selectPaymentMethod(this, 'cash')" style="flex:1; border: 2px solid var(--accent-secondary); background: rgba(212, 175, 55, 0.1); border-radius: var(--radius-sm); padding: 15px; text-align: center; cursor: pointer; color: var(--text-primary);">
+                            <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: var(--accent-secondary); margin-bottom: 8px; display:block;"></i>
+                            <span>الدفع نقداً</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label for="noteInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
+                    <textarea id="noteInput" rows="3" placeholder="أدخل ملاحظاتك الخاصة بالطلب (اختياري)" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <div class="action-buttons" style="display: flex; gap: 15px;">
+                    <button class="btn-outline" onclick="goToMenu()" style="flex: 1;">
+                        <i class="fas fa-arrow-right"></i> الرجوع للقائمة
+                    </button>
+                    <button id="sendOrderBtn" class="btn-primary" onclick="startOrderConfirmation()" style="flex: 2;">
+                        <i class="fas fa-paper-plane"></i> إرسال الطلب
+                    </button>
+                </div>
+            </div>
+
+            <div id="statusView" style="margin-top: 30px;"></div>
+
+            <div class="my-orders-section" style="margin-top: 50px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; color: var(--accent-secondary);">
+                    <i class="fas fa-clipboard-list"></i> طلباتي الحالية
+                </h3>
+                <div id="myOrdersContainer" class="orders-container"><p style="color: var(--text-secondary);">جاري تحميل الطلبات...</p></div>
+            </div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="noteInput"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
-        <textarea id="noteInput" rows="3" placeholder="أدخل ملاحظاتك الخاصة بالطلب (اختياري)"></textarea>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn btn-secondary" onclick="goToMenu()">
-          <i class="fas fa-arrow-right"></i> الرجوع للقائمة
-        </button>
-
-        <button id="sendOrderBtn" class="btn btn-primary" onclick="startOrderConfirmation()">
-          <i class="fas fa-paper-plane"></i> إرسال الطلب
-        </button>
-      </div>
+        
+        <!-- Right Column: Summary Box will be injected here during JS generation (handled internally by JS appending to cartContainer) -->
     </div>
+  </div>
 
-    <div id="statusView"></div>
-
-    <div class="my-orders-section">
-      <h3><i class="fas fa-clipboard-list"></i> طلباتي الحالية</h3>
-      <div id="myOrdersContainer" class="orders-container"><p>❌ لا توجد طلبات حالية.</p></div>
-    </div>
+  <!-- User Orders Modal (Cart version, matches menu.html) -->
+  <div id="userOrdersModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; padding: 20px; overflow-y: auto;">
+      <div style="background: var(--bg-card); max-width: 600px; margin: 40px auto; border-radius: var(--radius-md); padding: 30px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+              <h2 style="color: var(--accent-secondary);"><i class="fas fa-clipboard-list"></i> طلباتي السابقة</h2>
+              <button class="btn-outline" onclick="closeUserOrdersModal()" style="padding: 5px 15px; border-color: var(--accent-primary); color: var(--accent-primary);">إغلاق</button>
+          </div>
+          <div id="userOrdersListContainer" style="display: flex; flex-direction: column; gap: 15px;">
+              <p style="color: var(--text-secondary); text-align: center;">جاري التحميل...</p>
+          </div>
+      </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -420,12 +144,19 @@
     const db = firebase.database();
     const auth = firebase.auth();
 
+    // Since we changed layout slightly, let's inject order items properly
     const cartContainer = document.getElementById("cartContainer");
     const orderSummary = document.getElementById("orderSummary");
     const myOrdersContainer = document.getElementById("myOrdersContainer");
 
     let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
     let selectedPaymentMethod = "cash";
+    let unavailableMeals = {};
+
+    db.ref('settings/unavailable_meals').on('value', snap => {
+      unavailableMeals = snap.val() || {};
+      displayCartItems();
+    });
 
     let isSubmittingOrder = false;
 
@@ -437,8 +168,7 @@
     function showNotification(message, type = 'success') {
       const notification = document.createElement('div');
       notification.textContent = message;
-      notification.className = 'notification';
-      if (type === 'error') notification.style.background = 'var(--primary-dark)';
+      notification.className = 'notification ' + type;
       document.body.appendChild(notification);
       setTimeout(() => { notification.remove(); }, 3000);
     }
@@ -446,6 +176,7 @@
     function validateOrderData() {
       const nameValue = document.getElementById("studentName").value.trim();
       const timeValue = document.getElementById("pickupInput").value;
+      const phoneValue = document.getElementById("phoneInput").value.trim();
 
       if (!nameValue || nameValue.length < 2) {
         showNotification("⚠️ الرجاء إدخال اسم صحيح", "error");
@@ -456,6 +187,10 @@
         showNotification("⚠️ الرجاء إدخال اسم عربي صحيح", "error");
         return false;
       }
+      if (!phoneValue || phoneValue.length < 9) {
+        showNotification("⚠️ الرجاء إدخال رقم هاتف صحيح", "error");
+        return false;
+      }
       if (!timeValue) {
         showNotification("⚠️ الرجاء اختيار وقت الاستلام", "error");
         return false;
@@ -463,21 +198,15 @@
       return true;
     }
 
-    // ✅ تطبيع بيانات العنصر: quantity + unitPrice + lineTotal (يدعم العروض)
-    // - لو العنصر جاي من عروض المنيو وفيه totalPrice => نستخدمه كمجموع نهائي
-    // - غير هيك => unitPrice * quantity
     function normalizeCartItem(item) {
       const qty = Number(item.quantity ?? item.qty ?? 1) || 1;
-
       const unitPrice = Number(item.unitPrice ?? item.price ?? 0) || 0;
-
       let lineTotal = 0;
       if (item.totalPrice != null && !isNaN(Number(item.totalPrice))) {
         lineTotal = Number(item.totalPrice);
       } else {
         lineTotal = unitPrice * qty;
       }
-
       return {
         ...item,
         quantity: qty,
@@ -491,6 +220,10 @@
 
       if (order.cart.length > 0) {
         let total = 0;
+        
+        // Items Container
+        const itemsWrapper = document.createElement("div");
+        itemsWrapper.style.marginBottom = "30px";
 
         order.cart.forEach((rawItem, i) => {
           const item = normalizeCartItem(rawItem);
@@ -499,49 +232,78 @@
           const sizeText = item.size ? `الحجم: ${item.size}` : "";
           const breadText = item.breadType ? `الخبز: ${item.breadType}` : "";
           const optionsLine = (sizeText || breadText)
-            ? `<p style="color: var(--text-light); margin-bottom: 5px;"><strong>خيارات:</strong> ${[sizeText, breadText].filter(Boolean).join(" - ")}</p>`
+            ? `<p style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9rem;"><strong>خيارات:</strong> ${[sizeText, breadText].filter(Boolean).join(" - ")}</p>`
             : "";
 
+          const isUnavailable = unavailableMeals[item.name] === true;
+          
           const div = document.createElement("div");
-          div.className = "order-card";
+          div.className = "cart-item";
+          if (isUnavailable) {
+            div.style.borderColor = "var(--accent-primary)";
+            div.style.background = "rgba(230, 57, 70, 0.05)";
+          }
           div.innerHTML = `
-            <img src="${item.img}" alt="${item.name}">
-            <div class="order-details">
-              <h3>${item.name}</h3>
+            <img src="${item.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'}" alt="${item.name}" class="cart-item-img" ${isUnavailable ? 'style="filter: grayscale(1); opacity: 0.5;"' : ''}>
+            <div class="cart-item-details">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <h3>${item.name}</h3>
+                ${isUnavailable ? '<span style="color: var(--accent-primary); font-weight: bold; font-size: 0.85rem; background: rgba(230, 57, 70, 0.1); padding: 2px 8px; border-radius: var(--radius-sm);">غير متوفر</span>' : ''}
+              </div>
               ${optionsLine}
-              <p class="price">
-                ₪${item.unitPrice} <span style="color: var(--text-light); font-weight: 600;">× ${item.quantity}</span>
-                <span style="display:block; margin-top:6px; font-size: 0.95rem;">المجموع: ₪${item.lineTotal}</span>
-              </p>
-              ${item.extras?.length ? `<p class="extras"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
+              ${item.extras?.length ? `<p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px;"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
+              <div style="display: flex; gap: 15px; margin-top: 10px; align-items: center;">
+                 <span class="cart-item-price">₪${item.lineTotal}</span>
+                 <span style="color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: var(--radius-sm); font-size: 0.9rem;">الكمية: ${item.quantity}</span>
+              </div>
             </div>
-            <button class="remove-btn" onclick="removeItem(${i})">
-              <i class="fas fa-trash"></i> إزالة
+            <button class="delete-btn" onclick="removeItem(${i})">
+              <i class="fas fa-trash"></i>
             </button>
           `;
-          cartContainer.appendChild(div);
+          itemsWrapper.appendChild(div);
         });
 
-        const totalSection = document.createElement("div");
-        totalSection.className = "total-section";
-        totalSection.innerHTML = `
-          <h3>إجمالي الطلب</h3>
-          <div class="total-price">₪${total}</div>
-        `;
-        cartContainer.appendChild(totalSection);
+        cartContainer.appendChild(itemsWrapper);
 
+        // Render Summary specifically in the Right Column natively inside the wrapper (we inject it into the right place)
+        const totalSection = document.createElement("div");
+        totalSection.className = "order-summary";
+        totalSection.innerHTML = `
+          <h3 style="color: var(--accent-secondary);"><i class="fas fa-receipt"></i> الفاتورة</h3>
+          <div class="summary-row" style="color: var(--text-secondary);">
+             <span>المجموع الفرعي</span>
+             <span>₪${total}</span>
+          </div>
+          <div class="summary-total" style="color: var(--accent-primary);">
+             <span>الإجمالي المطلق</span>
+             <span>₪${total}</span>
+          </div>
+        `;
+        
+        // Ensure right layout injection
+        const cartLayout = document.querySelector('.cart-layout');
+        // remove existing if exists
+        const existingSummary = cartLayout.querySelector('.order-summary');
+        if (existingSummary) existingSummary.remove();
+        
+        cartLayout.appendChild(totalSection);
         orderSummary.style.display = "block";
       } else {
         cartContainer.innerHTML = `
-          <div class="empty-cart">
-            <i class="fas fa-shopping-cart"></i>
-            <h3>سلة التسوق فارغة</h3>
-            <button class="btn btn-primary" onclick="goToMenu()">
+          <div class="empty-cart" style="text-align:center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--border-color); margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 10px; color: var(--text-primary);">سلة التسوق فارغة</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
+            <button class="btn-primary" onclick="goToMenu()">
               <i class="fas fa-utensils"></i> تصفح القائمة
             </button>
           </div>
         `;
         orderSummary.style.display = "none";
+        const cartLayout = document.querySelector('.cart-layout');
+        const existingSummary = cartLayout.querySelector('.order-summary');
+        if (existingSummary) existingSummary.remove();
       }
     }
 
@@ -609,10 +371,17 @@
 
       if (confirmMode) { submitOrder(); return; }
 
+      // Check if any item is unavailable
+      const unavailableItems = order.cart.filter(it => unavailableMeals[it.name] === true);
+      if (unavailableItems.length > 0) {
+        showNotification(`⚠️ هناك وجبات غير متوفرة في سلتك (${unavailableItems.map(it => it.name).join(", ")})`, "error");
+        return;
+      }
+
       confirmMode = true;
       confirmSecondsLeft = 10;
 
-      showNotification("🕒 اضغط مرة ثانية للتأكيد أو انتظر 10 ثواني وسيتم الإرسال تلقائيًا", "success");
+      showNotification("🕒 اضغط مرة ثانية للتأكيد أو انتظر 10 ثواني وسيتم الإرسال تلقائيًا", "info");
       setSendButtonText(`<i class="fas fa-check"></i> تأكيد الإرسال (${confirmSecondsLeft})`, false);
 
       confirmIntervalId = setInterval(() => {
@@ -628,7 +397,6 @@
       confirmTimeoutId = setTimeout(() => { submitOrder(); }, 10000);
     }
 
-    // ✅ الإرسال الحقيقي
     async function submitOrder() {
       if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
         showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
@@ -661,24 +429,17 @@
 
       const timeValue = document.getElementById("pickupInput").value;
       const nameValue = document.getElementById("studentName").value.trim();
+      const phoneValue = document.getElementById("phoneInput").value.trim();
       const note = document.getElementById("noteInput").value.trim();
       const orderCode = Math.floor(100000 + Math.random() * 900000);
 
       const normalizedItems = order.cart.map(normalizeCartItem);
 
-      // ✅✅✅ جلب رقم الهاتف من users/{uid} (بدل user.phoneNumber)
-      let phoneFromDB = "";
-      try {
-        const userSnap = await db.ref("users/" + user.uid).once("value");
-        phoneFromDB = userSnap.val()?.phone || "";
-      } catch (e) {
-        phoneFromDB = "";
-      }
-
       const newOrder = {
         code: orderCode,
         studentName: nameValue,
-        phone: phoneFromDB,            // ✅ هيك الأدمن رح يشوفه
+        phone: phoneValue,
+        email: user.email || "غير معروف",
         userId: user.uid,
         items: normalizedItems.map(it => ({
           name: it.name,
@@ -726,23 +487,24 @@
 
     function showStatusTracking(data) {
       const statusView = document.getElementById("statusView");
+      statusView.style.display = 'block';
       statusView.innerHTML = `
-        <div class="status-view">
-          <h3><i class="fas fa-check-circle"></i> تم استلام طلبك</h3>
-          <div class="status-info">
-            <p><strong>رقم الطلب:</strong> ${data.code}</p>
-            <p><strong>الحالة الحالية:</strong> <span class="order-status status-pending">${data.status}</span></p>
+        <div style="background-color: rgba(39, 174, 96, 0.1); border: 1px solid #27ae60; border-radius: var(--radius-md); padding: 25px; text-align: center; margin-bottom: 30px;">
+          <h3 style="color: #27ae60; margin-bottom: 15px; font-size: 1.5rem;"><i class="fas fa-check-circle"></i> تم استلام طلبك بنجاح</h3>
+          <div style="display: flex; justify-content: space-around; background: var(--bg-card); padding: 15px; border-radius: var(--radius-sm);">
+            <div><p style="color: var(--text-secondary); font-size: 0.9rem;">رقم الطلب</p><strong style="font-size: 1.2rem; color: var(--text-primary);">${data.code}</strong></div>
+            <div><p style="color: var(--text-secondary); font-size: 0.9rem;">الحالة الحالية</p><strong style="font-size: 1.2rem; color: var(--accent-secondary);">${data.status}</strong></div>
           </div>
         </div>
       `;
     }
 
     function showMyOrders() {
-      myOrdersContainer.innerHTML = "<p>🔄 جاري تحميل طلباتك...</p>";
+      myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>🔄 جاري تحميل طلباتك...</p>";
       const user = auth.currentUser;
 
       if (!user) {
-        myOrdersContainer.innerHTML = "<p>❌ يرجى تسجيل الدخول لرؤية طلباتك.</p>";
+        myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>❌ يرجى تسجيل الدخول لرؤية طلباتك.</p>";
         return;
       }
 
@@ -750,27 +512,27 @@
         myOrdersContainer.innerHTML = "";
 
         if (!snapshot.exists()) {
-          myOrdersContainer.innerHTML = "<p>❌ لا توجد طلبات حالية.</p>";
+          myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>❌ لا توجد طلبات حالية.</p>";
           return;
         }
 
         snapshot.forEach(child => {
           const ord = child.val();
           const card = document.createElement("div");
-          card.className = "order-card";
+          card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;";
 
-          let statusClass = "status-pending";
-          if (ord.status === "جاري التحضير") statusClass = "status-processing";
-          else if (ord.status === "جاهز") statusClass = "status-ready";
-          else if (ord.status === "تم التسليم") statusClass = "status-completed";
+          let statusColor = "#ffb74d";
+          if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+          else if (ord.status === "جاهز") statusColor = "#81c784";
+          else if (ord.status === "تم التسليم") statusColor = "#27ae60";
 
           card.innerHTML = `
-            <div style="width: 100%;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3>🧾 رقم الطلب: ${ord.code}</h3>
-                <span class="order-status ${statusClass}">${ord.status}</span>
-              </div>
-              <p><strong>⏰ وقت الاستلام:</strong> ${ord.pickupTime}</p>
+            <div>
+              <h3 style="margin-bottom: 10px; color: var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code}</h3>
+              <p style="color: var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام: <strong style="color: var(--text-primary);">${ord.pickupTime}</strong></p>
+            </div>
+            <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 8px 16px; border-radius: var(--radius-pill); font-weight: 600;">
+              ${ord.status}
             </div>
           `;
           myOrdersContainer.appendChild(card);
@@ -785,8 +547,8 @@
         if (user) {
           showMyOrders();
           db.ref('users/' + user.uid).once('value').then(snapshot => {
-            if (snapshot.exists() && snapshot.val().username) {
-              document.getElementById('studentName').value = snapshot.val().username;
+            if (snapshot.exists() && snapshot.val().displayName) {
+              document.getElementById('studentName').value = snapshot.val().displayName;
             }
           });
         } else {
@@ -798,6 +560,67 @@
     window.addEventListener("beforeunload", () => {
       if (confirmIntervalId) clearInterval(confirmIntervalId);
       if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
+    });
+
+    // =========================================
+    // VIII. USER ORDERS (MODAL VIEW)
+    // =========================================
+    let userOrdersListenerModal = null;
+
+    function openUserOrdersModal() {
+      const user = auth.currentUser;
+      if (!user) {
+        showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error");
+        return;
+      }
+      document.getElementById("userOrdersModal").style.display = "block";
+      const container = document.getElementById("userOrdersListContainer");
+      container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>جاري تحميل طلباتك...</p>";
+
+      if (userOrdersListenerModal) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal);
+
+      userOrdersListenerModal = db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+        container.innerHTML = "";
+        if (!snapshot.exists()) {
+          container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات سابقة أو حالية.</p>";
+          return;
+        }
+        const orders = [];
+        snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
+        orders.reverse(); // latest first
+
+        orders.forEach(ord => {
+          const card = document.createElement("div");
+          card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 15px; display: flex; justify-content: space-between; align-items: center;";
+          let statusColor = "#ffb74d";
+          if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+          else if (ord.status === "جاهز") statusColor = "#81c784";
+          else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+
+          card.innerHTML = `
+            <div>
+              <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
+            </div>
+            <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 5px 10px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 600;">
+              ${ord.status || "قيد المعالجة"}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      });
+    }
+
+    function closeUserOrdersModal() {
+      document.getElementById("userOrdersModal").style.display = "none";
+      if (userOrdersListenerModal) {
+        const user = auth.currentUser;
+        if(user) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal);
+      }
+    }
+
+    window.addEventListener("click", function(event) {
+      if (event.target === document.getElementById("userOrdersModal")) closeUserOrdersModal();
     });
   </script>
 </body>
