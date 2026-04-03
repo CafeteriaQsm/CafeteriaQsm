@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* صورة خلفية طعام احترافية بدون خمر */
         .auth-wrapper {
             background-image: url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?q=80&w=1980&auto=format&fit=crop');
         }
@@ -23,7 +22,7 @@
             <h1>مرحباً بك 👋</h1>
             <p class="subtitle">سجّل دخولك للاستمتاع بأشهى المأكولات</p>
 
-            <button type="button" class="google-btn" onclick="loginWithGoogle()">
+            <button type="button" class="google-btn" id="loginBtn" onclick="loginWithGoogle()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                 تسجيل الدخول عبر Google
             </button>
@@ -56,57 +55,77 @@
 
         const auth = firebase.auth();
         const database = firebase.database();
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const messageDiv = document.getElementById('message');
 
-        auth.onAuthStateChanged(user => {
-            if (user) window.location.href = 'menu.html';
+        // ✅ الخطوة 1: تحقق من نتيجة الـ redirect أولاً قبل أي شيء
+        auth.getRedirectResult().then(async result => {
+            if (result && result.user) {
+                // جاء من redirect ناجح
+                messageDiv.style.color = '#43a047';
+                messageDiv.textContent = '✅ تم تسجيل الدخول! جاري التحويل...';
+                await handleLoginSuccess(result.user);
+            } else {
+                // لا يوجد redirect — شغّل onAuthStateChanged
+                auth.onAuthStateChanged(user => {
+                    if (user) window.location.href = 'menu.html';
+                });
+            }
+        }).catch(err => {
+            console.error('Redirect error:', err);
+            auth.onAuthStateChanged(user => {
+                if (user) window.location.href = 'menu.html';
+            });
         });
 
-        const provider = new firebase.auth.GoogleAuthProvider();
+        // ✅ دالة تسجيل الدخول
+        window.loginWithGoogle = async function () {
+            messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
+            messageDiv.style.color = 'var(--accent-secondary)';
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
 
-       window.loginWithGoogle = async function () {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
-    messageDiv.style.color = 'var(--accent-secondary)';
-    try {
-        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            try {
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-        // ✅ على الجوال استخدم redirect بدل popup
-        const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
+                // ✅ الجوال يستخدم redirect، الكمبيوتر يستخدم popup
+                const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
 
-        if (isMobile) {
-            await auth.signInWithRedirect(provider);
-        } else {
-            const result = await auth.signInWithPopup(provider);
-            await handleLoginSuccess(result.user);
+                if (isMobile) {
+                    await auth.signInWithRedirect(provider);
+                    // الصفحة ستُعاد تحميلها تلقائياً
+                } else {
+                    const result = await auth.signInWithPopup(provider);
+                    await handleLoginSuccess(result.user);
+                }
+            } catch (error) {
+                loginBtn.disabled = false;
+                let msg = '❌ حدث خطأ، حاول مجدداً';
+                if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
+                else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
+                else if (error.code === 'auth/popup-blocked') msg = '❌ تم حظر النافذة، جرب مجدداً';
+                messageDiv.style.color = 'var(--accent-primary)';
+                messageDiv.textContent = msg;
+            }
+        };
+
+        // ✅ حفظ بيانات المستخدم والانتقال لصفحة القائمة
+        async function handleLoginSuccess(user) {
+            try {
+                const userRef = database.ref('users/' + user.uid);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+                await userRef.update({
+                    lastLoginTime: new Date().toISOString(),
+                    email: user.email,
+                    displayName: user.displayName || "مستخدم",
+                    role: userData && userData.role ? userData.role : "user"
+                });
+            } catch (e) {
+                console.error(e);
+            }
+            window.location.href = 'menu.html';
         }
-    } catch (error) {
-        let msg = '❌ حدث خطأ، حاول مجدداً';
-        if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
-        else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
-        messageDiv.style.color = 'var(--accent-primary)';
-        messageDiv.textContent = msg;
-    }
-};
-
-// ✅ معالجة نتيجة الـ redirect بعد العودة
-auth.getRedirectResult().then(async result => {
-    if (result && result.user) {
-        await handleLoginSuccess(result.user);
-    }
-}).catch(err => console.error(err));
-
-async function handleLoginSuccess(user) {
-    const userRef = database.ref('users/' + user.uid);
-    const snapshot = await userRef.once('value');
-    const userData = snapshot.val();
-    await userRef.update({
-        lastLoginTime: new Date().toISOString(),
-        email: user.email,
-        displayName: user.displayName || "مستخدم",
-        role: userData && userData.role ? userData.role : "user"
-    });
-    window.location.href = 'menu.html';
-}
     </script>
 </body>
 </html>
