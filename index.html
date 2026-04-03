@@ -47,8 +47,11 @@
         firebase.initializeApp(firebaseConfig);
 
         // ✅ App Check - حماية ضد الطلبات الخارجية
-        firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
-
+       // ✅ وضع debug مؤقت للاختبار
+firebase.appCheck().activate(
+  new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
+  true
+);
         const auth = firebase.auth();
         const database = firebase.database();
 
