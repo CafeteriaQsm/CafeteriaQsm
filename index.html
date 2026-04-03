@@ -1,38 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>تسجيل الدخول - كافيتيريا Fulla</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* صورة خلفية طعام احترافية بدون خمر */
-        .auth-wrapper {
-            background-image: url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?q=80&w=1980&auto=format&fit=crop');
-        }
-    </style>
-</head>
-<body>
-    <div class="auth-wrapper">
-        <div class="auth-card">
-            <div class="logo" style="justify-content:center; margin-bottom:20px;">
-                <i class="fa-solid fa-utensils"></i>
-                <span>كافيتيريا Fulla</span>
-            </div>
-            <h1>مرحباً بك 👋</h1>
-            <p class="subtitle">سجّل دخولك للاستمتاع بأشهى المأكولات</p>
-
-            <button type="button" class="google-btn" onclick="loginWithGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                تسجيل الدخول عبر Google
-            </button>
-
-            <div id="message" style="margin-top:20px; font-weight:600; font-size:0.95rem;"></div>
-        </div>
-    </div>
-
-   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -58,62 +24,55 @@
     const database = firebase.database();
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    // 1. مراقبة حالة المستخدم للتحويل التلقائي إذا كان مسجلاً مسبقاً
+    // 1. مراقبة حالة المستخدم للتحويل التلقائي للزوار السابقين
     auth.onAuthStateChanged(user => {
-        // التحقق من المتغير window.isLoggingIn يمنع التحويل قبل حفظ البيانات في الداتا بيز
         if (user && !window.isLoggingIn) {
             window.location.href = 'menu.html';
         }
     });
 
-    // 2. دالة تسجيل الدخول الرئيسية
-    window.loginWithGoogle = async function () {
-        window.isLoggingIn = true; // تفعيل علم (Flag) لإيقاف التحويل المبكر
+    // 2. دالة تسجيل الدخول (تمت إزالة التوقفات لتناسب الآيفون)
+    window.loginWithGoogle = function () {
+        window.isLoggingIn = true; // منع التحويل المبكر
         const messageDiv = document.getElementById('message');
         messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
         messageDiv.style.color = 'var(--accent-secondary, #666)';
 
-        try {
-            await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            
-            // استخدام Popup لجميع الأجهزة يحل مشكلة الـ ITP في الهواتف
-            const result = await auth.signInWithPopup(provider);
-            await handleLoginSuccess(result.user);
+        // استدعاء Popup فوراً عند النقر بدون أي Await لتجاوز حظر Safari
+        auth.signInWithPopup(provider)
+            .then((result) => {
+                const user = result.user;
+                
+                // 3. تحديث الداتا بيز في الخلفية (بدون Await لعدم تعطيل التحويل)
+                const userRef = database.ref('users/' + user.uid);
+                userRef.once('value').then(snapshot => {
+                    const userData = snapshot.val();
+                    userRef.update({
+                        lastLoginTime: new Date().toISOString(),
+                        email: user.email,
+                        displayName: user.displayName || "مستخدم",
+                        role: userData && userData.role ? userData.role : "user"
+                    });
+                }).catch(err => console.error("خطأ في حفظ البيانات:", err));
 
-        } catch (error) {
-            window.isLoggingIn = false; // إلغاء العلم في حال حدوث خطأ
-            let msg = '❌ حدث خطأ، حاول مجدداً';
-            if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
-            else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
-            
-            messageDiv.style.color = 'red';
-            messageDiv.textContent = msg;
-            console.error("Login Error:", error);
-        }
-    };
+                // 4. التوجيه المباشر للصفحة (سيحل مشكلة الحاجة للـ Refresh)
+                window.location.href = 'menu.html';
+            })
+            .catch((error) => {
+                window.isLoggingIn = false;
+                let msg = '❌ حدث خطأ، حاول مجدداً';
+                
+                if (error.code === 'auth/popup-closed-by-user') {
+                    msg = '❌ تم إغلاق نافذة الدخول';
+                } else if (error.code === 'auth/popup-blocked') {
+                    msg = '❌ متصفحك يمنع النوافذ المنبثقة، يرجى السماح بها';
+                } else if (error.code === 'auth/network-request-failed') {
+                    msg = '❌ فشل الاتصال بالشبكة';
+                }
 
-    // 3. دالة حفظ البيانات في Database والتحويل
-    async function handleLoginSuccess(user) {
-        try {
-            const userRef = database.ref('users/' + user.uid);
-            const snapshot = await userRef.once('value');
-            const userData = snapshot.val();
-            
-            await userRef.update({
-                lastLoginTime: new Date().toISOString(),
-                email: user.email,
-                displayName: user.displayName || "مستخدم",
-                role: userData && userData.role ? userData.role : "user"
+                messageDiv.style.color = 'red';
+                messageDiv.textContent = msg;
+                console.error("Login Error:", error);
             });
-            
-            // التحويل لصفحة المنيو بعد التأكد من حفظ البيانات
-            window.location.href = 'menu.html';
-        } catch (error) {
-            console.error("Database Error:", error);
-            document.getElementById('message').textContent = '❌ حدث خطأ أثناء إعداد الحساب';
-            window.isLoggingIn = false;
-        }
-    }
+    };
 </script>
-</body>
-</html>
