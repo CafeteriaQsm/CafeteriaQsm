@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <header>
@@ -16,18 +15,14 @@
                 <i class="fa-solid fa-utensils"></i>
                 <span>كافيتيريا القاسمي</span>
             </div>
-
             <div class="nav-links">
                 <a href="menu.html" class="active">القائمة</a>
                 <a href="cart.html">السلة</a>
             </div>
-
             <div class="user-actions">
-
                 <div class="user-info" id="userInfo">
                     <span>مرحباً، <span id="usernameDisplay"></span></span>
                 </div>
-
                 <a href="cart.html" class="btn-primary">
                     <i class="fa-solid fa-shopping-cart"></i>
                     السلة (<span id="cartCount">0</span>)
@@ -36,12 +31,11 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero container">
         <div class="hero-content">
             <h4 class="hero-subtitle">طعم لا يُنسى</h4>
             <h1 class="hero-title">ليس مجرد طعام، <span>إنها تجربة.</span></h1>
-            <p class="hero-desc">استمتع بأشهى المأكولات المحضرة بعناية من أفضل المكونات الطازجة. اطلب الآن واستمتع بالجودة العالية والمذاق الرفيع في كافيتيريا القاسمي.</p>
+            <p class="hero-desc">استمتع بأشهى المأكولات المحضرة بعناية من أفضل المكونات الطازجة.</p>
             <div class="hero-actions">
                 <a href="#menuContainer" class="btn-primary" onclick="document.getElementById('menuContainer').scrollIntoView({behavior: 'smooth'})">تصفح القائمة</a>
                 <span style="display:flex; align-items:center; gap:10px; color:var(--text-secondary);">
@@ -56,7 +50,6 @@
         </div>
     </section>
 
-    <!-- Categories Navigation -->
     <div class="categories-wrapper">
         <nav class="categories" id="categoriesNav">
             <button class="category-btn active" data-category="all">الكل</button>
@@ -71,31 +64,23 @@
         </nav>
     </div>
 
-    <main class="container menu-section" id="menuContainer">
-        <!-- سيتم تعبئتها من JS -->
-    </main>
+    <main class="container menu-section" id="menuContainer"></main>
 
-    <!-- ✅ مودال التخصيص -->
     <div id="extrasModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">×</span>
             <h2 id="modalMealName"></h2>
-
             <div id="sizeSection" style="display:none;">
                 <h3>اختر الحجم والسعر:</h3>
                 <div class="size-options" id="sizeOptions"></div>
             </div>
-
             <div id="extrasSection" style="display:none;">
                 <h3>اختر الإضافات:</h3>
                 <div class="extras-list" id="extrasList"></div>
             </div>
-
-            <h3>ملاحظات خاصة (للبيتزا أو غيرها):</h3>
-            <textarea id="notesInput" rows="3" placeholder="ملاحظاتك (مثال: بدون بصل، نصف تونة ونصف زيتون للبيتزا...)"></textarea>
-
+            <h3>ملاحظات خاصة:</h3>
+            <textarea id="notesInput" rows="3" placeholder="ملاحظاتك (مثال: بدون بصل...)"></textarea>
             <div id="totalPriceDisplay">السعر الإجمالي: 0 شيكل</div>
-
             <div class="modal-footer">
                 <div id="quantityControl">
                     <button onclick="decreaseQuantity()">-</button>
@@ -107,9 +92,8 @@
         </div>
     </div>
 
-    <!-- User Orders Modal -->
     <div id="userOrdersModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; padding: 20px; overflow-y: auto;">
-        <div style="background: var(--bg-card); max-width: 600px; margin: 40px auto; border-radius: var(--radius-md); padding: 30px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="background: var(--bg-card); max-width: 600px; margin: 40px auto; border-radius: var(--radius-md); padding: 30px; border: 1px solid var(--border-color);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
                 <h2 style="color: var(--accent-secondary);"><i class="fas fa-clipboard-list"></i> طلباتي السابقة</h2>
                 <button class="btn-outline" onclick="closeUserOrdersModal()" style="padding: 5px 15px; border-color: var(--accent-primary); color: var(--accent-primary);">إغلاق</button>
@@ -120,643 +104,489 @@
         </div>
     </div>
 
- <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-    authDomain: "cafeteria-app-82268.firebaseapp.com",
-    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cafeteria-app-82268",
-    storageBucket: "cafeteria-app-82268.appspot.com",
-    messagingSenderId: "457381739769",
-    appId: "1:457381739769:web:409cb927ef54368cb3f628"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  // ✅ App Check
-  firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
-
-  const db = firebase.database();
-  const auth = firebase.auth();
-</script>
-
-
-  // =========================================
-  // ✅ صور الوجبات من الإنترنت حسب الاسم
-  // =========================================
-  const FOOD_IMAGES = {
-    "شاورما": "https://play-lh.googleusercontent.com/pzAKN02lPgHvcAi9lkBlpK_AfpvCPsDOVSmisADQuj4Vdp7TVjhRI-Di53CN6mHvyz8",
-    "شنيتسل": "https://files.mishloha.co.il/files/menu_food_pic/thumbnail/FIL_7052277_1687794909775.jpg?v=2",
-    "صدر دجاج": "https://imageproxy.wolt.com/menu/menu-images/shared/71d55962-296a-11ef-b9c6-3e77504ff7f7_________.jpg",
-    "برجر": "https://png.pngtree.com/png-vector/20240829/ourmid/pngtree-delicious-and-testy-cheese-burger-png-image_13659847.png",
-    "كباب": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/c97xr3ykgima67apncghpxpjljmx/%D8%B3%D8%A7%D9%86%D8%AF%D9%88%D8%AA%D8%B4%20%D9%83%D8%A8%D8%A7%D8%A8%20%D9%84%D8%AD%D9%85.png",
-    "نقنيق": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdoM-q5GyCCMwT46PIMiIGK7cAquU9e5ay_A&s",
-    "فلافل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6TRZQ3gbktLu9XZ419DxdfHY_HwFbqMHvSA&s",
-    "بطاطا بشميل": "https://cdnx.premiumread.com/?url=https://alwatannews.net/watanbahrainnews/uploads/images/2025/02/08/3217798.jpg&w=600&q=91&f=webp&t=1.0",
-    "بيتسا": "https://imageproxy.wolt.com/assets/6821ace3d145a32756ffec52",
-    "رفيولي بشميل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuDiOnKYDZIrr9xnA1d6PD0QD-uf1D7jGqWQ&s",
-    "صدر دجاج بشميل": "https://img-global.cpcdn.com/recipes/88e21be5b3b26cf4/200x200cq80/%D8%A7%D9%84%D8%B5%D9%88%D8%B1%D8%A9-%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%8A%D8%A9-%D9%84%D9%88%D8%B5%D9%81%D8%A9%D9%85%D8%B9%D9%83%D8%B1%D9%88%D9%86%D8%A9-%D8%A8%D8%B4%D8%A7%D9%85%D9%8A%D9%84-%D8%B9%D9%84%D9%89-%D8%B7%D8%B1%D9%8A%D9%82%D8%AA%D9%8A-%D8%A7%D9%84%D8%AE%D8%A7%D8%B5%D8%A9.jpg",
-    "مسحب بالفرن": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ1i-s6sskJ8ZnpTo6i59CJJuw7sedjT83UQ&s",
-    "جولش": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4riciWLxbEyrC3Ky8pmVTMrqZ2HAffRUZQ&s",
-    "شرائح عجل بالفرن": "https://modo3.com/thumbs/fit630x300/144006/1479132214/%D9%88%D8%B5%D9%81%D8%A7%D8%AA_%D8%B4%D8%B1%D8%A7%D8%A6%D8%AD_%D8%A7%D9%84%D9%84%D8%AD%D9%85.jpg",
-    "شرائح دجاج بالفرن": "https://www.atyabtabkha.com/uploads/sites/2/2021/10/9cf47e8d266dedf5fbefc0b84438f99645d3de36.jpg",
-    "فتوش بالجبن": "https://img-global.cpcdn.com/recipes/34ad32504b7a8609/400x400cq80/photo.jpg",
-    "تبولة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSENDRA9a3YtpV6eU-HLa2tAWwmEr125FKdGg&s",
-    "سلطة عربية": "https://i.ytimg.com/vi/HlcuerfRLec/maxresdefault.jpg",
-    "سلطة صدر دجاج": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjGmX9AQOe_gUz3r7J4Cxzq9vNINRz_Jh-_w&s",
-    "سلطة طونا": "https://modo3.com/thumbs/fit630x300/2785/1348665722/%D8%B7%D8%B1%D9%8A%D9%82%D8%A9_%D8%B9%D9%85%D9%84_%D8%B3%D9%84%D8%B7%D8%A9_%D8%A7%D9%84%D8%AA%D9%88%D9%86%D8%A7.jpg",
-      "عجه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtb4GQyRrToZo56RJUOb_LzBSxI5BBx-XEQg&s.jpg",
-    "بستراما": "https://i.ytimg.com/vi/MKSNQOuiEvI/maxresdefault.jpg",
-    "لبنة": "https://martendo.net/Images/ProductImages/85435/%D9%84%D8%A8%D9%86%D8%A9%20(3).jpg",
-    "جبنة صفراء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLqr58d33Ug6uDnBag3D5utKCrXUYIBYO9wQ&s",
-    "توست لبنة": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/9e6h6d3qk6t3m6xlugsi6nc1le88/12517bca-2b37-4ab8-893e-a13a06815d89.jpg",
-    "توست طونه": "https://i.ytimg.com/vi/vE-bbJtOWf8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDX7aexQ4F5lvGPczLxZKBsyodisA",
-    "لفة درزية": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYItx5tvMrBqAq-XDTZL1rw0akTavrcULIxA&s",
-    "معجنات بيتزا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk668xZtcXvDjUcmmhy8jqDp2m0X069e12nA&s",
-    "معجنات زعتر": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm2DyQAuSmQ4kYcHQMbF9px_OfMj_6TJcT6w&s",
-    "معجنات لحمه عجل": "https://i.ytimg.com/vi/qNJM64mkGNU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD8trDWFjiYRCP-g55e5SVLbsFOaA",
-    "معجنات لحمه جاج": "https://i.ytimg.com/vi/WRnD-83Ek9A/maxresdefault.jpg",
-    "معجنات سبانخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZuhr_djTzSFQzJIf4tgCA8RyAfyVhlJtv9Q&s",
-    "معجنات طونه": "https://i.ytimg.com/vi/iUe5UyB7Kpg/maxresdefault.jpg",
-    "معجنات نقنيق": "https://kitchen.sayidaty.net/uploads/small/f0/f0afef10320199b9246b4bb8e01e55a7_w750_h750.jpg",
-    "كبة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ZPRn8NhKUOXtHf0KQn05pCk8D5Fxwe-unw&s",
-    "سجاريوت لحمه": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
-    "سجاريوت بطاطا": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
-      "معجنات جبنه بيضا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD_bo_U-O4YPiRn9jmjAz3v1xohllGGWxtQg&s",
-    "معجنات زيتون": "https://www.justfood.tv/big/0fried%20pies%20bites.jpg",
-    "بطاطا": "https://cdn.salla.sa/GYNEpb/9f1f8499-7dfa-4678-877c-0b11caae8be0-1000x476.19047619048-pcxt8teVMlland7SiV2OWz9mP06s4B3Ok3CIM2DV.png",
-
-    "اي مشروب بارد": "https://png.pngtree.com/png-clipart/20250502/original/pngtree-chilled-glass-of-cold-drink-with-ice-cubes-and-condensation-png-image_20933400.png",
-    "HogoMogo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUpDJhFWq6wLio8g99z9E3luSlz-k1dqYg0A&s",
-    "فيوزتي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeTGhnqJ36aKQ95UAdKnsEIfQ-bDX4lnga-Q&s",
-    "ريدبول": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_2BdDHksLnt3g329lG5nxX2cwxbL8f8yjlA&s",
-    "اولفيرا": "https://blupenguin.co.il/wp-content/uploads/2024/10/%D7%90%D7%9C%D7%95%D7%95%D7%A8%D7%94-%D7%AA%D7%A4%D7%95%D7%97%D7%99%D7%9D-%D7%A7%D7%98%D7%9F-1.webp",
-    "اكس ال": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjObjNqrr1e-82QK-jvno7fXq_GiEnpGxfA&s",
-    "بلو": "https://blupenguin.co.il/wp-content/uploads/2024/10/40.webp",
-    "ماء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXi-POAM8qEfSsEezFtuqKWq8hPfOv7ceRAg&s",
-    "سحلب": "https://modo3.com/thumbs/fit630x300/67190/1446550846/%D9%83%D9%8A%D9%81%D9%8A%D8%A9_%D8%B9%D9%85%D9%84_%D8%A7%D9%84%D8%B3%D8%AD%D9%84%D8%A8.jpg",
-    "ليمونادا": "https://e7.pngegg.com/pngimages/1008/595/png-clipart-limonana-lemonade-fizzy-drinks-coffee-cafe-lemonade-thumbnail.png",
-    "اسبرسو": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo0zdv_B7wW-zAiT7ezHD6GnLPA_Y_ewH0hw&s",
-      "نسكافيه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLktC3gyVM0BXRXg5sq_CiD7aipS0TgrMEbw&s",
-    "هفوخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HUxvVJP8yrBzVusaZxQu_Paijr0LuwaG8w&s",
-    "شاي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7ZTvMXoDaNobEdiJW604ey3ROSHEWD4miQ&s"
-  };
-
-  // =========================================
-  // I. DESCRIPTIONS
-  // =========================================
-  const MEAL_DESCRIPTIONS = {
-    "شاورما": "شرائح لحم متبلة ومطهوة على السيخ، تقدم في خبز من اختيارك.",
-    "شنيتسل": "قطع دجاج متبلة ومقلية بالبقسماط، تقدم في خبز من اختيارك.",
-    "صدر دجاج": "صدر دجاج مشوي على الجريل، خفيف ولذيذ، يقدم في خبز من اختيارك.",
-    "برجر": "لحم بقر مفروم طازج ومشوي، يقدم في خبز خاص.",
-    "كباب": "لحم متبل ومشوي على الفحم، يقدم في خبز من اختيارك.",
-    "نقنيق": "نقانق مقلية أو مشوية، سريعة ولذيذة، تقدم في خبز من اختيارك.",
-    "فلافل": "كرات فلافل مقلية مقرمشة، نباتية، تقدم في خبز من اختيارك.",
-    "بطاطا بشميل": "بطاطا مخبوزة بصلصة البشاميل الغنية والجبنة.",
-    "بيتسا": "عجينة إيطالية بصلصة الطماطم والجبنة وإضافات من اختيارك.",
-    "رفيولي بشميل": "عجينة الباستا محشوة، مغطاة بصلصة البشاميل.",
-    "صدر دجاج بشميل": "صدر دجاج مطبوخ بصلصة البشاميل.",
-    "مسحب بالفرن": "دجاج مسحب مطبوخ ببطء في الفرن.",
-    "جولش": "طعام تقليدي من اللحم والخضار المطبوخ ببطء.",
-    "شرائح عجل بالفرن": "شرائح لحم العجل الطرية مطهوة بالفرن.",
-    "شرائح دجاج بالفرن": "شرائح الدجاج المتبلة ومطهوة بالفرن.",
-    "فتوش بالجبن": "سلطة فتوش تقليدية مع قطع من الجبن.",
-    "تبولة": "سلطة شرق أوسطية منعشة من البقدونس والبرغل.",
-    "سلطة عربية": "خضار موسمية مقطعة ناعماً مع صوص الليمون.",
-    "سلطة صدر دجاج": "سلطة خضراء مع قطع صدر دجاج مشوي.",
-    "سلطة طونا": "سلطة خضراء مع التونة.",
-    "عجه": "ساندويتش بيض مقلي بالخضار.",
-    "بستراما": "ساندويتش شرائح لحم البستراما البارد.",
-    "لبنة": "ساندويتش باللبنة وزيت الزيتون.",
-    "جبنة صفراء": "ساندويتش بالجبنة الصفراء.",
-    "توست لبنة": "توست محمص باللبنة.",
-    "توست طونه": "توست محمص بالتونة.",
-    "لفة درزية": "خبز الصاج مع الإضافات.",
-    "معجنات بيتزا": "معجنات بحشوة البيتزا.",
-    "معجنات زعتر": "معجنات بالزعتر وزيت الزيتون.",
-    "معجنات لحمه عجل": "معجنات بحشوة لحم العجل.",
-    "معجنات لحمه جاج": "معجنات بحشوة لحم الدجاج.",
-    "معجنات سبانخ": "معجنات بالسبانخ والليمون.",
-    "معجنات طونه": "معجنات بحشوة التونة.",
-    "معجنات نقنيق": "معجنات بحشوة النقانق.",
-    "كبة": "كرات الكبة المقلية.",
-    "سجاريوت لحمه": "لفائف باللحم.",
-    "سجاريوت بطاطا": "لفائف بالبطاطا.",
-    "معجنات جبنه بيضا": "معجنات بحشوة الجبنة البيضاء.",
-    "معجنات زيتون": "معجنات بالزيتون.",
-    "سحلب": "مشروب ساخن تقليدي.",
-    "ليمونادا": "عصير ليمون منعش.",
-    "اسبرسو": "قهوة مركزة.",
-    "نسكافيه": "قهوة بالحليب.",
-    "هفوخ": "كابتشينو.",
-    "شاي": "شاي ساخن.",
-    "اي مشروب بارد": "مشروب غازي أو عصير معلب (6 شيكل).",
-    "HogoMogo": "مشروب طاقة / عصير خاص.",
-    "فيوزتي": "شاي مثلج معلب.",
-    "ريدبول": "مشروب طاقة ريدبول.",
-    "اولفيرا": "مشروب أوليفيرا.",
-    "اكس ال": "مشروب طاقة XL.",
-    "بلو": "مشروب طاقة Blue.",
-    "ماء": "ماء معدني أو مياه شرب.",
-    "بطاطا": "بطاطا مقلية مقرمشة."
-  };
-
-  const MAIN_EXTRAS_LIST = [
-    "سلطة عربية", "حمص", "ملفوف مايونيز", "ملفوف أحمر",
-    "ملفوف أبيض", "خيار مكبوس", "بندورة", "بصل",
-    "طونة", "زيتون", "ذرة", "كاتشوب",
-    "مايونيز", "ألفاييم"
-  ];
-
-  const PIZZA_EXTRAS_LIST = [
-    "طونة", "زيتون", "ذرة", "فقع", "خضار", "بندورة"
-  ];
-
-  // =========================================
-  // II. MEALS
-  // =========================================
-  const meals = [
-    { name: "شاورما", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "شنيتسل", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "صدر دجاج", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
-    { name: "برجر", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
-    { name: "كباب", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
-    { name: "نقنيق", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
-    { name: "فلافل", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
-
-    { name: "بطاطا بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
-    { name: "بيتسا", category: "italian", sizes: { "صغير": 15, "كبير": 50 }, extras: PIZZA_EXTRAS_LIST, notes: "يمكن كتابة ملاحظات لتقسيم الإضافات (نصف/نصف) في خانة الملاحظات." },
-    { name: "رفيولي بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
-    { name: "صدر دجاج بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
-
-    { name: "مسحب بالفرن", category: "home", price: 40 },
-    { name: "جولش", category: "home", price: 40 },
-    { name: "شرائح عجل بالفرن", category: "home", price: 40 },
-    { name: "شرائح دجاج بالفرن", category: "home", price: 40 },
-
-    { name: "فتوش بالجبن", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "تبولة", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "سلطة عربية", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
-    { name: "سلطة صدر دجاج", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
-    { name: "سلطة طونا", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
-
-    { name: "عجه", category: "sandwiches", price: 12, extras: MAIN_EXTRAS_LIST },
-    { name: "بستراما", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
-    { name: "لبنة", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
-    { name: "جبنة صفراء", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
-    { name: "توست لبنة", category: "sandwiches", price: 12, extras: [] },
-    { name: "توست طونه", category: "sandwiches", price: 12, extras: [] },
-    { name: "لفة درزية", category: "sandwiches", price: 13, extras: ["تبولة"] },
-
-    { name: "معجنات بيتزا", category: "pastries", price: 4 },
-    { name: "معجنات زعتر", category: "pastries", price: 4 },
-    { name: "معجنات لحمه عجل", category: "pastries", price: 4 },
-    { name: "معجنات لحمه جاج", category: "pastries", price: 4 },
-    { name: "معجنات سبانخ", category: "pastries", price: 4 },
-    { name: "معجنات طونه", category: "pastries", price: 4 },
-    { name: "معجنات نقنيق", category: "pastries", price: 4 },
-    { name: "كبة", category: "pastries", price: 4 },
-
-    /* ✅ عروض المعجنات */
-    { name: "سجاريوت لحمه", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
-    { name: "سجاريوت بطاطا", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
-    { name: "معجنات جبنه بيضا", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
-    { name: "معجنات زيتون", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
-
-    { name: "بطاطا", category: "extras", sizes: { "صغير": 7, "كبير": 10 }, extras: [] },
-
-    { name: "اي مشروب بارد", category: "drinks", price: 6 },
-    { name: "HogoMogo", category: "drinks", price: 10 },
-    { name: "فيوزتي", category: "drinks", price: 8 },
-    { name: "ريدبول", category: "drinks", price: 8 },
-    { name: "اولفيرا", category: "drinks", price: 8 },
-    { name: "اكس ال", category: "drinks", price: 5 },
-    { name: "بلو", category: "drinks", price: 5 },
-    { name: "ماء", category: "drinks", price: 5 },
-    { name: "سحلب", category: "drinks", sizes: { "صغير": 10, "كبير": 15 } },
-    { name: "ليمونادا", category: "drinks", sizes: { "صغير": 7, "وسط": 10, "كبير": 12 } },
-    { name: "اسبرسو", category: "drinks", price: 6 },
-    { name: "نسكافيه", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
-    { name: "هفوخ", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
-    { name: "شاي", category: "drinks", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } }
-  ];
-
-  meals.forEach(m => {
-    if (FOOD_IMAGES[m.name]) m.img = FOOD_IMAGES[m.name];
-  });
-
-  // =========================================
-  // III. STATE
-  // =========================================
-  let selectedMeal = null;
-  let quantity = 1;
-  let basePrice = 0;
-  let selectedSize = "";
-  let unavailableMeals = {};
-
-  database.ref('settings/unavailable_meals').on('value', snap => {
-    unavailableMeals = snap.val() || {};
-    const activeBtn = document.querySelector('.category-btn.active');
-    if (activeBtn) filterMeals(activeBtn.dataset.category, activeBtn);
-  });
-
-  // =========================================
-  // IV. HELPERS
-  // =========================================
-  function translateCategory(category) {
-    const translations = {
-      "main": "وجبات رئيسية",
-      "italian": "مأكولات إيطالية",
-      "home": "أكل بيتي",
-      "salads": "سلطات",
-      "sandwiches": "ساندويتشات",
-      "pastries": "معجنات",
-      "drinks": "مشروبات",
-      "extras": "إضافات منفردة"
-    };
-    return translations[category] || category;
-  }
-
-  function getMealDescription(mealName) {
-    return MEAL_DESCRIPTIONS[mealName] || "وجبة لذيذة ومغذية.";
-  }
-
-  function showNotification(message, type = "success") {
-    const notification = document.createElement("div");
-    notification.textContent = message;
-    notification.className = "notification " + type;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
-  }
-
-  // ✅ عروض المعجنات
-  function calcOfferTotal(mealName, unitPrice, qty) {
-    const offers = {
-      "سجاريوت لحمه": { bundleQty: 3, bundlePrice: 10 },
-      "سجاريوت بطاطا": { bundleQty: 3, bundlePrice: 10 },
-      "معجنات جبنه بيضا": { bundleQty: 4, bundlePrice: 10 },
-      "معجنات زيتون": { bundleQty: 4, bundlePrice: 10 }
-    };
-
-    const offer = offers[mealName];
-    if (!offer) return unitPrice * qty;
-
-    const bundles = Math.floor(qty / offer.bundleQty);
-    const remainder = qty % offer.bundleQty;
-    return (bundles * offer.bundlePrice) + (remainder * unitPrice);
-  }
-
-  function calculateTotalPrice() {
-    const unit = Number(basePrice) || 0;
-    const final = calcOfferTotal(selectedMeal?.name || "", unit, quantity);
-    document.getElementById("totalPriceDisplay").textContent = `السعر الإجمالي: ${final.toFixed(0)} شيكل`;
-    return final;
-  }
-
-  function updatePriceOnSizeChange(price) {
-    basePrice = price;
-    calculateTotalPrice();
-  }
-
-  function decreaseQuantity() {
-    if (quantity > 1) {
-      quantity--;
-      document.getElementById("quantityDisplay").textContent = quantity;
-      calculateTotalPrice();
-    }
-  }
-
-  function increaseQuantity() {
-    quantity++;
-    document.getElementById("quantityDisplay").textContent = quantity;
-    calculateTotalPrice();
-  }
-
-  function closeModal() {
-    document.getElementById("extrasModal").style.display = "none";
-    selectedMeal = null;
-    quantity = 1;
-    basePrice = 0;
-    selectedSize = "";
-    document.getElementById("quantityDisplay").textContent = "1";
-    document.getElementById("notesInput").value = "";
-  }
-
-  // =========================================
-  // V. UI
-  // =========================================
-  function displayMeals(filteredMeals) {
-    const menuContainer = document.getElementById("menuContainer");
-    menuContainer.innerHTML = "";
-
-    const categorizedMeals = filteredMeals.reduce((acc, meal) => {
-      const categoryName = translateCategory(meal.category);
-      if (!acc[categoryName]) acc[categoryName] = [];
-      acc[categoryName].push(meal);
-      return acc;
-    }, {});
-
-    for (const categoryName in categorizedMeals) {
-      const sectionTitle = document.createElement("h2");
-      sectionTitle.className = "section-title";
-      sectionTitle.textContent = categoryName;
-      menuContainer.appendChild(sectionTitle);
-
-      const mealGrid = document.createElement("div");
-      mealGrid.className = "menu-container";
-
-      categorizedMeals[categoryName].forEach(meal => {
-        const card = document.createElement("div");
-        card.className = "meal-card";
-
-        let priceDisplay;
-        if (meal.price != null) {
-          priceDisplay = `${meal.price} شيكل`;
-        } else if (meal.sizes) {
-          const minPrice = Math.min(...Object.values(meal.sizes));
-          priceDisplay = `ابتداءً من ${minPrice} شيكل`;
-        } else {
-          priceDisplay = "يرجى السؤال";
-        }
-
-        const isUnavailable = unavailableMeals[meal.name] === true;
-        const addBtnHtml = isUnavailable 
-          ? `<button class="add-btn" style="background: var(--bg-dark); color: var(--text-secondary); cursor: not-allowed;" title="غير متوفر حالياً">
-               <i class="fa-solid fa-ban"></i>
-             </button>`
-          : `<button class="add-btn" onclick="openExtrasModal('${meal.name}')">
-               <i class="fa-solid fa-plus"></i>
-             </button>`;
-
-        card.innerHTML = `
-          <div class="meal-img-wrapper" ${isUnavailable ? 'style="opacity: 0.5; filter: grayscale(1);"' : ''}>
-             <img src="${meal.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'}" alt="${meal.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'">
-          </div>
-          <h3 ${isUnavailable ? 'style="color: var(--text-secondary)"' : ''}>${meal.name}</h3>
-          <p>${getMealDescription(meal.name)}</p>
-          ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ""}
-          <div class="meal-card-footer">
-            <span class="price">${isUnavailable ? '<span style="color:var(--accent-primary); font-size: 0.9rem; font-weight: bold;">غير متوفر</span>' : priceDisplay}</span>
-            ${addBtnHtml}
-          </div>
-        `;
-        mealGrid.appendChild(card);
-      });
-
-      menuContainer.appendChild(mealGrid);
-    }
-  }
-
-  function filterMeals(category, clickedButton) {
-    document.querySelectorAll(".category-btn").forEach(btn => btn.classList.remove("active"));
-    clickedButton.classList.add("active");
-
-    const filtered = (category === "all") ? meals : meals.filter(m => m.category === category);
-    displayMeals(filtered);
-  }
-
-  function openExtrasModal(mealName) {
-    selectedMeal = meals.find(m => m.name === mealName);
-    if (!selectedMeal) return;
-
-    // reset
-    quantity = 1;
-    document.getElementById("quantityDisplay").textContent = "1";
-    document.getElementById("notesInput").value = "";
-    document.getElementById("modalMealName").textContent = selectedMeal.name;
-
-    const sizeSection = document.getElementById("sizeSection");
-    const sizeOptionsContainer = document.getElementById("sizeOptions");
-    sizeOptionsContainer.innerHTML = "";
-
-    let defaultPrice = 0;
-    let hasSizes = false;
-
-    if (selectedMeal.sizes) {
-      sizeSection.style.display = "block";
-      hasSizes = true;
-      let isFirst = true;
-
-      for (const size in selectedMeal.sizes) {
-        const price = selectedMeal.sizes[size];
-        const id = `size-${size}`;
-
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "mealSize";
-        input.id = id;
-        input.value = size;
-        input.setAttribute("data-price", price);
-        input.onchange = () => {
-          selectedSize = size;
-          updatePriceOnSizeChange(price);
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+            authDomain: "cafeteria-app-82268.firebaseapp.com",
+            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cafeteria-app-82268",
+            storageBucket: "cafeteria-app-82268.appspot.com",
+            messagingSenderId: "457381739769",
+            appId: "1:457381739769:web:409cb927ef54368cb3f628"
         };
 
-        const label = document.createElement("label");
-        label.htmlFor = id;
-        label.textContent = `${size} (${price} شيكل)`;
+        firebase.initializeApp(firebaseConfig);
 
-        sizeOptionsContainer.appendChild(input);
-        sizeOptionsContainer.appendChild(label);
+        // ✅ App Check
+        firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
 
-        if (isFirst) {
-          input.checked = true;
-          defaultPrice = price;
-          selectedSize = size;
-          isFirst = false;
+        // ✅ استخدام db بشكل موحد
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // ✅ التحقق من تسجيل الدخول
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            document.getElementById('usernameDisplay').textContent = user.displayName || user.email;
+            updateCartCount();
+        });
+
+        // =========================================
+        // صور الوجبات
+        // =========================================
+        const FOOD_IMAGES = {
+            "شاورما": "https://play-lh.googleusercontent.com/pzAKN02lPgHvcAi9lkBlpK_AfpvCPsDOVSmisADQuj4Vdp7TVjhRI-Di53CN6mHvyz8",
+            "شنيتسل": "https://files.mishloha.co.il/files/menu_food_pic/thumbnail/FIL_7052277_1687794909775.jpg?v=2",
+            "صدر دجاج": "https://imageproxy.wolt.com/menu/menu-images/shared/71d55962-296a-11ef-b9c6-3e77504ff7f7_________.jpg",
+            "برجر": "https://png.pngtree.com/png-vector/20240829/ourmid/pngtree-delicious-and-testy-cheese-burger-png-image_13659847.png",
+            "كباب": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/c97xr3ykgima67apncghpxpjljmx/%D8%B3%D8%A7%D9%86%D8%AF%D9%88%D8%AA%D8%B4%20%D9%83%D8%A8%D8%A7%D8%A8%20%D9%84%D8%AD%D9%85.png",
+            "نقنيق": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdoM-q5GyCCMwT46PIMiIGK7cAquU9e5ay_A&s",
+            "فلافل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6TRZQ3gbktLu9XZ419DxdfHY_HwFbqMHvSA&s",
+            "بطاطا بشميل": "https://cdnx.premiumread.com/?url=https://alwatannews.net/watanbahrainnews/uploads/images/2025/02/08/3217798.jpg&w=600&q=91&f=webp&t=1.0",
+            "بيتسا": "https://imageproxy.wolt.com/assets/6821ace3d145a32756ffec52",
+            "رفيولي بشميل": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuDiOnKYDZIrr9xnA1d6PD0QD-uf1D7jGqWQ&s",
+            "صدر دجاج بشميل": "https://img-global.cpcdn.com/recipes/88e21be5b3b26cf4/200x200cq80/photo.jpg",
+            "مسحب بالفرن": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ1i-s6sskJ8ZnpTo6i59CJJuw7sedjT83UQ&s",
+            "جولش": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm4riciWLxbEyrC3Ky8pmVTMrqZ2HAffRUZQ&s",
+            "شرائح عجل بالفرن": "https://modo3.com/thumbs/fit630x300/144006/1479132214/%D9%88%D8%B5%D9%81%D8%A7%D8%AA_%D8%B4%D8%B1%D8%A7%D8%A6%D8%AD_%D8%A7%D9%84%D9%84%D8%AD%D9%85.jpg",
+            "شرائح دجاج بالفرن": "https://www.atyabtabkha.com/uploads/sites/2/2021/10/9cf47e8d266dedf5fbefc0b84438f99645d3de36.jpg",
+            "فتوش بالجبن": "https://img-global.cpcdn.com/recipes/34ad32504b7a8609/400x400cq80/photo.jpg",
+            "تبولة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSENDRA9a3YtpV6eU-HLa2tAWwmEr125FKdGg&s",
+            "سلطة عربية": "https://i.ytimg.com/vi/HlcuerfRLec/maxresdefault.jpg",
+            "سلطة صدر دجاج": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjGmX9AQOe_gUz3r7J4Cxzq9vNINRz_Jh-_w&s",
+            "سلطة طونا": "https://modo3.com/thumbs/fit630x300/2785/1348665722/%D8%B7%D8%B1%D9%8A%D9%82%D8%A9_%D8%B9%D9%85%D9%84_%D8%B3%D9%84%D8%B7%D8%A9_%D8%A7%D9%84%D8%AA%D9%88%D9%86%D8%A7.jpg",
+            "عجه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtb4GQyRrToZo56RJUOb_LzBSxI5BBx-XEQg&s",
+            "بستراما": "https://i.ytimg.com/vi/MKSNQOuiEvI/maxresdefault.jpg",
+            "لبنة": "https://martendo.net/Images/ProductImages/85435/%D9%84%D8%A8%D9%86%D8%A9%20(3).jpg",
+            "جبنة صفراء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLqr58d33Ug6uDnBag3D5utKCrXUYIBYO9wQ&s",
+            "توست لبنة": "https://img.ananinja.com/media/ninja-catalog-42/restaurants/9e6h6d3qk6t3m6xlugsi6nc1le88/12517bca-2b37-4ab8-893e-a13a06815d89.jpg",
+            "توست طونه": "https://i.ytimg.com/vi/vE-bbJtOWf8/hq720.jpg",
+            "لفة درزية": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYItx5tvMrBqAq-XDTZL1rw0akTavrcULIxA&s",
+            "معجنات بيتزا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk668xZtcXvDjUcmmhy8jqDp2m0X069e12nA&s",
+            "معجنات زعتر": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm2DyQAuSmQ4kYcHQMbF9px_OfMj_6TJcT6w&s",
+            "معجنات لحمه عجل": "https://i.ytimg.com/vi/qNJM64mkGNU/hq720.jpg",
+            "معجنات لحمه جاج": "https://i.ytimg.com/vi/WRnD-83Ek9A/maxresdefault.jpg",
+            "معجنات سبانخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZuhr_djTzSFQzJIf4tgCA8RyAfyVhlJtv9Q&s",
+            "معجنات طونه": "https://i.ytimg.com/vi/iUe5UyB7Kpg/maxresdefault.jpg",
+            "معجنات نقنيق": "https://kitchen.sayidaty.net/uploads/small/f0/f0afef10320199b9246b4bb8e01e55a7_w750_h750.jpg",
+            "كبة": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ZPRn8NhKUOXtHf0KQn05pCk8D5Fxwe-unw&s",
+            "سجاريوت لحمه": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
+            "سجاريوت بطاطا": "https://static.webteb.net/images/content/ramadanrecipe_recipe_355_679.jpg",
+            "معجنات جبنه بيضا": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD_bo_U-O4YPiRn9jmjAz3v1xohllGGWxtQg&s",
+            "معجنات زيتون": "https://www.justfood.tv/big/0fried%20pies%20bites.jpg",
+            "بطاطا": "https://cdn.salla.sa/GYNEpb/9f1f8499-7dfa-4678-877c-0b11caae8be0-1000x476.19047619048-pcxt8teVMlland7SiV2OWz9mP06s4B3Ok3CIM2DV.png",
+            "اي مشروب بارد": "https://png.pngtree.com/png-clipart/20250502/original/pngtree-chilled-glass-of-cold-drink-with-ice-cubes-and-condensation-png-image_20933400.png",
+            "HogoMogo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUpDJhFWq6wLio8g99z9E3luSlz-k1dqYg0A&s",
+            "فيوزتي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeTGhnqJ36aKQ95UAdKnsEIfQ-bDX4lnga-Q&s",
+            "ريدبول": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_2BdDHksLnt3g329lG5nxX2cwxbL8f8yjlA&s",
+            "اولفيرا": "https://blupenguin.co.il/wp-content/uploads/2024/10/%D7%90%D7%9C%D7%95%D7%95%D7%A8%D7%94-%D7%AA%D7%A4%D7%95%D7%97%D7%99%D7%9D-%D7%A7%D7%98%D7%9F-1.webp",
+            "اكس ال": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjObjNqrr1e-82QK-jvno7fXq_GiEnpGxfA&s",
+            "بلو": "https://blupenguin.co.il/wp-content/uploads/2024/10/40.webp",
+            "ماء": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXi-POAM8qEfSsEezFtuqKWq8hPfOv7ceRAg&s",
+            "سحلب": "https://modo3.com/thumbs/fit630x300/67190/1446550846/%D9%83%D9%8A%D9%81%D9%8A%D8%A9_%D8%B9%D9%85%D9%84_%D8%A7%D9%84%D8%B3%D8%AD%D9%84%D8%A8.jpg",
+            "ليمونادا": "https://e7.pngegg.com/pngimages/1008/595/png-clipart-limonana-lemonade-fizzy-drinks-coffee-cafe-lemonade-thumbnail.png",
+            "اسبرسو": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo0zdv_B7wW-zAiT7ezHD6GnLPA_Y_ewH0hw&s",
+            "نسكافيه": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLktC3gyVM0BXRXg5sq_CiD7aipS0TgrMEbw&s",
+            "هفوخ": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HUxvVJP8yrBzVusaZxQu_Paijr0LuwaG8w&s",
+            "شاي": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7ZTvMXoDaNobEdiJW604ey3ROSHEWD4miQ&s"
+        };
+
+        const MEAL_DESCRIPTIONS = {
+            "شاورما": "شرائح لحم متبلة ومطهوة على السيخ، تقدم في خبز من اختيارك.",
+            "شنيتسل": "قطع دجاج متبلة ومقلية بالبقسماط، تقدم في خبز من اختيارك.",
+            "صدر دجاج": "صدر دجاج مشوي على الجريل، خفيف ولذيذ، يقدم في خبز من اختيارك.",
+            "برجر": "لحم بقر مفروم طازج ومشوي، يقدم في خبز خاص.",
+            "كباب": "لحم متبل ومشوي على الفحم، يقدم في خبز من اختيارك.",
+            "نقنيق": "نقانق مقلية أو مشوية، سريعة ولذيذة، تقدم في خبز من اختيارك.",
+            "فلافل": "كرات فلافل مقلية مقرمشة، نباتية، تقدم في خبز من اختيارك.",
+            "بطاطا بشميل": "بطاطا مخبوزة بصلصة البشاميل الغنية والجبنة.",
+            "بيتسا": "عجينة إيطالية بصلصة الطماطم والجبنة وإضافات من اختيارك.",
+            "رفيولي بشميل": "عجينة الباستا محشوة، مغطاة بصلصة البشاميل.",
+            "صدر دجاج بشميل": "صدر دجاج مطبوخ بصلصة البشاميل.",
+            "مسحب بالفرن": "دجاج مسحب مطبوخ ببطء في الفرن.",
+            "جولش": "طعام تقليدي من اللحم والخضار المطبوخ ببطء.",
+            "شرائح عجل بالفرن": "شرائح لحم العجل الطرية مطهوة بالفرن.",
+            "شرائح دجاج بالفرن": "شرائح الدجاج المتبلة ومطهوة بالفرن.",
+            "فتوش بالجبن": "سلطة فتوش تقليدية مع قطع من الجبن.",
+            "تبولة": "سلطة شرق أوسطية منعشة من البقدونس والبرغل.",
+            "سلطة عربية": "خضار موسمية مقطعة ناعماً مع صوص الليمون.",
+            "سلطة صدر دجاج": "سلطة خضراء مع قطع صدر دجاج مشوي.",
+            "سلطة طونا": "سلطة خضراء مع التونة.",
+            "عجه": "ساندويتش بيض مقلي بالخضار.",
+            "بستراما": "ساندويتش شرائح لحم البستراما البارد.",
+            "لبنة": "ساندويتش باللبنة وزيت الزيتون.",
+            "جبنة صفراء": "ساندويتش بالجبنة الصفراء.",
+            "توست لبنة": "توست محمص باللبنة.",
+            "توست طونه": "توست محمص بالتونة.",
+            "لفة درزية": "خبز الصاج مع الإضافات.",
+            "معجنات بيتزا": "معجنات بحشوة البيتزا.",
+            "معجنات زعتر": "معجنات بالزعتر وزيت الزيتون.",
+            "معجنات لحمه عجل": "معجنات بحشوة لحم العجل.",
+            "معجنات لحمه جاج": "معجنات بحشوة لحم الدجاج.",
+            "معجنات سبانخ": "معجنات بالسبانخ والليمون.",
+            "معجنات طونه": "معجنات بحشوة التونة.",
+            "معجنات نقنيق": "معجنات بحشوة النقانق.",
+            "كبة": "كرات الكبة المقلية.",
+            "سجاريوت لحمه": "لفائف باللحم.",
+            "سجاريوت بطاطا": "لفائف بالبطاطا.",
+            "معجنات جبنه بيضا": "معجنات بحشوة الجبنة البيضاء.",
+            "معجنات زيتون": "معجنات بالزيتون.",
+            "سحلب": "مشروب ساخن تقليدي.",
+            "ليمونادا": "عصير ليمون منعش.",
+            "اسبرسو": "قهوة مركزة.",
+            "نسكافيه": "قهوة بالحليب.",
+            "هفوخ": "كابتشينو.",
+            "شاي": "شاي ساخن.",
+            "اي مشروب بارد": "مشروب غازي أو عصير معلب.",
+            "HogoMogo": "مشروب طاقة / عصير خاص.",
+            "فيوزتي": "شاي مثلج معلب.",
+            "ريدبول": "مشروب طاقة ريدبول.",
+            "اولفيرا": "مشروب أوليفيرا.",
+            "اكس ال": "مشروب طاقة XL.",
+            "بلو": "مشروب طاقة Blue.",
+            "ماء": "ماء معدني أو مياه شرب.",
+            "بطاطا": "بطاطا مقلية مقرمشة."
+        };
+
+        const MAIN_EXTRAS_LIST = [
+            "سلطة عربية", "حمص", "ملفوف مايونيز", "ملفوف أحمر",
+            "ملفوف أبيض", "خيار مكبوس", "بندورة", "بصل",
+            "طونة", "زيتون", "ذرة", "كاتشوب", "مايونيز", "ألفاييم"
+        ];
+
+        const PIZZA_EXTRAS_LIST = ["طونة", "زيتون", "ذرة", "فقع", "خضار", "بندورة"];
+
+        const meals = [
+            { name: "شاورما", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+            { name: "شنيتسل", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+            { name: "صدر دجاج", category: "main", sizes: { "بجيت": 25, "لخمنياه": 20 }, extras: MAIN_EXTRAS_LIST },
+            { name: "برجر", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
+            { name: "كباب", category: "main", sizes: { "بجيت": 30, "لخمنياه": 25 }, extras: MAIN_EXTRAS_LIST },
+            { name: "نقنيق", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
+            { name: "فلافل", category: "main", sizes: { "بجيت": 15, "لخمنياه": 10 }, extras: MAIN_EXTRAS_LIST },
+            { name: "بطاطا بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+            { name: "بيتسا", category: "italian", sizes: { "صغير": 15, "كبير": 50 }, extras: PIZZA_EXTRAS_LIST },
+            { name: "رفيولي بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+            { name: "صدر دجاج بشميل", category: "italian", sizes: { "صغير": 30, "كبير": 40 }, extras: [] },
+            { name: "مسحب بالفرن", category: "home", price: 40 },
+            { name: "جولش", category: "home", price: 40 },
+            { name: "شرائح عجل بالفرن", category: "home", price: 40 },
+            { name: "شرائح دجاج بالفرن", category: "home", price: 40 },
+            { name: "فتوش بالجبن", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+            { name: "تبولة", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+            { name: "سلطة عربية", category: "salads", sizes: { "صغير": 13, "وسط": 20, "كبير": 25 }, extras: [] },
+            { name: "سلطة صدر دجاج", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
+            { name: "سلطة طونا", category: "salads", sizes: { "صغير": 20, "وسط": 25, "كبير": 30 }, extras: [] },
+            { name: "عجه", category: "sandwiches", price: 12, extras: MAIN_EXTRAS_LIST },
+            { name: "بستراما", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+            { name: "لبنة", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+            { name: "جبنة صفراء", category: "sandwiches", price: 10, extras: MAIN_EXTRAS_LIST },
+            { name: "توست لبنة", category: "sandwiches", price: 12, extras: [] },
+            { name: "توست طونه", category: "sandwiches", price: 12, extras: [] },
+            { name: "لفة درزية", category: "sandwiches", price: 13, extras: ["تبولة"] },
+            { name: "معجنات بيتزا", category: "pastries", price: 4 },
+            { name: "معجنات زعتر", category: "pastries", price: 4 },
+            { name: "معجنات لحمه عجل", category: "pastries", price: 4 },
+            { name: "معجنات لحمه جاج", category: "pastries", price: 4 },
+            { name: "معجنات سبانخ", category: "pastries", price: 4 },
+            { name: "معجنات طونه", category: "pastries", price: 4 },
+            { name: "معجنات نقنيق", category: "pastries", price: 4 },
+            { name: "كبة", category: "pastries", price: 4 },
+            { name: "سجاريوت لحمه", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
+            { name: "سجاريوت بطاطا", category: "pastries", price: 4, offer: "عرض: 3 بـ 10 شيكل" },
+            { name: "معجنات جبنه بيضا", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
+            { name: "معجنات زيتون", category: "pastries", price: 4, offer: "عرض: 4 بـ 10 شيكل" },
+            { name: "بطاطا", category: "extras", sizes: { "صغير": 7, "كبير": 10 }, extras: [] },
+            { name: "اي مشروب بارد", category: "drinks", price: 6 },
+            { name: "HogoMogo", category: "drinks", price: 10 },
+            { name: "فيوزتي", category: "drinks", price: 8 },
+            { name: "ريدبول", category: "drinks", price: 8 },
+            { name: "اولفيرا", category: "drinks", price: 8 },
+            { name: "اكس ال", category: "drinks", price: 5 },
+            { name: "بلو", category: "drinks", price: 5 },
+            { name: "ماء", category: "drinks", price: 5 },
+            { name: "سحلب", category: "drinks", sizes: { "صغير": 10, "كبير": 15 } },
+            { name: "ليمونادا", category: "drinks", sizes: { "صغير": 7, "وسط": 10, "كبير": 12 } },
+            { name: "اسبرسو", category: "drinks", price: 6 },
+            { name: "نسكافيه", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
+            { name: "هفوخ", category: "drinks", sizes: { "صغير": 6, "وسط": 8, "كبير": 10 } },
+            { name: "شاي", category: "drinks", sizes: { "صغير": 5, "وسط": 6, "كبير": 7 } }
+        ];
+
+        meals.forEach(m => { if (FOOD_IMAGES[m.name]) m.img = FOOD_IMAGES[m.name]; });
+
+        // =========================================
+        // STATE
+        // =========================================
+        let selectedMeal = null;
+        let quantity = 1;
+        let basePrice = 0;
+        let selectedSize = "";
+        let unavailableMeals = {};
+
+        // ✅ استخدام db بدل database
+        db.ref('settings/unavailable_meals').on('value', snap => {
+            unavailableMeals = snap.val() || {};
+            const activeBtn = document.querySelector('.category-btn.active');
+            if (activeBtn) filterMeals(activeBtn.dataset.category, activeBtn);
+        });
+
+        // =========================================
+        // HELPERS
+        // =========================================
+        function translateCategory(category) {
+            const t = { "main": "وجبات رئيسية", "italian": "مأكولات إيطالية", "home": "أكل بيتي", "salads": "سلطات", "sandwiches": "ساندويتشات", "pastries": "معجنات", "drinks": "مشروبات", "extras": "إضافات منفردة" };
+            return t[category] || category;
         }
-      }
-    } else {
-      sizeSection.style.display = "none";
-      defaultPrice = selectedMeal.price || 0;
-      selectedSize = "حجم عادي";
-    }
 
-    updatePriceOnSizeChange(defaultPrice);
+        function getMealDescription(n) { return MEAL_DESCRIPTIONS[n] || "وجبة لذيذة ومغذية."; }
 
-    const extrasSection = document.getElementById("extrasSection");
-    const extrasListContainer = document.getElementById("extrasList");
-    extrasListContainer.innerHTML = "";
+        function showNotification(message, type = "success") {
+            const n = document.createElement("div");
+            n.textContent = message;
+            n.className = "notification " + type;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
+        }
 
-    if (selectedMeal.extras && selectedMeal.extras.length > 0) {
-      extrasSection.style.display = "block";
-      selectedMeal.extras.forEach((extra, index) => {
-        const id = `extra-${index}`;
+        function calcOfferTotal(mealName, unitPrice, qty) {
+            const offers = {
+                "سجاريوت لحمه": { bundleQty: 3, bundlePrice: 10 },
+                "سجاريوت بطاطا": { bundleQty: 3, bundlePrice: 10 },
+                "معجنات جبنه بيضا": { bundleQty: 4, bundlePrice: 10 },
+                "معجنات زيتون": { bundleQty: 4, bundlePrice: 10 }
+            };
+            const offer = offers[mealName];
+            if (!offer) return unitPrice * qty;
+            return (Math.floor(qty / offer.bundleQty) * offer.bundlePrice) + ((qty % offer.bundleQty) * unitPrice);
+        }
 
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.id = id;
-        input.value = extra;
-        input.onchange = calculateTotalPrice;
+        function calculateTotalPrice() {
+            const final = calcOfferTotal(selectedMeal?.name || "", Number(basePrice) || 0, quantity);
+            document.getElementById("totalPriceDisplay").textContent = `السعر الإجمالي: ${final.toFixed(0)} شيكل`;
+            return final;
+        }
 
-        const label = document.createElement("label");
-        label.htmlFor = id;
-        label.textContent = extra;
+        function updatePriceOnSizeChange(price) { basePrice = price; calculateTotalPrice(); }
+        function decreaseQuantity() { if (quantity > 1) { quantity--; document.getElementById("quantityDisplay").textContent = quantity; calculateTotalPrice(); } }
+        function increaseQuantity() { quantity++; document.getElementById("quantityDisplay").textContent = quantity; calculateTotalPrice(); }
 
-        extrasListContainer.appendChild(input);
-        extrasListContainer.appendChild(label);
-      });
-    } else {
-      extrasSection.style.display = "none";
-    }
+        function closeModal() {
+            document.getElementById("extrasModal").style.display = "none";
+            selectedMeal = null; quantity = 1; basePrice = 0; selectedSize = "";
+            document.getElementById("quantityDisplay").textContent = "1";
+            document.getElementById("notesInput").value = "";
+        }
 
-    document.getElementById("extrasModal").style.display = "block";
-  }
+        // =========================================
+        // UI
+        // =========================================
+        function displayMeals(filteredMeals) {
+            const menuContainer = document.getElementById("menuContainer");
+            menuContainer.innerHTML = "";
+            const categorizedMeals = filteredMeals.reduce((acc, meal) => {
+                const cat = translateCategory(meal.category);
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(meal);
+                return acc;
+            }, {});
 
-  // =========================================
-  // VI. CART LOGIC
-  // =========================================
-  function addToCart() {
-    if (!selectedMeal) return;
+            for (const categoryName in categorizedMeals) {
+                const title = document.createElement("h2");
+                title.className = "section-title";
+                title.textContent = categoryName;
+                menuContainer.appendChild(title);
 
-    const extrasPicked = [];
-    document.querySelectorAll("#extrasList input:checked").forEach(chk => extrasPicked.push(chk.value));
+                const grid = document.createElement("div");
+                grid.className = "menu-container";
 
-    if (selectedMeal.sizes && !selectedSize) {
-      showNotification("الرجاء اختيار الحجم أولاً", "error");
-      return;
-    }
+                categorizedMeals[categoryName].forEach(meal => {
+                    const card = document.createElement("div");
+                    card.className = "meal-card";
+                    let priceDisplay = meal.price != null ? `${meal.price} شيكل` : meal.sizes ? `ابتداءً من ${Math.min(...Object.values(meal.sizes))} شيكل` : "يرجى السؤال";
+                    const isUnavailable = unavailableMeals[meal.name] === true;
+                    const addBtnHtml = isUnavailable
+                        ? `<button class="add-btn" style="background: var(--bg-dark); color: var(--text-secondary); cursor: not-allowed;"><i class="fa-solid fa-ban"></i></button>`
+                        : `<button class="add-btn" onclick="openExtrasModal('${meal.name}')"><i class="fa-solid fa-plus"></i></button>`;
+                    card.innerHTML = `
+                        <div class="meal-img-wrapper" ${isUnavailable ? 'style="opacity:0.5;filter:grayscale(1);"' : ''}>
+                            <img src="${meal.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'}" alt="${meal.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'">
+                        </div>
+                        <h3 ${isUnavailable ? 'style="color:var(--text-secondary)"' : ''}>${meal.name}</h3>
+                        <p>${getMealDescription(meal.name)}</p>
+                        ${meal.offer ? `<span class="offer-text">${meal.offer}</span>` : ""}
+                        <div class="meal-card-footer">
+                            <span class="price">${isUnavailable ? '<span style="color:var(--accent-primary);font-size:0.9rem;font-weight:bold;">غير متوفر</span>' : priceDisplay}</span>
+                            ${addBtnHtml}
+                        </div>`;
+                    grid.appendChild(card);
+                });
+                menuContainer.appendChild(grid);
+            }
+        }
 
-    const unitPrice = Number(basePrice || selectedMeal.price || 0) || 0;
-    const finalTotal = calcOfferTotal(selectedMeal.name, unitPrice, quantity);
+        function filterMeals(category, clickedButton) {
+            document.querySelectorAll(".category-btn").forEach(btn => btn.classList.remove("active"));
+            clickedButton.classList.add("active");
+            displayMeals(category === "all" ? meals : meals.filter(m => m.category === category));
+        }
 
-    const itemDetails = {
-      id: Date.now() + "-" + Math.random().toString(16).slice(2),
-      name: selectedMeal.name,
-      img: selectedMeal.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
-      size: selectedSize || "حجم عادي",
-      extras: extrasPicked,
-      notes: document.getElementById("notesInput").value.trim(),
-      quantity: quantity,
-      unitPrice: unitPrice,
-      totalPrice: finalTotal,
-      lineTotal: finalTotal
-    };
+        function openExtrasModal(mealName) {
+            selectedMeal = meals.find(m => m.name === mealName);
+            if (!selectedMeal) return;
+            quantity = 1;
+            document.getElementById("quantityDisplay").textContent = "1";
+            document.getElementById("notesInput").value = "";
+            document.getElementById("modalMealName").textContent = selectedMeal.name;
 
-    let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+            const sizeSection = document.getElementById("sizeSection");
+            const sizeOptionsContainer = document.getElementById("sizeOptions");
+            sizeOptionsContainer.innerHTML = "";
+            let defaultPrice = 0;
 
-    const sameIndex = order.cart.findIndex(it =>
-      (it.name === itemDetails.name) &&
-      (it.size === itemDetails.size) &&
-      (JSON.stringify(it.extras || []) === JSON.stringify(itemDetails.extras || [])) &&
-      ((it.notes || "") === (itemDetails.notes || ""))
-    );
+            if (selectedMeal.sizes) {
+                sizeSection.style.display = "block";
+                let isFirst = true;
+                for (const size in selectedMeal.sizes) {
+                    const price = selectedMeal.sizes[size];
+                    const input = document.createElement("input");
+                    input.type = "radio"; input.name = "mealSize"; input.id = `size-${size}`; input.value = size;
+                    input.setAttribute("data-price", price);
+                    input.onchange = () => { selectedSize = size; updatePriceOnSizeChange(price); };
+                    const label = document.createElement("label");
+                    label.htmlFor = `size-${size}`; label.textContent = `${size} (${price} شيكل)`;
+                    sizeOptionsContainer.appendChild(input); sizeOptionsContainer.appendChild(label);
+                    if (isFirst) { input.checked = true; defaultPrice = price; selectedSize = size; isFirst = false; }
+                }
+            } else {
+                sizeSection.style.display = "none";
+                defaultPrice = selectedMeal.price || 0;
+                selectedSize = "حجم عادي";
+            }
+            updatePriceOnSizeChange(defaultPrice);
 
-    if (sameIndex !== -1) {
-      const existing = order.cart[sameIndex];
-      const newQty = (Number(existing.quantity || 1) + quantity);
-      const newUnit = Number(existing.unitPrice ?? existing.price ?? unitPrice) || unitPrice;
-      const newTotal = calcOfferTotal(existing.name, newUnit, newQty);
+            const extrasSection = document.getElementById("extrasSection");
+            const extrasListContainer = document.getElementById("extrasList");
+            extrasListContainer.innerHTML = "";
+            if (selectedMeal.extras && selectedMeal.extras.length > 0) {
+                extrasSection.style.display = "block";
+                selectedMeal.extras.forEach((extra, index) => {
+                    const input = document.createElement("input");
+                    input.type = "checkbox"; input.id = `extra-${index}`; input.value = extra;
+                    input.onchange = calculateTotalPrice;
+                    const label = document.createElement("label");
+                    label.htmlFor = `extra-${index}`; label.textContent = extra;
+                    extrasListContainer.appendChild(input); extrasListContainer.appendChild(label);
+                });
+            } else { extrasSection.style.display = "none"; }
+            document.getElementById("extrasModal").style.display = "block";
+        }
 
-      order.cart[sameIndex] = {
-        ...existing,
-        quantity: newQty,
-        unitPrice: newUnit,
-        totalPrice: newTotal,
-        lineTotal: newTotal
-      };
-    } else {
-      order.cart.push(itemDetails);
-    }
+        // =========================================
+        // CART
+        // =========================================
+        function addToCart() {
+            if (!selectedMeal) return;
+            const extrasPicked = [];
+            document.querySelectorAll("#extrasList input:checked").forEach(chk => extrasPicked.push(chk.value));
+            if (selectedMeal.sizes && !selectedSize) { showNotification("الرجاء اختيار الحجم أولاً", "error"); return; }
+            const unitPrice = Number(basePrice || selectedMeal.price || 0) || 0;
+            const finalTotal = calcOfferTotal(selectedMeal.name, unitPrice, quantity);
+            const itemDetails = {
+                id: Date.now() + "-" + Math.random().toString(16).slice(2),
+                name: selectedMeal.name,
+                img: selectedMeal.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
+                size: selectedSize || "حجم عادي",
+                extras: extrasPicked,
+                notes: document.getElementById("notesInput").value.trim(),
+                quantity: quantity,
+                unitPrice: unitPrice,
+                totalPrice: finalTotal,
+                lineTotal: finalTotal
+            };
+            let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+            const sameIndex = order.cart.findIndex(it => it.name === itemDetails.name && it.size === itemDetails.size && JSON.stringify(it.extras || []) === JSON.stringify(itemDetails.extras || []) && (it.notes || "") === (itemDetails.notes || ""));
+            if (sameIndex !== -1) {
+                const existing = order.cart[sameIndex];
+                const newQty = Number(existing.quantity || 1) + quantity;
+                const newUnit = Number(existing.unitPrice ?? existing.price ?? unitPrice) || unitPrice;
+                order.cart[sameIndex] = { ...existing, quantity: newQty, unitPrice: newUnit, totalPrice: calcOfferTotal(existing.name, newUnit, newQty), lineTotal: calcOfferTotal(existing.name, newUnit, newQty) };
+            } else { order.cart.push(itemDetails); }
+            localStorage.setItem("order", JSON.stringify(order));
+            updateCartCount(order.cart.length);
+            closeModal();
+            showNotification(`تم إضافة ${itemDetails.name}`);
+        }
 
-    localStorage.setItem("order", JSON.stringify(order));
-    updateCartCount(order.cart.length);
+        function updateCartCount(count) {
+            const order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+            document.getElementById("cartCount").textContent = (count != null) ? count : order.cart.length;
+        }
 
-    closeModal();
-    showNotification(`تم إضافة ${itemDetails.name}`);
-  }
+        // =========================================
+        // INIT
+        // =========================================
+        document.querySelectorAll(".category-btn").forEach(btn => {
+            btn.onclick = () => filterMeals(btn.dataset.category, btn);
+        });
+        const allBtn = document.querySelector('.category-btn[data-category="all"]');
+        filterMeals("all", allBtn);
+        updateCartCount();
 
-  function updateCartCount(count) {
-    const order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
-    document.getElementById("cartCount").textContent = (count != null) ? count : order.cart.length;
-  }
+        // =========================================
+        // USER ORDERS MODAL
+        // =========================================
+        let userOrdersListener = null;
 
-  // =========================================
-  // VII. INIT
-  // =========================================
-  function initialize() {
-    document.querySelectorAll(".category-btn").forEach(btn => {
-      btn.onclick = () => filterMeals(btn.dataset.category, btn);
-    });
+        function openUserOrdersModal() {
+            const user = auth.currentUser;
+            if (!user) { showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error"); return; }
+            document.getElementById("userOrdersModal").style.display = "block";
+            const container = document.getElementById("userOrdersListContainer");
+            container.innerHTML = "<p style='color:var(--text-secondary);text-align:center;'>جاري تحميل طلباتك...</p>";
+            if (userOrdersListener) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener);
+            userOrdersListener = db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+                container.innerHTML = "";
+                if (!snapshot.exists()) { container.innerHTML = "<p style='color:var(--text-secondary);text-align:center;'>لا توجد طلبات.</p>"; return; }
+                const orders = [];
+                snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
+                orders.reverse();
+                orders.forEach(ord => {
+                    const card = document.createElement("div");
+                    card.style.cssText = "background-color:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:15px;display:flex;justify-content:space-between;align-items:center;";
+                    let statusColor = "#ffb74d";
+                    if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+                    else if (ord.status === "جاهز") statusColor = "#81c784";
+                    else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-weight:bold;margin-bottom:5px;color:var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
+                            <div style="font-size:0.85rem;color:var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
+                        </div>
+                        <div style="background-color:${statusColor}22;color:${statusColor};padding:5px 10px;border-radius:var(--radius-pill);font-size:0.85rem;font-weight:600;">${ord.status || "قيد المعالجة"}</div>`;
+                    container.appendChild(card);
+                });
+            });
+        }
 
-    const allBtn = document.querySelector('.category-btn[data-category="all"]');
-    filterMeals("all", allBtn);
+        function closeUserOrdersModal() {
+            document.getElementById("userOrdersModal").style.display = "none";
+            if (userOrdersListener) { const user = auth.currentUser; if (user) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener); }
+        }
 
-    updateCartCount();
-
-  // =========================================
-  // VIII. USER ORDERS
-  // =========================================
-  let userOrdersListener = null;
-
-  function openUserOrdersModal() {
-    const user = auth.currentUser;
-    if (!user) {
-      showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error");
-      return;
-    }
-    document.getElementById("userOrdersModal").style.display = "block";
-    const container = document.getElementById("userOrdersListContainer");
-    container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>جاري تحميل طلباتك...</p>";
-
-    if (userOrdersListener) database.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener);
-
-    userOrdersListener = database.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
-      container.innerHTML = "";
-      if (!snapshot.exists()) {
-        container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات سابقة أو حالية.</p>";
-        return;
-      }
-      const orders = [];
-      snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
-      orders.reverse(); // latest first
-
-      orders.forEach(ord => {
-        const card = document.createElement("div");
-        card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 15px; display: flex; justify-content: space-between; align-items: center;";
-        let statusColor = "#ffb74d";
-        if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
-        else if (ord.status === "جاهز") statusColor = "#81c784";
-        else if (ord.status === "تم التسليم") statusColor = "#27ae60";
-
-        card.innerHTML = `
-          <div>
-            <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
-            <div style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
-          </div>
-          <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 5px 10px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 600;">
-            ${ord.status || "قيد المعالجة"}
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    });
-  }
-
-  function closeUserOrdersModal() {
-    document.getElementById("userOrdersModal").style.display = "none";
-    if (userOrdersListener) {
-      const user = auth.currentUser;
-      if(user) database.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListener);
-    }
-  }
-
-  window.addEventListener("click", function(event) {
-    const ordersModal = document.getElementById("userOrdersModal");
-    if (event.target === ordersModal) closeUserOrdersModal();
-    const extrasModal = document.getElementById("extrasModal");
-    if (event.target === extrasModal) closeModal();
-  });
-}
-
-initialize();
+        window.addEventListener("click", function(event) {
+            if (event.target === document.getElementById("userOrdersModal")) closeUserOrdersModal();
+            if (event.target === document.getElementById("extrasModal")) closeModal();
+        });
     </script>
 </body>
 </html>
