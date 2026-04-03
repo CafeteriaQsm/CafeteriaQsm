@@ -388,7 +388,9 @@
                 items: normalizedItems.map(it => ({
                     name: it.name, img: it.img, quantity: it.quantity,
                     unitPrice: it.unitPrice, lineTotal: it.lineTotal,
-                    extras: it.extras || [], size: it.size || "", breadType: it.breadType || ""
+                    extras: it.extras || [], size: it.size || "",
+                    breadType: it.breadType || "",
+                    notes: it.notes || ""  // ✅ ملاحظات كل وجبة
                 })),
                 pickupTime: document.getElementById("pickupInput").value,
                 paymentMethod: selectedPaymentMethod,
