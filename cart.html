@@ -1,643 +1,488 @@
 <!doctype html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <title>سلة الطلبات - كافيتيريا القاسمي</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <title>سلة الطلبات - كافيتيريا القاسمي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <header>
-    <div class="header-content">
-        <div class="logo">
-            <i class="fa-solid fa-utensils"></i>
-            <span>كافيتيريا القاسمي</span>
-        </div>
-
-        <div class="nav-links">
-            <a href="menu.html">القائمة</a>
-            <a href="cart.html" class="active">السلة</a>
-        </div>
-        
-        <div class="user-actions">
-            <button class="btn-outline" onclick="openUserOrdersModal()" style="margin-left: 10px; border-color: var(--accent-secondary); color: var(--accent-secondary);">
-                <i class="fas fa-clipboard-list"></i> طلباتي
-            </button>
-        </div>
-    </div>
-  </header>
-
-  <div class="page-header">
-    <div class="container">
-        <h1>سلة الطلبات</h1>
-        <p>راجع طلباتك وأكمل عملية الشراء</p>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="cart-layout">
-        <!-- Left Column: Cart Items & Form -->
-        <div>
-            <div id="cartContainer">
-                <div class="empty-cart" style="text-align:center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                    <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--border-color); margin-bottom: 20px;"></i>
-                    <h3 style="margin-bottom: 10px;">سلة التسوق فارغة</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
-                    <button class="btn-primary" onclick="goToMenu()">
-                        <i class="fas fa-utensils"></i> تصفح القائمة
-                    </button>
-                </div>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fa-solid fa-utensils"></i>
+                <span>كافيتيريا القاسمي</span>
             </div>
+            <div class="nav-links">
+                <a href="menu.html">القائمة</a>
+                <a href="cart.html" class="active">السلة</a>
+            </div>
+            <div class="user-actions">
+                <button class="btn-outline" onclick="openUserOrdersModal()" style="margin-left:10px;border-color:var(--accent-secondary);color:var(--accent-secondary);">
+                    <i class="fas fa-clipboard-list"></i> طلباتي
+                </button>
+            </div>
+        </div>
+    </header>
 
-            <!-- Order Form -->
-            <div class="order-form" id="orderSummary" style="display:none; background-color: var(--bg-card); border-radius: var(--radius-md); padding: 30px; margin-top: 30px; border: 1px solid var(--border-color);">
-                <h3 style="font-size: 1.5rem; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; color: var(--accent-secondary);">
-                    <i class="fas fa-user-edit"></i> معلومات الطلب
-                </h3>
+    <div class="page-header">
+        <div class="container">
+            <h1>سلة الطلبات</h1>
+            <p>راجع طلباتك وأكمل عملية الشراء</p>
+        </div>
+    </div>
 
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="studentName" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-user"></i> اسم الطالب *</label>
-                    <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit;">
-                    <small style="color: var(--text-secondary); display:block; margin-top:5px; font-size: 0.85rem;">يجب أن يكون اسم عربي صحيح</small>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="phoneInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-phone"></i> رقم الهاتف *</label>
-                    <input type="tel" id="phoneInput" required placeholder="05X-XXXXXXX" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit; direction: ltr; text-align: right;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="pickupInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام *</label>
-                    <input type="time" id="pickupInput" required style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label style="display:block; margin-bottom:10px; color:var(--text-secondary);"><i class="fas fa-credit-card"></i> طريقة الدفع *</label>
-                    <div class="payment-methods" style="display: flex; gap: 15px;">
-                        <div class="payment-method selected" onclick="selectPaymentMethod(this, 'cash')" style="flex:1; border: 2px solid var(--accent-secondary); background: rgba(212, 175, 55, 0.1); border-radius: var(--radius-sm); padding: 15px; text-align: center; cursor: pointer; color: var(--text-primary);">
-                            <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: var(--accent-secondary); margin-bottom: 8px; display:block;"></i>
-                            <span>الدفع نقداً</span>
-                        </div>
+    <div class="container">
+        <div class="cart-layout">
+            <div>
+                <div id="cartContainer">
+                    <div class="empty-cart" style="text-align:center;padding:60px 20px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border-color);">
+                        <i class="fas fa-shopping-cart" style="font-size:4rem;color:var(--border-color);margin-bottom:20px;"></i>
+                        <h3 style="margin-bottom:10px;">سلة التسوق فارغة</h3>
+                        <p style="color:var(--text-secondary);margin-bottom:20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
+                        <button class="btn-primary" onclick="goToMenu()"><i class="fas fa-utensils"></i> تصفح القائمة</button>
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 30px;">
-                    <label for="noteInput" style="display:block; margin-bottom:8px; color:var(--text-secondary);"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
-                    <textarea id="noteInput" rows="3" placeholder="أدخل ملاحظاتك الخاصة بالطلب (اختياري)" style="width:100%; padding:15px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:rgba(255,255,255,0.03); color:var(--text-primary); font-family:inherit; resize:vertical;"></textarea>
+                <div class="order-form" id="orderSummary" style="display:none;background-color:var(--bg-card);border-radius:var(--radius-md);padding:30px;margin-top:30px;border:1px solid var(--border-color);">
+                    <h3 style="font-size:1.5rem;margin-bottom:25px;border-bottom:1px solid var(--border-color);padding-bottom:15px;color:var(--accent-secondary);">
+                        <i class="fas fa-user-edit"></i> معلومات الطلب
+                    </h3>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label for="studentName" style="display:block;margin-bottom:8px;color:var(--text-secondary);"><i class="fas fa-user"></i> اسم الطالب *</label>
+                        <input type="text" id="studentName" required placeholder="أدخل اسمك الكامل بالعربية" style="width:100%;padding:15px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(255,255,255,0.03);color:var(--text-primary);font-family:inherit;">
+                        <small style="color:var(--text-secondary);display:block;margin-top:5px;font-size:0.85rem;">يجب أن يكون اسم عربي صحيح</small>
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label for="phoneInput" style="display:block;margin-bottom:8px;color:var(--text-secondary);"><i class="fas fa-phone"></i> رقم الهاتف *</label>
+                        <input type="tel" id="phoneInput" required placeholder="05X-XXXXXXX" style="width:100%;padding:15px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(255,255,255,0.03);color:var(--text-primary);font-family:inherit;direction:ltr;text-align:right;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label for="pickupInput" style="display:block;margin-bottom:8px;color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام *</label>
+                        <input type="time" id="pickupInput" required style="width:100%;padding:15px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(255,255,255,0.03);color:var(--text-primary);font-family:inherit;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label style="display:block;margin-bottom:10px;color:var(--text-secondary);"><i class="fas fa-credit-card"></i> طريقة الدفع *</label>
+                        <div class="payment-methods" style="display:flex;gap:15px;">
+                            <div class="payment-method selected" onclick="selectPaymentMethod(this,'cash')" style="flex:1;border:2px solid var(--accent-secondary);background:rgba(212,175,55,0.1);border-radius:var(--radius-sm);padding:15px;text-align:center;cursor:pointer;color:var(--text-primary);">
+                                <i class="fas fa-money-bill-wave" style="font-size:1.5rem;color:var(--accent-secondary);margin-bottom:8px;display:block;"></i>
+                                <span>الدفع نقداً</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:30px;">
+                        <label for="noteInput" style="display:block;margin-bottom:8px;color:var(--text-secondary);"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
+                        <textarea id="noteInput" rows="3" placeholder="أدخل ملاحظاتك الخاصة بالطلب (اختياري)" style="width:100%;padding:15px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(255,255,255,0.03);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>
+                    </div>
+                    <div class="action-buttons" style="display:flex;gap:15px;">
+                        <button class="btn-outline" onclick="goToMenu()" style="flex:1;"><i class="fas fa-arrow-right"></i> الرجوع للقائمة</button>
+                        <button id="sendOrderBtn" class="btn-primary" onclick="startOrderConfirmation()" style="flex:2;"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+                    </div>
                 </div>
 
-                <div class="action-buttons" style="display: flex; gap: 15px;">
-                    <button class="btn-outline" onclick="goToMenu()" style="flex: 1;">
-                        <i class="fas fa-arrow-right"></i> الرجوع للقائمة
-                    </button>
-                    <button id="sendOrderBtn" class="btn-primary" onclick="startOrderConfirmation()" style="flex: 2;">
-                        <i class="fas fa-paper-plane"></i> إرسال الطلب
-                    </button>
+                <div id="statusView" style="margin-top:30px;"></div>
+
+                <div class="my-orders-section" style="margin-top:50px;">
+                    <h3 style="font-size:1.5rem;margin-bottom:25px;border-bottom:1px solid var(--border-color);padding-bottom:15px;color:var(--accent-secondary);">
+                        <i class="fas fa-clipboard-list"></i> طلباتي الحالية
+                    </h3>
+                    <div id="myOrdersContainer" class="orders-container"><p style="color:var(--text-secondary);">جاري تحميل الطلبات...</p></div>
                 </div>
-            </div>
-
-            <div id="statusView" style="margin-top: 30px;"></div>
-
-            <div class="my-orders-section" style="margin-top: 50px;">
-                <h3 style="font-size: 1.5rem; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; color: var(--accent-secondary);">
-                    <i class="fas fa-clipboard-list"></i> طلباتي الحالية
-                </h3>
-                <div id="myOrdersContainer" class="orders-container"><p style="color: var(--text-secondary);">جاري تحميل الطلبات...</p></div>
             </div>
         </div>
-        
-        <!-- Right Column: Summary Box will be injected here during JS generation (handled internally by JS appending to cartContainer) -->
     </div>
-  </div>
 
-  <!-- User Orders Modal (Cart version, matches menu.html) -->
-  <div id="userOrdersModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; padding: 20px; overflow-y: auto;">
-      <div style="background: var(--bg-card); max-width: 600px; margin: 40px auto; border-radius: var(--radius-md); padding: 30px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
-              <h2 style="color: var(--accent-secondary);"><i class="fas fa-clipboard-list"></i> طلباتي الحالية</h2>
-              <button class="btn-outline" onclick="closeUserOrdersModal()" style="padding: 5px 15px; border-color: var(--accent-primary); color: var(--accent-primary);">إغلاق</button>
-          </div>
-          <div id="userOrdersListContainer" style="display: flex; flex-direction: column; gap: 15px;">
-              <p style="color: var(--text-secondary); text-align: center;">جاري التحميل...</p>
-          </div>
-      </div>
-  </div>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-    authDomain: "cafeteria-app-82268.firebaseapp.com",
-    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cafeteria-app-82268",
-    storageBucket: "cafeteria-app-82268.appspot.com",
-    messagingSenderId: "457381739769",
-    appId: "1:457381739769:web:409cb927ef54368cb3f628"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  // ✅ App Check
-  firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
-
-  const db = firebase.database();
-  const auth = firebase.auth();
-</script>
-
-    // Since we changed layout slightly, let's inject order items properly
-    const cartContainer = document.getElementById("cartContainer");
-    const orderSummary = document.getElementById("orderSummary");
-    const myOrdersContainer = document.getElementById("myOrdersContainer");
-
-    let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
-    let selectedPaymentMethod = "cash";
-    let unavailableMeals = {};
-
-    db.ref('settings/unavailable_meals').on('value', snap => {
-      unavailableMeals = snap.val() || {};
-      displayCartItems();
-    });
-
-    let isSubmittingOrder = false;
-
-    let confirmMode = false;
-    let confirmSecondsLeft = 0;
-    let confirmIntervalId = null;
-    let confirmTimeoutId = null;
-
-    function showNotification(message, type = 'success') {
-      const notification = document.createElement('div');
-      notification.textContent = message;
-      notification.className = 'notification ' + type;
-      document.body.appendChild(notification);
-      setTimeout(() => { notification.remove(); }, 3000);
-    }
-
-    function validateOrderData() {
-      const nameValue = document.getElementById("studentName").value.trim();
-      const timeValue = document.getElementById("pickupInput").value;
-      const phoneValue = document.getElementById("phoneInput").value.trim();
-
-      if (!nameValue || nameValue.length < 2) {
-        showNotification("⚠️ الرجاء إدخال اسم صحيح", "error");
-        return false;
-      }
-      const arabicRegex = /^[\u0600-\u06FF\s]+$/;
-      if (!arabicRegex.test(nameValue)) {
-        showNotification("⚠️ الرجاء إدخال اسم عربي صحيح", "error");
-        return false;
-      }
-      if (!phoneValue || phoneValue.length < 9) {
-        showNotification("⚠️ الرجاء إدخال رقم هاتف صحيح", "error");
-        return false;
-      }
-      if (!timeValue) {
-        showNotification("⚠️ الرجاء اختيار وقت الاستلام", "error");
-        return false;
-      }
-      return true;
-    }
-
-    function normalizeCartItem(item) {
-      const qty = Number(item.quantity ?? item.qty ?? 1) || 1;
-      const unitPrice = Number(item.unitPrice ?? item.price ?? 0) || 0;
-      let lineTotal = 0;
-      if (item.totalPrice != null && !isNaN(Number(item.totalPrice))) {
-        lineTotal = Number(item.totalPrice);
-      } else {
-        lineTotal = unitPrice * qty;
-      }
-      return {
-        ...item,
-        quantity: qty,
-        unitPrice: unitPrice,
-        lineTotal: lineTotal,
-      };
-    }
-
-    function displayCartItems() {
-      cartContainer.innerHTML = "";
-
-      if (order.cart.length > 0) {
-        let total = 0;
-        
-        // Items Container
-        const itemsWrapper = document.createElement("div");
-        itemsWrapper.style.marginBottom = "30px";
-
-        order.cart.forEach((rawItem, i) => {
-          const item = normalizeCartItem(rawItem);
-          total += item.lineTotal;
-
-          const sizeText = item.size ? `الحجم: ${item.size}` : "";
-          const breadText = item.breadType ? `الخبز: ${item.breadType}` : "";
-          const optionsLine = (sizeText || breadText)
-            ? `<p style="color: var(--text-secondary); margin-bottom: 8px; font-size: 0.9rem;"><strong>خيارات:</strong> ${[sizeText, breadText].filter(Boolean).join(" - ")}</p>`
-            : "";
-
-          const isUnavailable = unavailableMeals[item.name] === true;
-          
-          const div = document.createElement("div");
-          div.className = "cart-item";
-          if (isUnavailable) {
-            div.style.borderColor = "var(--accent-primary)";
-            div.style.background = "rgba(230, 57, 70, 0.05)";
-          }
-          div.innerHTML = `
-            <img src="${item.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'}" alt="${item.name}" class="cart-item-img" ${isUnavailable ? 'style="filter: grayscale(1); opacity: 0.5;"' : ''}>
-            <div class="cart-item-details">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <h3>${item.name}</h3>
-                ${isUnavailable ? '<span style="color: var(--accent-primary); font-weight: bold; font-size: 0.85rem; background: rgba(230, 57, 70, 0.1); padding: 2px 8px; border-radius: var(--radius-sm);">غير متوفر</span>' : ''}
-              </div>
-              ${optionsLine}
-              ${item.extras?.length ? `<p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px;"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
-              <div style="display: flex; gap: 15px; margin-top: 10px; align-items: center;">
-                 <span class="cart-item-price">₪${item.lineTotal}</span>
-                 <span style="color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: var(--radius-sm); font-size: 0.9rem;">الكمية: ${item.quantity}</span>
-              </div>
+    <div id="userOrdersModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;padding:20px;overflow-y:auto;">
+        <div style="background:var(--bg-card);max-width:600px;margin:40px auto;border-radius:var(--radius-md);padding:30px;border:1px solid var(--border-color);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;border-bottom:1px solid var(--border-color);padding-bottom:15px;">
+                <h2 style="color:var(--accent-secondary);"><i class="fas fa-clipboard-list"></i> طلباتي الحالية</h2>
+                <button class="btn-outline" onclick="closeUserOrdersModal()" style="padding:5px 15px;border-color:var(--accent-primary);color:var(--accent-primary);">إغلاق</button>
             </div>
-            <button class="delete-btn" onclick="removeItem(${i})">
-              <i class="fas fa-trash"></i>
-            </button>
-          `;
-          itemsWrapper.appendChild(div);
-        });
-
-        cartContainer.appendChild(itemsWrapper);
-
-        // Render Summary specifically in the Right Column natively inside the wrapper (we inject it into the right place)
-        const totalSection = document.createElement("div");
-        totalSection.className = "order-summary";
-        totalSection.innerHTML = `
-          <h3 style="color: var(--accent-secondary);"><i class="fas fa-receipt"></i> الفاتورة</h3>
-          <div class="summary-row" style="color: var(--text-secondary);">
-             <span>المجموع الفرعي</span>
-             <span>₪${total}</span>
-          </div>
-          <div class="summary-total" style="color: var(--accent-primary);">
-             <span>الإجمالي المطلق</span>
-             <span>₪${total}</span>
-          </div>
-        `;
-        
-        // Ensure right layout injection
-        const cartLayout = document.querySelector('.cart-layout');
-        // remove existing if exists
-        const existingSummary = cartLayout.querySelector('.order-summary');
-        if (existingSummary) existingSummary.remove();
-        
-        cartLayout.appendChild(totalSection);
-        orderSummary.style.display = "block";
-      } else {
-        cartContainer.innerHTML = `
-          <div class="empty-cart" style="text-align:center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-            <i class="fas fa-shopping-cart" style="font-size: 4rem; color: var(--border-color); margin-bottom: 20px;"></i>
-            <h3 style="margin-bottom: 10px; color: var(--text-primary);">سلة التسوق فارغة</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
-            <button class="btn-primary" onclick="goToMenu()">
-              <i class="fas fa-utensils"></i> تصفح القائمة
-            </button>
-          </div>
-        `;
-        orderSummary.style.display = "none";
-        const cartLayout = document.querySelector('.cart-layout');
-        const existingSummary = cartLayout.querySelector('.order-summary');
-        if (existingSummary) existingSummary.remove();
-      }
-    }
-
-    function removeItem(index) {
-      order.cart.splice(index, 1);
-      localStorage.setItem("order", JSON.stringify(order));
-      displayCartItems();
-    }
-
-    function selectPaymentMethod(element, method) {
-      selectedPaymentMethod = method;
-      document.querySelectorAll('.payment-method').forEach(btn => btn.classList.remove('selected'));
-      element.classList.add('selected');
-    }
-
-    function goToMenu() { window.location.href = "menu.html"; }
-
-    function clearCartPageAfterSend() {
-      order = { cart: [] };
-      localStorage.removeItem("order");
-      displayCartItems();
-      document.getElementById("noteInput").value = "";
-      document.getElementById("pickupInput").value = "";
-      cancelOrderConfirmation(true);
-    }
-
-    function setSendButtonText(text, disabled = false) {
-      const btn = document.getElementById("sendOrderBtn");
-      if (!btn) return;
-      btn.innerHTML = text;
-      btn.disabled = !!disabled;
-      btn.style.opacity = disabled ? "0.7" : "1";
-      btn.style.cursor = disabled ? "not-allowed" : "pointer";
-    }
-
-    function cancelOrderConfirmation(silent = false) {
-      confirmMode = false;
-      confirmSecondsLeft = 0;
-      if (confirmIntervalId) clearInterval(confirmIntervalId);
-      if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
-      confirmIntervalId = null;
-      confirmTimeoutId = null;
-      setSendButtonText('<i class="fas fa-paper-plane"></i> إرسال الطلب', false);
-      if (!silent) showNotification("تم إلغاء التأكيد", "error");
-    }
-
-    function startOrderConfirmation() {
-      if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
-        showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
-        return;
-      }
-
-      const user = auth.currentUser;
-      if (!user) {
-        showNotification('يجب تسجيل الدخول أولاً لإرسال الطلب!', 'error');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-        return;
-      }
-
-      if (!validateOrderData()) return;
-      if (!order.cart || order.cart.length === 0) {
-        showNotification("⚠️ سلة الطلبات فارغة", "error");
-        return;
-      }
-
-      if (confirmMode) { submitOrder(); return; }
-
-      // Check if any item is unavailable
-      const unavailableItems = order.cart.filter(it => unavailableMeals[it.name] === true);
-      if (unavailableItems.length > 0) {
-        showNotification(`⚠️ هناك وجبات غير متوفرة في سلتك (${unavailableItems.map(it => it.name).join(", ")})`, "error");
-        return;
-      }
-
-      confirmMode = true;
-      confirmSecondsLeft = 10;
-
-      showNotification("🕒 اضغط مرة ثانية للتأكيد أو انتظر 10 ثواني وسيتم الإرسال تلقائيًا", "info");
-      setSendButtonText(`<i class="fas fa-check"></i> تأكيد الإرسال (${confirmSecondsLeft})`, false);
-
-      confirmIntervalId = setInterval(() => {
-        confirmSecondsLeft--;
-        if (confirmSecondsLeft <= 0) {
-          clearInterval(confirmIntervalId);
-          confirmIntervalId = null;
-        } else {
-          setSendButtonText(`<i class="fas fa-check"></i> تأكيد الإرسال (${confirmSecondsLeft})`, false);
-        }
-      }, 1000);
-
-      confirmTimeoutId = setTimeout(() => { submitOrder(); }, 10000);
-    }
-
-    async function submitOrder() {
-      if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") {
-        showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error");
-        return;
-      }
-
-      const user = auth.currentUser;
-      if (!user) {
-        showNotification('يجب تسجيل الدخول أولاً لإرسال الطلب!', 'error');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-        return;
-      }
-
-      if (!validateOrderData()) return;
-      if (!order.cart || order.cart.length === 0) {
-        showNotification("⚠️ سلة الطلبات فارغة", "error");
-        return;
-      }
-
-      isSubmittingOrder = true;
-      localStorage.setItem("orderSubmitting", "1");
-
-      if (confirmIntervalId) clearInterval(confirmIntervalId);
-      if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
-      confirmIntervalId = null;
-      confirmTimeoutId = null;
-      confirmMode = false;
-
-      setSendButtonText('<i class="fas fa-spinner fa-spin"></i> جاري إرسال الطلب...', true);
-
-      const timeValue = document.getElementById("pickupInput").value;
-      const nameValue = document.getElementById("studentName").value.trim();
-      const phoneValue = document.getElementById("phoneInput").value.trim();
-      const note = document.getElementById("noteInput").value.trim();
-      const orderCode = Math.floor(100000 + Math.random() * 900000);
-
-      const normalizedItems = order.cart.map(normalizeCartItem);
-
-      const newOrder = {
-        code: orderCode,
-        studentName: nameValue,
-        phone: phoneValue,
-        email: user.email || "غير معروف",
-        userId: user.uid,
-        items: normalizedItems.map(it => ({
-          name: it.name,
-          img: it.img,
-          quantity: it.quantity,
-          unitPrice: it.unitPrice,
-          lineTotal: it.lineTotal,
-          extras: it.extras || [],
-          size: it.size || "",
-          breadType: it.breadType || ""
-        })),
-        pickupTime: timeValue,
-        paymentMethod: selectedPaymentMethod,
-        notes: note,
-        total: normalizedItems.reduce((sum, it) => sum + it.lineTotal, 0),
-        status: "قيد المعالجة",
-        timestamp: new Date().toISOString()
-      };
-
-      try {
-        const now = Date.now();
-        const last = Number(localStorage.getItem("lastOrderSentAt") || 0);
-        if (now - last < 20000) throw new Error("TOO_FAST");
-
-        await db.ref("orders").push(newOrder);
-        localStorage.setItem("lastOrderSentAt", String(now));
-
-        clearCartPageAfterSend();
-        showStatusTracking(newOrder);
-        showNotification("✅ تم إرسال طلبك بنجاح!", "success");
-        showMyOrders();
-      } catch (error) {
-        if (String(error.message || "").includes("TOO_FAST")) {
-          showNotification("⛔ لا يمكنك إرسال طلبين بسرعة. انتظر 20 ثانية", "error");
-        } else {
-          showNotification("❌ حدث خطأ أثناء إرسال الطلب", "error");
-          console.error("Error writing to database:", error);
-        }
-      } finally {
-        isSubmittingOrder = false;
-        localStorage.removeItem("orderSubmitting");
-        setSendButtonText('<i class="fas fa-paper-plane"></i> إرسال الطلب', false);
-      }
-    }
-
-    function showStatusTracking(data) {
-      const statusView = document.getElementById("statusView");
-      statusView.style.display = 'block';
-      statusView.innerHTML = `
-        <div style="background-color: rgba(39, 174, 96, 0.1); border: 1px solid #27ae60; border-radius: var(--radius-md); padding: 25px; text-align: center; margin-bottom: 30px;">
-          <h3 style="color: #27ae60; margin-bottom: 15px; font-size: 1.5rem;"><i class="fas fa-check-circle"></i> تم استلام طلبك بنجاح</h3>
-          <div style="display: flex; justify-content: space-around; background: var(--bg-card); padding: 15px; border-radius: var(--radius-sm);">
-            <div><p style="color: var(--text-secondary); font-size: 0.9rem;">رقم الطلب</p><strong style="font-size: 1.2rem; color: var(--text-primary);">${data.code}</strong></div>
-            <div><p style="color: var(--text-secondary); font-size: 0.9rem;">الحالة الحالية</p><strong style="font-size: 1.2rem; color: var(--accent-secondary);">${data.status}</strong></div>
-          </div>
+            <div id="userOrdersListContainer" style="display:flex;flex-direction:column;gap:15px;">
+                <p style="color:var(--text-secondary);text-align:center;">جاري التحميل...</p>
+            </div>
         </div>
-      `;
-    }
+    </div>
 
-function showMyOrders() {
-  myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>🔄 جاري تحميل طلباتك...</p>";
-  const user = auth.currentUser;
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-  if (!user) {
-    myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>❌ يرجى تسجيل الدخول.</p>";
-    return;
-  }
+    <script>
+        // =========================================
+        // FIREBASE INIT
+        // =========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+            authDomain: "cafeteria-app-82268.firebaseapp.com",
+            databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cafeteria-app-82268",
+            storageBucket: "cafeteria-app-82268.appspot.com",
+            messagingSenderId: "457381739769",
+            appId: "1:457381739769:web:409cb927ef54368cb3f628"
+        };
 
-  // ✅ query على userId فقط — يجلب طلبات المستخدم الحالي فقط
-  db.ref("orders")
-    .orderByChild("userId")
-    .equalTo(user.uid)
-    .on("value", snapshot => {
-      myOrdersContainer.innerHTML = "";
+        firebase.initializeApp(firebaseConfig);
 
-      if (!snapshot.exists()) {
-        myOrdersContainer.innerHTML = "<p style='color: var(--text-secondary);'>❌ لا توجد طلبات حالية.</p>";
-        return;
-      }
+        // ✅ App Check
+        firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
 
-      snapshot.forEach(child => {
-        const ord = child.val();
-        const card = document.createElement("div");
-        card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;";
+        const db = firebase.database();
+        const auth = firebase.auth();
 
-        let statusColor = "#ffb74d";
-        if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
-        else if (ord.status === "جاهز") statusColor = "#81c784";
-        else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+        // =========================================
+        // ✅ كل الكود داخل script واحد
+        // =========================================
+        const cartContainer = document.getElementById("cartContainer");
+        const orderSummary = document.getElementById("orderSummary");
+        const myOrdersContainer = document.getElementById("myOrdersContainer");
 
-        card.innerHTML = `
-          <div>
-            <h3 style="margin-bottom: 10px; color: var(--text-primary);">
-              <i class="fas fa-receipt"></i> رقم الطلب: ${ord.code}
-            </h3>
-            <p style="color: var(--text-secondary);">
-              <i class="fas fa-clock"></i> وقت الاستلام: 
-              <strong style="color: var(--text-primary);">${ord.pickupTime}</strong>
-            </p>
-          </div>
-          <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 8px 16px; border-radius: var(--radius-pill); font-weight: 600;">
-            ${ord.status}
-          </div>
-        `;
-        myOrdersContainer.appendChild(card);
-      });
-    });
-}
+        let order = JSON.parse(localStorage.getItem("order")) || { cart: [] };
+        let selectedPaymentMethod = "cash";
+        let unavailableMeals = {};
+        let isSubmittingOrder = false;
+        let confirmMode = false;
+        let confirmSecondsLeft = 0;
+        let confirmIntervalId = null;
+        let confirmTimeoutId = null;
 
-    document.addEventListener('DOMContentLoaded', function () {
-      displayCartItems();
-
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          showMyOrders();
-          db.ref('users/' + user.uid).once('value').then(snapshot => {
-            if (snapshot.exists() && snapshot.val().displayName) {
-              document.getElementById('studentName').value = snapshot.val().displayName;
+        // ✅ التحقق من تسجيل الدخول
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
             }
-          });
-        } else {
-          showMyOrders();
-        }
-      });
-    });
-
-    window.addEventListener("beforeunload", () => {
-      if (confirmIntervalId) clearInterval(confirmIntervalId);
-      if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
-    });
-
-    // =========================================
-    // VIII. USER ORDERS (MODAL VIEW)
-    // =========================================
-    let userOrdersListenerModal = null;
-
-    function openUserOrdersModal() {
-      const user = auth.currentUser;
-      if (!user) {
-        showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error");
-        return;
-      }
-      document.getElementById("userOrdersModal").style.display = "block";
-      const container = document.getElementById("userOrdersListContainer");
-      container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>جاري تحميل طلباتك...</p>";
-
-      if (userOrdersListenerModal) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal);
-
-      userOrdersListenerModal = db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
-        container.innerHTML = "";
-        if (!snapshot.exists()) {
-          container.innerHTML = "<p style='color: var(--text-secondary); text-align: center;'>لا توجد طلبات حالية.</p>";
-          return;
-        }
-        const orders = [];
-        snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
-        orders.reverse(); // latest first
-
-        orders.forEach(ord => {
-          const card = document.createElement("div");
-          card.style.cssText = "background-color: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 15px; display: flex; justify-content: space-between; align-items: center;";
-          let statusColor = "#ffb74d";
-          if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
-          else if (ord.status === "جاهز") statusColor = "#81c784";
-          else if (ord.status === "تم التسليم") statusColor = "#27ae60";
-
-          card.innerHTML = `
-            <div>
-              <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
-              <div style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
-            </div>
-            <div style="background-color: ${statusColor}22; color: ${statusColor}; padding: 5px 10px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 600;">
-              ${ord.status || "قيد المعالجة"}
-            </div>
-          `;
-          container.appendChild(card);
+            showMyOrders();
+            db.ref('users/' + user.uid).once('value').then(snapshot => {
+                if (snapshot.exists() && snapshot.val().displayName) {
+                    document.getElementById('studentName').value = snapshot.val().displayName;
+                }
+            });
         });
-      });
-    }
 
-    function closeUserOrdersModal() {
-      document.getElementById("userOrdersModal").style.display = "none";
-      if (userOrdersListenerModal) {
-        const user = auth.currentUser;
-        if(user) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal);
-      }
-    }
+        db.ref('settings/unavailable_meals').on('value', snap => {
+            unavailableMeals = snap.val() || {};
+            displayCartItems();
+        });
 
-    window.addEventListener("click", function(event) {
-      if (event.target === document.getElementById("userOrdersModal")) closeUserOrdersModal();
-    });
-  </script>
+        // =========================================
+        // HELPERS
+        // =========================================
+        function showNotification(message, type = 'success') {
+            const n = document.createElement('div');
+            n.textContent = message;
+            n.className = 'notification ' + type;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
+        }
+
+        function validateOrderData() {
+            const nameValue = document.getElementById("studentName").value.trim();
+            const timeValue = document.getElementById("pickupInput").value;
+            const phoneValue = document.getElementById("phoneInput").value.trim();
+            if (!nameValue || nameValue.length < 2) { showNotification("⚠️ الرجاء إدخال اسم صحيح", "error"); return false; }
+            if (!/^[\u0600-\u06FF\s]+$/.test(nameValue)) { showNotification("⚠️ الرجاء إدخال اسم عربي صحيح", "error"); return false; }
+            if (!phoneValue || phoneValue.length < 9) { showNotification("⚠️ الرجاء إدخال رقم هاتف صحيح", "error"); return false; }
+            if (!timeValue) { showNotification("⚠️ الرجاء اختيار وقت الاستلام", "error"); return false; }
+            return true;
+        }
+
+        function normalizeCartItem(item) {
+            const qty = Number(item.quantity ?? item.qty ?? 1) || 1;
+            const unitPrice = Number(item.unitPrice ?? item.price ?? 0) || 0;
+            const lineTotal = (item.totalPrice != null && !isNaN(Number(item.totalPrice))) ? Number(item.totalPrice) : unitPrice * qty;
+            return { ...item, quantity: qty, unitPrice: unitPrice, lineTotal: lineTotal };
+        }
+
+        // =========================================
+        // DISPLAY CART
+        // =========================================
+        function displayCartItems() {
+            cartContainer.innerHTML = "";
+            if (order.cart.length > 0) {
+                let total = 0;
+                const itemsWrapper = document.createElement("div");
+                itemsWrapper.style.marginBottom = "30px";
+
+                order.cart.forEach((rawItem, i) => {
+                    const item = normalizeCartItem(rawItem);
+                    total += item.lineTotal;
+                    const sizeText = item.size ? `الحجم: ${item.size}` : "";
+                    const optionsLine = sizeText ? `<p style="color:var(--text-secondary);margin-bottom:8px;font-size:0.9rem;"><strong>خيارات:</strong> ${sizeText}</p>` : "";
+                    const isUnavailable = unavailableMeals[item.name] === true;
+                    const div = document.createElement("div");
+                    div.className = "cart-item";
+                    if (isUnavailable) { div.style.borderColor = "var(--accent-primary)"; div.style.background = "rgba(230,57,70,0.05)"; }
+                    div.innerHTML = `
+                        <img src="${item.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'}" alt="${item.name}" class="cart-item-img" ${isUnavailable ? 'style="filter:grayscale(1);opacity:0.5;"' : ''}>
+                        <div class="cart-item-details">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                <h3>${item.name}</h3>
+                                ${isUnavailable ? '<span style="color:var(--accent-primary);font-weight:bold;font-size:0.85rem;background:rgba(230,57,70,0.1);padding:2px 8px;border-radius:var(--radius-sm);">غير متوفر</span>' : ''}
+                            </div>
+                            ${optionsLine}
+                            ${item.extras?.length ? `<p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:8px;"><strong>الإضافات:</strong> ${item.extras.join(", ")}</p>` : ""}
+                            <div style="display:flex;gap:15px;margin-top:10px;align-items:center;">
+                                <span class="cart-item-price">₪${item.lineTotal}</span>
+                                <span style="color:var(--text-secondary);background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:var(--radius-sm);font-size:0.9rem;">الكمية: ${item.quantity}</span>
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="removeItem(${i})"><i class="fas fa-trash"></i></button>`;
+                    itemsWrapper.appendChild(div);
+                });
+
+                cartContainer.appendChild(itemsWrapper);
+
+                const totalSection = document.createElement("div");
+                totalSection.className = "order-summary";
+                totalSection.innerHTML = `
+                    <h3 style="color:var(--accent-secondary);"><i class="fas fa-receipt"></i> الفاتورة</h3>
+                    <div class="summary-row" style="color:var(--text-secondary);"><span>المجموع الفرعي</span><span>₪${total}</span></div>
+                    <div class="summary-total" style="color:var(--accent-primary);"><span>الإجمالي المطلق</span><span>₪${total}</span></div>`;
+
+                const cartLayout = document.querySelector('.cart-layout');
+                const existingSummary = cartLayout.querySelector('.order-summary');
+                if (existingSummary) existingSummary.remove();
+                cartLayout.appendChild(totalSection);
+                orderSummary.style.display = "block";
+            } else {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart" style="text-align:center;padding:60px 20px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border-color);">
+                        <i class="fas fa-shopping-cart" style="font-size:4rem;color:var(--border-color);margin-bottom:20px;"></i>
+                        <h3 style="margin-bottom:10px;color:var(--text-primary);">سلة التسوق فارغة</h3>
+                        <p style="color:var(--text-secondary);margin-bottom:20px;">لم تقم بإضافة أي عنصر إلى سلتك بعد.</p>
+                        <button class="btn-primary" onclick="goToMenu()"><i class="fas fa-utensils"></i> تصفح القائمة</button>
+                    </div>`;
+                orderSummary.style.display = "none";
+                const cartLayout = document.querySelector('.cart-layout');
+                const existingSummary = cartLayout.querySelector('.order-summary');
+                if (existingSummary) existingSummary.remove();
+            }
+        }
+
+        function removeItem(index) {
+            order.cart.splice(index, 1);
+            localStorage.setItem("order", JSON.stringify(order));
+            displayCartItems();
+        }
+
+        function selectPaymentMethod(element, method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-method').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function goToMenu() { window.location.href = "menu.html"; }
+
+        function clearCartPageAfterSend() {
+            order = { cart: [] };
+            localStorage.removeItem("order");
+            displayCartItems();
+            document.getElementById("noteInput").value = "";
+            document.getElementById("pickupInput").value = "";
+            cancelOrderConfirmation(true);
+        }
+
+        function setSendButtonText(text, disabled = false) {
+            const btn = document.getElementById("sendOrderBtn");
+            if (!btn) return;
+            btn.innerHTML = text;
+            btn.disabled = !!disabled;
+            btn.style.opacity = disabled ? "0.7" : "1";
+            btn.style.cursor = disabled ? "not-allowed" : "pointer";
+        }
+
+        function cancelOrderConfirmation(silent = false) {
+            confirmMode = false; confirmSecondsLeft = 0;
+            if (confirmIntervalId) clearInterval(confirmIntervalId);
+            if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
+            confirmIntervalId = null; confirmTimeoutId = null;
+            setSendButtonText('<i class="fas fa-paper-plane"></i> إرسال الطلب', false);
+            if (!silent) showNotification("تم إلغاء التأكيد", "error");
+        }
+
+        // =========================================
+        // ORDER CONFIRMATION
+        // =========================================
+        function startOrderConfirmation() {
+            if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") { showNotification("⛔ الطلب قيد الإرسال بالفعل... انتظر قليلاً", "error"); return; }
+            const user = auth.currentUser;
+            if (!user) { showNotification('يجب تسجيل الدخول أولاً!', 'error'); setTimeout(() => { window.location.href = 'index.html'; }, 1500); return; }
+            if (!validateOrderData()) return;
+            if (!order.cart || order.cart.length === 0) { showNotification("⚠️ سلة الطلبات فارغة", "error"); return; }
+            if (confirmMode) { submitOrder(); return; }
+            const unavailableItems = order.cart.filter(it => unavailableMeals[it.name] === true);
+            if (unavailableItems.length > 0) { showNotification(`⚠️ هناك وجبات غير متوفرة: ${unavailableItems.map(it => it.name).join(", ")}`, "error"); return; }
+            confirmMode = true; confirmSecondsLeft = 10;
+            showNotification("🕒 اضغط مرة ثانية للتأكيد أو انتظر 10 ثواني", "info");
+            setSendButtonText(`<i class="fas fa-check"></i> تأكيد الإرسال (${confirmSecondsLeft})`, false);
+            confirmIntervalId = setInterval(() => {
+                confirmSecondsLeft--;
+                if (confirmSecondsLeft <= 0) { clearInterval(confirmIntervalId); confirmIntervalId = null; }
+                else setSendButtonText(`<i class="fas fa-check"></i> تأكيد الإرسال (${confirmSecondsLeft})`, false);
+            }, 1000);
+            confirmTimeoutId = setTimeout(() => { submitOrder(); }, 10000);
+        }
+
+        async function submitOrder() {
+            if (isSubmittingOrder || localStorage.getItem("orderSubmitting") === "1") { showNotification("⛔ الطلب قيد الإرسال بالفعل", "error"); return; }
+            const user = auth.currentUser;
+            if (!user) { showNotification('يجب تسجيل الدخول أولاً!', 'error'); setTimeout(() => { window.location.href = 'index.html'; }, 1500); return; }
+            if (!validateOrderData()) return;
+            if (!order.cart || order.cart.length === 0) { showNotification("⚠️ سلة الطلبات فارغة", "error"); return; }
+
+            isSubmittingOrder = true;
+            localStorage.setItem("orderSubmitting", "1");
+            if (confirmIntervalId) clearInterval(confirmIntervalId);
+            if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
+            confirmIntervalId = null; confirmTimeoutId = null; confirmMode = false;
+            setSendButtonText('<i class="fas fa-spinner fa-spin"></i> جاري إرسال الطلب...', true);
+
+            const normalizedItems = order.cart.map(normalizeCartItem);
+            const newOrder = {
+                code: Math.floor(100000 + Math.random() * 900000),
+                studentName: document.getElementById("studentName").value.trim(),
+                phone: document.getElementById("phoneInput").value.trim(),
+                email: user.email || "غير معروف",
+                userId: user.uid,
+                items: normalizedItems.map(it => ({
+                    name: it.name, img: it.img, quantity: it.quantity,
+                    unitPrice: it.unitPrice, lineTotal: it.lineTotal,
+                    extras: it.extras || [], size: it.size || "", breadType: it.breadType || ""
+                })),
+                pickupTime: document.getElementById("pickupInput").value,
+                paymentMethod: selectedPaymentMethod,
+                notes: document.getElementById("noteInput").value.trim(),
+                total: normalizedItems.reduce((sum, it) => sum + it.lineTotal, 0),
+                status: "قيد المعالجة",
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                // ✅ Rate limiting - منع الإرسال المتكرر
+                const now = Date.now();
+                const last = Number(localStorage.getItem("lastOrderSentAt") || 0);
+                if (now - last < 20000) throw new Error("TOO_FAST");
+
+                await db.ref("orders").push(newOrder);
+                localStorage.setItem("lastOrderSentAt", String(now));
+                clearCartPageAfterSend();
+                showStatusTracking(newOrder);
+                showNotification("✅ تم إرسال طلبك بنجاح!", "success");
+                showMyOrders();
+            } catch (error) {
+                if (String(error.message || "").includes("TOO_FAST")) {
+                    showNotification("⛔ لا يمكنك إرسال طلبين بسرعة. انتظر 20 ثانية", "error");
+                } else {
+                    showNotification("❌ حدث خطأ أثناء إرسال الطلب", "error");
+                    console.error(error);
+                }
+            } finally {
+                isSubmittingOrder = false;
+                localStorage.removeItem("orderSubmitting");
+                setSendButtonText('<i class="fas fa-paper-plane"></i> إرسال الطلب', false);
+            }
+        }
+
+        function showStatusTracking(data) {
+            const statusView = document.getElementById("statusView");
+            statusView.style.display = 'block';
+            statusView.innerHTML = `
+                <div style="background-color:rgba(39,174,96,0.1);border:1px solid #27ae60;border-radius:var(--radius-md);padding:25px;text-align:center;margin-bottom:30px;">
+                    <h3 style="color:#27ae60;margin-bottom:15px;font-size:1.5rem;"><i class="fas fa-check-circle"></i> تم استلام طلبك بنجاح</h3>
+                    <div style="display:flex;justify-content:space-around;background:var(--bg-card);padding:15px;border-radius:var(--radius-sm);">
+                        <div><p style="color:var(--text-secondary);font-size:0.9rem;">رقم الطلب</p><strong style="font-size:1.2rem;color:var(--text-primary);">${data.code}</strong></div>
+                        <div><p style="color:var(--text-secondary);font-size:0.9rem;">الحالة الحالية</p><strong style="font-size:1.2rem;color:var(--accent-secondary);">${data.status}</strong></div>
+                    </div>
+                </div>`;
+        }
+
+        // =========================================
+        // MY ORDERS
+        // =========================================
+        function showMyOrders() {
+            myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>🔄 جاري تحميل طلباتك...</p>";
+            const user = auth.currentUser;
+            if (!user) { myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ يرجى تسجيل الدخول.</p>"; return; }
+
+            // ✅ query بـ userId - يجلب طلبات المستخدم فقط
+            db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+                myOrdersContainer.innerHTML = "";
+                if (!snapshot.exists()) { myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ لا توجد طلبات حالية.</p>"; return; }
+                snapshot.forEach(child => {
+                    const ord = child.val();
+                    const card = document.createElement("div");
+                    card.style.cssText = "background-color:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:20px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;";
+                    let statusColor = "#ffb74d";
+                    if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+                    else if (ord.status === "جاهز") statusColor = "#81c784";
+                    else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+                    card.innerHTML = `
+                        <div>
+                            <h3 style="margin-bottom:10px;color:var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code}</h3>
+                            <p style="color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام: <strong style="color:var(--text-primary);">${ord.pickupTime}</strong></p>
+                        </div>
+                        <div style="background-color:${statusColor}22;color:${statusColor};padding:8px 16px;border-radius:var(--radius-pill);font-weight:600;">${ord.status}</div>`;
+                    myOrdersContainer.appendChild(card);
+                });
+            });
+        }
+
+        // =========================================
+        // USER ORDERS MODAL
+        // =========================================
+        let userOrdersListenerModal = null;
+
+        function openUserOrdersModal() {
+            const user = auth.currentUser;
+            if (!user) { showNotification("يجب تسجيل الدخول لرؤية طلباتك", "error"); return; }
+            document.getElementById("userOrdersModal").style.display = "block";
+            const container = document.getElementById("userOrdersListContainer");
+            container.innerHTML = "<p style='color:var(--text-secondary);text-align:center;'>جاري تحميل طلباتك...</p>";
+            if (userOrdersListenerModal) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal);
+            userOrdersListenerModal = db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+                container.innerHTML = "";
+                if (!snapshot.exists()) { container.innerHTML = "<p style='color:var(--text-secondary);text-align:center;'>لا توجد طلبات حالية.</p>"; return; }
+                const orders = [];
+                snapshot.forEach(child => { orders.push({ id: child.key, ...child.val() }); });
+                orders.reverse();
+                orders.forEach(ord => {
+                    const card = document.createElement("div");
+                    card.style.cssText = "background-color:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:15px;display:flex;justify-content:space-between;align-items:center;";
+                    let statusColor = "#ffb74d";
+                    if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+                    else if (ord.status === "جاهز") statusColor = "#81c784";
+                    else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-weight:bold;margin-bottom:5px;color:var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code || "---"}</div>
+                            <div style="font-size:0.85rem;color:var(--text-secondary);"><i class="fas fa-clock"></i> الاستلام: ${ord.pickupTime || "غير محدد"}</div>
+                        </div>
+                        <div style="background-color:${statusColor}22;color:${statusColor};padding:5px 10px;border-radius:var(--radius-pill);font-size:0.85rem;font-weight:600;">${ord.status || "قيد المعالجة"}</div>`;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function closeUserOrdersModal() {
+            document.getElementById("userOrdersModal").style.display = "none";
+            if (userOrdersListenerModal) { const user = auth.currentUser; if (user) db.ref("orders").orderByChild("userId").equalTo(user.uid).off("value", userOrdersListenerModal); }
+        }
+
+        window.addEventListener("click", function(event) {
+            if (event.target === document.getElementById("userOrdersModal")) closeUserOrdersModal();
+        });
+
+        window.addEventListener("beforeunload", () => {
+            if (confirmIntervalId) clearInterval(confirmIntervalId);
+            if (confirmTimeoutId) clearTimeout(confirmTimeoutId);
+        });
+
+        // ✅ تهيئة أولية
+        displayCartItems();
+    </script>
 </body>
 </html>
