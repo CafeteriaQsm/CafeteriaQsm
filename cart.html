@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8" />
-    <title>سلة الطلبات - كافيتيريا القاسمي</title>
+    <title>سلة الطلبات - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
@@ -12,7 +12,7 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fa-solid fa-utensils"></i>
-                <span>كافيتيريا القاسمي</span>
+                <span>كافيتيريا Fulla</span>
             </div>
             <div class="nav-links">
                 <a href="menu.html">القائمة</a>
@@ -127,11 +127,12 @@
 
         firebase.initializeApp(firebaseConfig);
 
-     // ✅ وضع debug مؤقت للاختبار
-firebase.appCheck().activate(
-  new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
-  true
-);
+        // ✅ App Check
+        firebase.appCheck().activate(
+            new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
+            true
+        );
+
         const db = firebase.database();
         const auth = firebase.auth();
 
@@ -406,35 +407,33 @@ firebase.appCheck().activate(
         // MY ORDERS
         // =========================================
         function showMyOrders() {
-    myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>🔄 جاري تحميل طلباتك...</p>";
-    const user = auth.currentUser;
-    if (!user) { myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ يرجى تسجيل الدخول.</p>"; return; }
+            myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>🔄 جاري تحميل طلباتك...</p>";
+            const user = auth.currentUser;
+            if (!user) { myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ يرجى تسجيل الدخول.</p>"; return; }
 
-    // ✅ قراءة طلبات المستخدم مباشرة بدون query على orders كاملة
-    db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
-        myOrdersContainer.innerHTML = "";
-        if (!snapshot.exists()) {
-            myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ لا توجد طلبات حالية.</p>";
-            return;
+            // ✅ query بـ userId - يجلب طلبات المستخدم فقط
+            db.ref("orders").orderByChild("userId").equalTo(user.uid).on("value", snapshot => {
+                myOrdersContainer.innerHTML = "";
+                if (!snapshot.exists()) { myOrdersContainer.innerHTML = "<p style='color:var(--text-secondary);'>❌ لا توجد طلبات حالية.</p>"; return; }
+                snapshot.forEach(child => {
+                    const ord = child.val();
+                    const card = document.createElement("div");
+                    card.style.cssText = "background-color:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:20px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;";
+                    let statusColor = "#ffb74d";
+                    if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
+                    else if (ord.status === "جاهز") statusColor = "#81c784";
+                    else if (ord.status === "تم التسليم") statusColor = "#27ae60";
+                    card.innerHTML = `
+                        <div>
+                            <h3 style="margin-bottom:10px;color:var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code}</h3>
+                            <p style="color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام: <strong style="color:var(--text-primary);">${ord.pickupTime}</strong></p>
+                        </div>
+                        <div style="background-color:${statusColor}22;color:${statusColor};padding:8px 16px;border-radius:var(--radius-pill);font-weight:600;">${ord.status}</div>`;
+                    myOrdersContainer.appendChild(card);
+                });
+            });
         }
-        snapshot.forEach(child => {
-            const ord = child.val();
-            const card = document.createElement("div");
-            card.style.cssText = "background-color:rgba(255,255,255,0.03);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:20px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;";
-            let statusColor = "#ffb74d";
-            if (ord.status === "جاري التحضير") statusColor = "#64b5f6";
-            else if (ord.status === "جاهز") statusColor = "#81c784";
-            else if (ord.status === "تم التسليم") statusColor = "#27ae60";
-            card.innerHTML = `
-                <div>
-                    <h3 style="margin-bottom:10px;color:var(--text-primary);"><i class="fas fa-receipt"></i> رقم الطلب: ${ord.code}</h3>
-                    <p style="color:var(--text-secondary);"><i class="fas fa-clock"></i> وقت الاستلام: <strong style="color:var(--text-primary);">${ord.pickupTime}</strong></p>
-                </div>
-                <div style="background-color:${statusColor}22;color:${statusColor};padding:8px 16px;border-radius:var(--radius-pill);font-weight:600;">${ord.status}</div>`;
-            myOrdersContainer.appendChild(card);
-        });
-    });
-}
+
         // =========================================
         // USER ORDERS MODAL
         // =========================================
