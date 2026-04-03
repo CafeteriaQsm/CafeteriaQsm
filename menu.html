@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8" />
-    <title>قائمة الطعام - كافيتيريا القاسمي</title>
+    <title>قائمة الطعام - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -13,7 +13,7 @@
         <div class="header-content">
             <div class="logo">
                 <i class="fa-solid fa-utensils"></i>
-                <span>كافيتيريا القاسمي</span>
+                <span>كافيتيريا Fulla</span>
             </div>
             <div class="nav-links">
                 <a href="menu.html" class="active">القائمة</a>
@@ -123,11 +123,11 @@
 
         firebase.initializeApp(firebaseConfig);
 
-      // ✅ وضع debug مؤقت للاختبار
-firebase.appCheck().activate(
-  new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
-  true
-);
+        // ✅ App Check
+        firebase.appCheck().activate(
+            new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
+            true
+        );
 
         // ✅ استخدام db بشكل موحد
         const auth = firebase.auth();
