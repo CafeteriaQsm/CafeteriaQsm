@@ -29,6 +29,7 @@
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
@@ -43,18 +44,21 @@
             appId: "1:457381739769:web:409cb927ef54368cb3f628"
         };
 
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+
+        // ✅ App Check - حماية ضد الطلبات الخارجية
+        firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
+
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Check if already logged in
+        // إذا مسجل دخول انقله للقائمة
         auth.onAuthStateChanged(user => {
             if (user) {
                 window.location.href = 'menu.html';
             }
         });
 
-        // Google Login Provider
         const provider = new firebase.auth.GoogleAuthProvider();
 
         window.loginWithGoogle = async function () {
@@ -63,39 +67,25 @@
             messageDiv.style.color = 'var(--accent-secondary)';
 
             try {
-                // Set persistence
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                
-                // Sign in with Google
                 const result = await auth.signInWithPopup(provider);
                 const user = result.user;
 
-                // Create or update user node in DB
                 const userRef = database.ref('users/' + user.uid);
-                
-                // Fetch existing details
                 const snapshot = await userRef.once('value');
                 const userData = snapshot.val();
-                
-                let updateData = {
+
+                await userRef.update({
                     lastLoginTime: new Date().toISOString(),
                     email: user.email,
                     displayName: user.displayName || "مستخدم جديد",
-                    role: userData && userData.role ? userData.role : "user" // retain admin role if exists
-                };
+                    role: userData && userData.role ? userData.role : "user"
+                });
 
-                await userRef.update(updateData);
-                
-                if (userData && userData.lastLoginTime) {
-                    localStorage.setItem('lastLoginTime', userData.lastLoginTime);
-                }
-
-                messageDiv.style.color = '#2e7d32'; // Success green
+                messageDiv.style.color = '#2e7d32';
                 messageDiv.textContent = '✅ تم تسجيل الدخول بنجاح! جاري تحويلك...';
 
-                setTimeout(() => {
-                    window.location.href = 'menu.html';
-                }, 1000);
+                setTimeout(() => { window.location.href = 'menu.html'; }, 1000);
 
             } catch (error) {
                 console.error(error);
@@ -105,7 +95,7 @@
                 } else if (error.code === 'auth/network-request-failed') {
                     errorMessage = '❌ فشل الاتصال بالشبكة، يرجى المحاولة لاحقاً';
                 }
-                messageDiv.style.color = 'var(--accent-primary)'; // Error red
+                messageDiv.style.color = 'var(--accent-primary)';
                 messageDiv.textContent = errorMessage;
             }
         };
