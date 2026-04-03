@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8" />
-    <title>لوحة تحكم الأدمن - كافيتيريا القاسمي</title>
+    <title>لوحة تحكم الأدمن - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
@@ -83,11 +83,11 @@
 
         firebase.initializeApp(firebaseConfig);
 
-      // ✅ وضع debug مؤقت للاختبار
-firebase.appCheck().activate(
-  new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
-  true
-);
+        // ✅ App Check
+        firebase.appCheck().activate(
+            new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
+            true
+        );
 
         const db = firebase.database();
         const auth = firebase.auth();
