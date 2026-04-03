@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>تسجيل الدخول - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
     <style>
         .auth-wrapper {
             background-image: url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?q=80&w=1980&auto=format&fit=crop');
@@ -19,10 +21,11 @@
                 <i class="fa-solid fa-utensils"></i>
                 <span>كافيتيريا Fulla</span>
             </div>
-            <h1>مرحباً بك 👋</h1>
+
+            <h1>مرحباً بك</h1>
             <p class="subtitle">سجّل دخولك للاستمتاع بأشهى المأكولات</p>
 
-            <button type="button" class="google-btn" id="loginBtn" onclick="loginWithGoogle()">
+            <button type="button" class="google-btn" id="loginBtn">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                 تسجيل الدخول عبر Google
             </button>
@@ -48,6 +51,7 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+
         firebase.appCheck().activate(
             new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
             true
@@ -56,76 +60,107 @@
         const auth = firebase.auth();
         const database = firebase.database();
         const provider = new firebase.auth.GoogleAuthProvider();
-        const messageDiv = document.getElementById('message');
 
-        // ✅ الخطوة 1: تحقق من نتيجة الـ redirect أولاً قبل أي شيء
-        auth.getRedirectResult().then(async result => {
-            if (result && result.user) {
-                // جاء من redirect ناجح
-                messageDiv.style.color = '#43a047';
-                messageDiv.textContent = '✅ تم تسجيل الدخول! جاري التحويل...';
-                await handleLoginSuccess(result.user);
-            } else {
-                // لا يوجد redirect — شغّل onAuthStateChanged
-                auth.onAuthStateChanged(user => {
-                    if (user) window.location.href = 'menu.html';
-                });
-            }
-        }).catch(err => {
-            console.error('Redirect error:', err);
-            auth.onAuthStateChanged(user => {
-                if (user) window.location.href = 'menu.html';
+        const loginBtn = document.getElementById("loginBtn");
+        const messageDiv = document.getElementById("message");
+
+        let handledLogin = false;
+
+        function setMessage(text, color) {
+            messageDiv.textContent = text;
+            messageDiv.style.color = color;
+        }
+
+        async function saveUserData(user) {
+            const userRef = database.ref("users/" + user.uid);
+            const snapshot = await userRef.once("value");
+            const userData = snapshot.val();
+
+            await userRef.update({
+                lastLoginTime: new Date().toISOString(),
+                email: user.email || "",
+                displayName: user.displayName || "مستخدم",
+                role: userData && userData.role ? userData.role : "user"
             });
+        }
+
+        async function handleLoginSuccess(user) {
+            if (handledLogin) return;
+            handledLogin = true;
+
+            try {
+                setMessage("✅ تم تسجيل الدخول! جاري التحويل...", "#43a047");
+                await saveUserData(user);
+            } catch (error) {
+                console.error("Save user error:", error);
+            }
+
+            sessionStorage.removeItem("login_in_progress");
+            window.location.replace("menu.html");
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                await handleLoginSuccess(user);
+            } else {
+                loginBtn.disabled = false;
+
+                if (sessionStorage.getItem("login_in_progress") === "1") {
+                    setMessage("⏳ جاري استكمال تسجيل الدخول...", "var(--accent-secondary)");
+                }
+            }
         });
 
-        // ✅ دالة تسجيل الدخول
-        window.loginWithGoogle = async function () {
-            messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
-            messageDiv.style.color = 'var(--accent-secondary)';
-            const loginBtn = document.getElementById('loginBtn');
+        auth.getRedirectResult()
+            .then(async (result) => {
+                if (result && result.user) {
+                    await handleLoginSuccess(result.user);
+                }
+            })
+            .catch((error) => {
+                console.error("Redirect error:", error);
+                loginBtn.disabled = false;
+                sessionStorage.removeItem("login_in_progress");
+
+                let msg = "❌ حدث خطأ أثناء استكمال تسجيل الدخول";
+                if (error.code === "auth/network-request-failed") msg = "❌ فشل الاتصال بالشبكة";
+                if (error.code === "auth/web-storage-unsupported") msg = "❌ المتصفح لا يدعم التخزين المطلوب";
+
+                setMessage(msg, "var(--accent-primary)");
+            });
+
+        loginBtn.addEventListener("click", async function () {
             loginBtn.disabled = true;
+            setMessage("⏳ جاري تسجيل الدخول...", "var(--accent-secondary)");
 
             try {
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-                // ✅ الجوال يستخدم redirect، الكمبيوتر يستخدم popup
                 const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
 
                 if (isMobile) {
+                    sessionStorage.setItem("login_in_progress", "1");
                     await auth.signInWithRedirect(provider);
-                    // الصفحة ستُعاد تحميلها تلقائياً
                 } else {
                     const result = await auth.signInWithPopup(provider);
-                    await handleLoginSuccess(result.user);
+                    if (result && result.user) {
+                        await handleLoginSuccess(result.user);
+                    }
                 }
             } catch (error) {
+                console.error("Login error:", error);
                 loginBtn.disabled = false;
-                let msg = '❌ حدث خطأ، حاول مجدداً';
-                if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
-                else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
-                else if (error.code === 'auth/popup-blocked') msg = '❌ تم حظر النافذة، جرب مجدداً';
-                messageDiv.style.color = 'var(--accent-primary)';
-                messageDiv.textContent = msg;
-            }
-        };
+                sessionStorage.removeItem("login_in_progress");
 
-        // ✅ حفظ بيانات المستخدم والانتقال لصفحة القائمة
-        async function handleLoginSuccess(user) {
-            try {
-                const userRef = database.ref('users/' + user.uid);
-                const snapshot = await userRef.once('value');
-                const userData = snapshot.val();
-                await userRef.update({
-                    lastLoginTime: new Date().toISOString(),
-                    email: user.email,
-                    displayName: user.displayName || "مستخدم",
-                    role: userData && userData.role ? userData.role : "user"
-                });
-            } catch (e) {
-                console.error(e);
+                let msg = "❌ حدث خطأ، حاول مجدداً";
+                if (error.code === "auth/popup-closed-by-user") msg = "❌ تم إغلاق نافذة الدخول";
+                else if (error.code === "auth/network-request-failed") msg = "❌ فشل الاتصال بالشبكة";
+                else if (error.code === "auth/popup-blocked") msg = "❌ تم حظر النافذة، جرب مجدداً";
+                else if (error.code === "auth/cancelled-popup-request") msg = "❌ تم إلغاء محاولة الدخول السابقة";
+
+                setMessage(msg, "var(--accent-primary)");
             }
-            window.location.href = 'menu.html';
-        }
+        });
     </script>
 </body>
 </html>
