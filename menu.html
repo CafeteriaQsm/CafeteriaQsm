@@ -120,25 +120,31 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-    <script>
+<script>
   const firebaseConfig = {
-      apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
-      authDomain: "cafeteria-app-82268.firebaseapp.com",
-      databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "cafeteria-app-82268",
-      storageBucket: "cafeteria-app-82268.appspot.com",
-      messagingSenderId: "457381739769",
-      appId: "1:457381739769:web:409cb927ef54368cb3f628"
+    apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
+    authDomain: "cafeteria-app-82268.firebaseapp.com",
+    databaseURL: "https://cafeteria-app-82268-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cafeteria-app-82268",
+    storageBucket: "cafeteria-app-82268.appspot.com",
+    messagingSenderId: "457381739769",
+    appId: "1:457381739769:web:409cb927ef54368cb3f628"
   };
 
-  const app = firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
+
+  // ✅ App Check
+  firebase.appCheck().activate('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr', true);
+
+  const db = firebase.database();
   const auth = firebase.auth();
-  const database = firebase.database();
+</script>
 
 
   // =========================================
