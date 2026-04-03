@@ -79,7 +79,8 @@
                 <div class="extras-list" id="extrasList"></div>
             </div>
             <h3>ملاحظات خاصة:</h3>
-            <textarea id="notesInput" rows="3" placeholder="ملاحظاتك (مثال: بدون بصل...)"></textarea>
+            <textarea id="notesInput" rows="3" maxlength="150" placeholder="ملاحظاتك (مثال: بدون بصل...) — حد أقصى 150 حرف"></textarea>
+            <small id="modalNoteCounter" style="color:var(--text-secondary);font-size:0.78rem;text-align:left;display:block;margin-top:4px;">0 / 150</small>
             <div id="totalPriceDisplay">السعر الإجمالي: 0 شيكل</div>
             <div class="modal-footer">
                 <div id="quantityControl">
