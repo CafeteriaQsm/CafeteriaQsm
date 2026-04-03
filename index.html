@@ -63,34 +63,50 @@
 
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        window.loginWithGoogle = async function () {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
-            messageDiv.style.color = 'var(--accent-secondary)';
-            try {
-                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                const userRef = database.ref('users/' + user.uid);
-                const snapshot = await userRef.once('value');
-                const userData = snapshot.val();
-                await userRef.update({
-                    lastLoginTime: new Date().toISOString(),
-                    email: user.email,
-                    displayName: user.displayName || "مستخدم",
-                    role: userData && userData.role ? userData.role : "user"
-                });
-                messageDiv.style.color = '#43a047';
-                messageDiv.textContent = '✅ تم تسجيل الدخول! جاري التحويل...';
-                setTimeout(() => { window.location.href = 'menu.html'; }, 900);
-            } catch (error) {
-                let msg = '❌ حدث خطأ، حاول مجدداً';
-                if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
-                else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
-                messageDiv.style.color = 'var(--accent-primary)';
-                messageDiv.textContent = msg;
-            }
-        };
+       window.loginWithGoogle = async function () {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = '⏳ جاري تسجيل الدخول...';
+    messageDiv.style.color = 'var(--accent-secondary)';
+    try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        // ✅ على الجوال استخدم redirect بدل popup
+        const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            await auth.signInWithRedirect(provider);
+        } else {
+            const result = await auth.signInWithPopup(provider);
+            await handleLoginSuccess(result.user);
+        }
+    } catch (error) {
+        let msg = '❌ حدث خطأ، حاول مجدداً';
+        if (error.code === 'auth/popup-closed-by-user') msg = '❌ تم إغلاق نافذة الدخول';
+        else if (error.code === 'auth/network-request-failed') msg = '❌ فشل الاتصال بالشبكة';
+        messageDiv.style.color = 'var(--accent-primary)';
+        messageDiv.textContent = msg;
+    }
+};
+
+// ✅ معالجة نتيجة الـ redirect بعد العودة
+auth.getRedirectResult().then(async result => {
+    if (result && result.user) {
+        await handleLoginSuccess(result.user);
+    }
+}).catch(err => console.error(err));
+
+async function handleLoginSuccess(user) {
+    const userRef = database.ref('users/' + user.uid);
+    const snapshot = await userRef.once('value');
+    const userData = snapshot.val();
+    await userRef.update({
+        lastLoginTime: new Date().toISOString(),
+        email: user.email,
+        displayName: user.displayName || "مستخدم",
+        role: userData && userData.role ? userData.role : "user"
+    });
+    window.location.href = 'menu.html';
+}
     </script>
 </body>
 </html>
