@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <title>تسجيل الدخول - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-
     <style>
         .auth-wrapper {
             background-image: url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?q=80&w=1980&auto=format&fit=crop');
@@ -35,7 +33,6 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
@@ -52,11 +49,6 @@
 
         firebase.initializeApp(firebaseConfig);
 
-        firebase.appCheck().activate(
-            new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
-            true
-        );
-
         const auth = firebase.auth();
         const database = firebase.database();
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -64,7 +56,8 @@
         const loginBtn = document.getElementById("loginBtn");
         const messageDiv = document.getElementById("message");
 
-        let handledLogin = false;
+        let handled = false;
+        let authChecked = false;
 
         function setMessage(text, color) {
             messageDiv.textContent = text;
@@ -74,64 +67,73 @@
         async function saveUserData(user) {
             const userRef = database.ref("users/" + user.uid);
             const snapshot = await userRef.once("value");
-            const userData = snapshot.val();
+            const oldData = snapshot.val();
 
             await userRef.update({
                 lastLoginTime: new Date().toISOString(),
                 email: user.email || "",
                 displayName: user.displayName || "مستخدم",
-                role: userData && userData.role ? userData.role : "user"
+                role: oldData && oldData.role ? oldData.role : "user"
             });
         }
 
-        async function handleLoginSuccess(user) {
-            if (handledLogin) return;
-            handledLogin = true;
+        async function finishLogin(user) {
+            if (handled) return;
+            handled = true;
 
             try {
                 setMessage("✅ تم تسجيل الدخول! جاري التحويل...", "#43a047");
                 await saveUserData(user);
-            } catch (error) {
-                console.error("Save user error:", error);
+            } catch (e) {
+                console.error("saveUserData error:", e);
             }
 
-            sessionStorage.removeItem("login_in_progress");
+            localStorage.removeItem("login_in_progress");
             window.location.replace("menu.html");
         }
 
         auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                await handleLoginSuccess(user);
-            } else {
-                loginBtn.disabled = false;
+            authChecked = true;
 
-                if (sessionStorage.getItem("login_in_progress") === "1") {
-                    setMessage("⏳ جاري استكمال تسجيل الدخول...", "var(--accent-secondary)");
-                }
+            if (user) {
+                await finishLogin(user);
+                return;
+            }
+
+            loginBtn.disabled = false;
+
+            if (localStorage.getItem("login_in_progress") === "1") {
+                setMessage("❌ لم يكتمل تسجيل الدخول. حاول مرة أخرى.", "#e53935");
+                localStorage.removeItem("login_in_progress");
             }
         });
 
         auth.getRedirectResult()
             .then(async (result) => {
                 if (result && result.user) {
-                    await handleLoginSuccess(result.user);
+                    await finishLogin(result.user);
                 }
             })
             .catch((error) => {
                 console.error("Redirect error:", error);
                 loginBtn.disabled = false;
-                sessionStorage.removeItem("login_in_progress");
+                localStorage.removeItem("login_in_progress");
 
-                let msg = "❌ حدث خطأ أثناء استكمال تسجيل الدخول";
-                if (error.code === "auth/network-request-failed") msg = "❌ فشل الاتصال بالشبكة";
-                if (error.code === "auth/web-storage-unsupported") msg = "❌ المتصفح لا يدعم التخزين المطلوب";
+                let msg = "❌ فشل استكمال تسجيل الدخول";
+                if (error.code === "auth/unauthorized-domain") {
+                    msg = "❌ هذا الدومين غير مضاف في Firebase Authorized Domains";
+                } else if (error.code === "auth/network-request-failed") {
+                    msg = "❌ فشل الاتصال بالشبكة";
+                } else if (error.code === "auth/web-storage-unsupported") {
+                    msg = "❌ المتصفح لا يدعم التخزين المطلوب لتسجيل الدخول";
+                }
 
-                setMessage(msg, "var(--accent-primary)");
+                setMessage(msg, "#e53935");
             });
 
-        loginBtn.addEventListener("click", async function () {
+        loginBtn.addEventListener("click", async () => {
             loginBtn.disabled = true;
-            setMessage("⏳ جاري تسجيل الدخول...", "var(--accent-secondary)");
+            setMessage("⏳ جاري تسجيل الدخول...", "#ff9800");
 
             try {
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
@@ -139,28 +141,35 @@
                 const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
 
                 if (isMobile) {
-                    sessionStorage.setItem("login_in_progress", "1");
+                    localStorage.setItem("login_in_progress", "1");
                     await auth.signInWithRedirect(provider);
                 } else {
                     const result = await auth.signInWithPopup(provider);
                     if (result && result.user) {
-                        await handleLoginSuccess(result.user);
+                        await finishLogin(result.user);
                     }
                 }
             } catch (error) {
                 console.error("Login error:", error);
                 loginBtn.disabled = false;
-                sessionStorage.removeItem("login_in_progress");
+                localStorage.removeItem("login_in_progress");
 
-                let msg = "❌ حدث خطأ، حاول مجدداً";
-                if (error.code === "auth/popup-closed-by-user") msg = "❌ تم إغلاق نافذة الدخول";
+                let msg = "❌ حدث خطأ، حاول مجددًا";
+                if (error.code === "auth/popup-closed-by-user") msg = "❌ تم إغلاق نافذة تسجيل الدخول";
+                else if (error.code === "auth/popup-blocked") msg = "❌ المتصفح حظر نافذة تسجيل الدخول";
                 else if (error.code === "auth/network-request-failed") msg = "❌ فشل الاتصال بالشبكة";
-                else if (error.code === "auth/popup-blocked") msg = "❌ تم حظر النافذة، جرب مجدداً";
-                else if (error.code === "auth/cancelled-popup-request") msg = "❌ تم إلغاء محاولة الدخول السابقة";
 
-                setMessage(msg, "var(--accent-primary)");
+                setMessage(msg, "#e53935");
             }
         });
+
+        setTimeout(() => {
+            if (!handled && localStorage.getItem("login_in_progress") === "1" && authChecked) {
+                loginBtn.disabled = false;
+                setMessage("❌ تعذر إكمال تسجيل الدخول على الهاتف. تأكد من إعدادات Firebase والدومين.", "#e53935");
+                localStorage.removeItem("login_in_progress");
+            }
+        }, 5000);
     </script>
 </body>
 </html>
