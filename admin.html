@@ -16,6 +16,7 @@
             --accent-primary:#ef4444;
             --accent-secondary:#f59e0b;
             --accent-tertiary:#38bdf8;
+            --accent-success:#22c55e;
             --radius-sm:12px;
             --radius-md:18px;
         }
@@ -30,7 +31,7 @@
         }
 
         .admin-header{
-            background:rgba(17,24,39,.95);
+            background:rgba(17,24,39,.96);
             border-bottom:1px solid var(--border-color);
             position:sticky;
             top:0;
@@ -114,6 +115,7 @@
             font-weight:700;
             cursor:pointer;
             transition:.2s;
+            font-family:inherit;
         }
 
         .btn-primary{
@@ -130,7 +132,7 @@
 
         .btn-primary:hover,
         .btn-outline:hover{
-            opacity:.9;
+            opacity:.92;
             transform:translateY(-1px);
         }
 
@@ -161,12 +163,13 @@
             position:fixed;
             left:20px;
             bottom:20px;
-            z-index:9999;
+            z-index:99999;
             padding:14px 18px;
             border-radius:12px;
             color:#fff;
             font-weight:700;
             box-shadow:0 10px 25px rgba(0,0,0,.25);
+            max-width:420px;
         }
 
         .notification.success{background:#16a34a}
@@ -176,7 +179,7 @@
             position:fixed;
             inset:0;
             background:rgba(2,6,23,.92);
-            z-index:99999;
+            z-index:999999;
             display:flex;
             align-items:center;
             justify-content:center;
@@ -312,7 +315,7 @@
                 <h2 style="color:var(--accent-secondary);"><i class="fas fa-list"></i> إدارة توفر الوجبات</h2>
                 <button class="btn-outline" onclick="closeMealsModal()" style="padding:5px 15px;border-color:var(--accent-primary);color:var(--accent-primary);">إغلاق</button>
             </div>
-            <p style="color:var(--text-secondary);margin-bottom:20px;">قم بالضغط على الزر المقابل لأي وجبة لإيقاف بيعها مؤقتاً.</p>
+            <p style="color:var(--text-secondary);margin-bottom:20px;">قم بالضغط على الزر المقابل لأي وجبة لإيقاف بيعها مؤقتاً أو تفعيلها من جديد.</p>
             <div id="mealsListContainer" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;"></div>
         </div>
     </div>
@@ -386,7 +389,7 @@
         const ADMIN_EMAIL = "mohamad.36669@gmail.com";
 
         // =========================================
-        // AUTH UI
+        // AUTH
         // =========================================
         googleLoginBtn.addEventListener("click", loginWithGoogleForBoth);
 
@@ -412,13 +415,6 @@
             } catch (error) {
                 console.error(error);
                 showLoginOverlay("حدث خطأ أثناء التحقق من الدخول");
-            }
-        });
-
-        newAuth.onAuthStateChanged((user) => {
-            const oldUser = auth.currentUser;
-            if (oldUser && oldUser.email === ADMIN_EMAIL && user && user.email === ADMIN_EMAIL) {
-                hideLoginOverlay();
             }
         });
 
@@ -490,10 +486,13 @@
                     auth.signOut(),
                     newAuth.signOut()
                 ]);
+
                 listenersStarted = false;
                 allOrders = [];
                 oldOrdersCache = [];
                 firestoreOrdersCache = [];
+                unavailableMeals = {};
+
                 showEmptyState();
                 showLoginOverlay("تم تسجيل الخروج");
                 showNotification("تم تسجيل الخروج", "success");
@@ -674,7 +673,7 @@
         }
 
         // =========================================
-        // OLD REALTIME DATABASE LISTENERS
+        // LISTENERS
         // =========================================
         function startOldRealtimeListeners() {
             db.ref("orders").on("value", snapshot => {
@@ -694,9 +693,6 @@
             });
         }
 
-        // =========================================
-        // NEW FIRESTORE LISTENERS
-        // =========================================
         function startFirestoreListeners() {
             firestore.collection("orders")
                 .orderBy("createdAt", "desc")
@@ -745,18 +741,42 @@
                 card.style.cssText = `background:rgba(255,255,255,0.02);border:1px solid ${isUnavailable ? 'var(--accent-primary)' : 'var(--border-color)'};border-radius:var(--radius-sm);padding:15px;display:flex;flex-direction:column;gap:10px;text-align:center;`;
                 card.innerHTML = `
                     <div style="font-weight:bold;font-size:1.1rem;color:${isUnavailable ? 'var(--text-secondary)' : 'var(--text-primary)'}">${meal}</div>
-                    <div style="font-size:0.85rem;margin-bottom:5px;color:${isUnavailable ? 'var(--accent-primary)' : '#27ae60'}">${isUnavailable ? '<i class="fas fa-times-circle"></i> غير متوفر' : '<i class="fas fa-check-circle"></i> متوفر'}</div>
-                    <button class="${isUnavailable ? 'btn-outline' : 'btn-primary'}" style="${isUnavailable ? 'border-color:#27ae60;color:#27ae60;width:100%' : 'background-color:var(--accent-primary);border:none;width:100%;'}" onclick="toggleMealAvailability('${meal}', ${!isUnavailable})">
+                    <div style="font-size:0.85rem;margin-bottom:5px;color:${isUnavailable ? 'var(--accent-primary)' : '#27ae60'}">
+                        ${isUnavailable ? '<i class="fas fa-times-circle"></i> غير متوفر' : '<i class="fas fa-check-circle"></i> متوفر'}
+                    </div>
+                    <button class="${isUnavailable ? 'btn-outline' : 'btn-primary'}"
+                        style="${isUnavailable ? 'border-color:#27ae60;color:#27ae60;width:100%' : 'background-color:var(--accent-primary);border:none;width:100%;'}"
+                        onclick="toggleMealAvailability('${meal.replace(/'/g, "\\'")}', ${!isUnavailable})">
                         ${isUnavailable ? 'تفعيل الوجبة' : 'تعطيل'}
                     </button>`;
                 container.appendChild(card);
             });
         }
 
-        function toggleMealAvailability(meal, setUnavailable) {
-            db.ref('settings/unavailable_meals/' + meal).set(setUnavailable ? true : null)
-                .then(() => showNotification(setUnavailable ? `تم تعطيل ${meal}` : `تم تفعيل ${meal}`, "success"))
-                .catch(() => showNotification("فشل في تحديث حالة الوجبة", "error"));
+        async function toggleMealAvailability(meal, setUnavailable) {
+            try {
+                // القديم للموقع القديم
+                await db.ref('settings/unavailable_meals/' + meal).set(setUnavailable ? true : null);
+
+                // الجديد للتطبيق الحالي
+                await firestore.collection("settings").doc("availability").set({
+                    [meal]: !setUnavailable
+                }, { merge: true });
+
+                showNotification(setUnavailable ? `تم تعطيل ${meal}` : `تم تفعيل ${meal}`, "success");
+
+                // تحديث محلي سريع
+                if (setUnavailable) {
+                    unavailableMeals[meal] = true;
+                } else {
+                    delete unavailableMeals[meal];
+                }
+
+                renderMealsManager();
+            } catch (error) {
+                console.error(error);
+                showNotification("فشل في تحديث حالة الوجبة", "error");
+            }
         }
 
         // =========================================
@@ -848,7 +868,7 @@
                     ? `
                         <button class="btn-outline" style="flex:1;padding:9px;font-size:0.85rem;" onclick="updateStatus('${order.id}','firestore')"><i class="fas fa-sync-alt"></i> تحديث</button>
                         <button class="btn-primary" style="flex:1;padding:9px;background:#27ae60;border:none;font-size:0.85rem;" onclick="markAsDelivered('${order.id}','${orderCode}','firestore')"><i class="fas fa-check"></i> تسليم</button>
-                        <button class="btn-outline" style="flex:1;padding:9px;font-size:0.85rem;opacity:.6;cursor:not-allowed;" disabled><i class="fas fa-lock"></i> حذف غير متاح</button>
+                        <button class="btn-primary" style="flex:1;padding:9px;background:var(--accent-primary);border:none;font-size:0.85rem;" onclick="deleteOrder('${order.id}','${orderCode}','firestore')"><i class="fas fa-trash"></i> حذف</button>
                       `
                     : `
                         <button class="btn-outline" style="flex:1;padding:9px;font-size:0.85rem;" onclick="updateStatus('${order.id}','rtdb')"><i class="fas fa-sync-alt"></i> تحديث</button>
@@ -887,7 +907,6 @@
                     </div>
 
                     <div style="padding:16px 20px;flex-grow:1;">
-
                         <div style="background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;border:1px solid var(--border-color);">
                             <div style="font-weight:700;font-size:1rem;margin-bottom:8px;">
                                 <i class="fas fa-user" style="color:var(--accent-secondary);margin-left:6px;"></i>${getStudentName(order)}
@@ -929,7 +948,7 @@
         }
 
         // =========================================
-        // ORDER ACTIONS
+        // ACTIONS
         // =========================================
         function getStatusValue(orderId, source) {
             const sel = document.getElementById(`status-${source}-${orderId}`);
@@ -957,74 +976,106 @@
                 .catch(() => showNotification("❌ فشل في تحديث الحالة", "error"));
         }
 
-        function deleteOrder(orderId, code, source) {
-            if (source === "firestore") {
-                showNotification("حذف طلبات Firestore غير متاح من القواعد الحالية", "error");
-                return;
-            }
-
+        async function deleteOrder(orderId, code, source) {
             if (!confirm(`هل أنت متأكد أنك تريد حذف الطلب ${code ? "#" + code : ""} ؟`)) return;
-            db.ref("orders/" + orderId).remove()
-                .then(() => showNotification("✅ تم حذف الطلب بنجاح", "success"))
-                .catch(() => showNotification("❌ فشل في حذف الطلب", "error"));
-        }
 
-       async function markAsDelivered(orderId, code, source) {
-    if (!confirm(`تأكيد: هل تريد وضع الطلب ${code ? "#" + code : ""} كـ "تم التسليم"؟`)) return;
+            try {
+                if (source === "firestore") {
+                    const orderRef = firestore.collection("orders").doc(orderId);
+                    const orderSnap = await orderRef.get();
 
-    try {
-        if (source === "firestore") {
-            const orderRef = firestore.collection("orders").doc(orderId);
-            const orderSnap = await orderRef.get();
+                    if (!orderSnap.exists) {
+                        showNotification("الطلب غير موجود", "error");
+                        return;
+                    }
 
-            if (!orderSnap.exists) {
-                showNotification("الطلب غير موجود", "error");
-                return;
+                    const data = orderSnap.data();
+
+                    await firestore.collection("orders_archive").doc(orderId).set({
+                        ...data,
+                        archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        archiveReason: "manual_delete",
+                        originalOrderId: orderId
+                    });
+
+                    await orderRef.delete();
+                    showNotification("✅ تم حذف الطلب من القائمة وحفظه في الأرشيف", "success");
+                    return;
+                }
+
+                const oldRef = db.ref("orders/" + orderId);
+                const snap = await oldRef.once("value");
+
+                if (snap.exists()) {
+                    await db.ref("orders_archive/" + orderId).set({
+                        ...snap.val(),
+                        archivedAt: Date.now(),
+                        archiveReason: "manual_delete",
+                        originalOrderId: orderId
+                    });
+                }
+
+                await oldRef.remove();
+                showNotification("✅ تم حذف الطلب من القائمة وحفظه في الأرشيف", "success");
+            } catch (error) {
+                console.error(error);
+                showNotification("❌ فشل في حذف الطلب", "error");
             }
-
-            const data = orderSnap.data();
-
-            await firestore.collection("orders_archive").doc(orderId).set({
-                ...data,
-                status: "تم التسليم",
-                archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                archiveReason: "delivered",
-                originalOrderId: orderId
-            });
-
-            await orderRef.delete();
-
-            showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
-            return;
         }
 
-        // Realtime DB القديم
-        const oldRef = db.ref("orders/" + orderId);
-        const snap = await oldRef.once("value");
+        async function markAsDelivered(orderId, code, source) {
+            if (!confirm(`تأكيد: هل تريد وضع الطلب ${code ? "#" + code : ""} كـ "تم التسليم"؟`)) return;
 
-        if (!snap.exists()) {
-            showNotification("الطلب غير موجود", "error");
-            return;
+            try {
+                if (source === "firestore") {
+                    const orderRef = firestore.collection("orders").doc(orderId);
+                    const orderSnap = await orderRef.get();
+
+                    if (!orderSnap.exists) {
+                        showNotification("الطلب غير موجود", "error");
+                        return;
+                    }
+
+                    const data = orderSnap.data();
+
+                    await firestore.collection("orders_archive").doc(orderId).set({
+                        ...data,
+                        status: "تم التسليم",
+                        archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        archiveReason: "delivered",
+                        originalOrderId: orderId
+                    });
+
+                    await orderRef.delete();
+                    showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
+                    return;
+                }
+
+                const oldRef = db.ref("orders/" + orderId);
+                const snap = await oldRef.once("value");
+
+                if (!snap.exists()) {
+                    showNotification("الطلب غير موجود", "error");
+                    return;
+                }
+
+                const data = snap.val();
+
+                await db.ref("orders_archive/" + orderId).set({
+                    ...data,
+                    status: "تم التسليم",
+                    archivedAt: Date.now(),
+                    archiveReason: "delivered",
+                    originalOrderId: orderId
+                });
+
+                await oldRef.remove();
+                showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
+            } catch (error) {
+                console.error(error);
+                showNotification("❌ فشل في عملية التسليم", "error");
+            }
         }
-
-        const data = snap.val();
-
-        await db.ref("orders_archive/" + orderId).set({
-            ...data,
-            status: "تم التسليم",
-            archivedAt: Date.now(),
-            archiveReason: "delivered",
-            originalOrderId: orderId
-        });
-
-        await oldRef.remove();
-
-        showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
-    } catch (error) {
-        console.error(error);
-        showNotification("❌ فشل في عملية التسليم", "error");
-    }
-}
 
         // =========================================
         // EVENTS
