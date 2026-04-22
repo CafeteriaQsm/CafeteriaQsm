@@ -1,11 +1,248 @@
-<html lang="ar"><head><meta http-equiv="origin-trial" content="A7vZI3v+Gz7JfuRolKNM4Aff6zaGuT7X0mf3wtoZTnKv6497cVMnhy03KDqX7kBz/q/iidW7srW31oQbBt4VhgoAAACUeyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGUuY29tOjQ0MyIsImZlYXR1cmUiOiJEaXNhYmxlVGhpcmRQYXJ0eVN0b3JhZ2VQYXJ0aXRpb25pbmczIiwiZXhwaXJ5IjoxNzU3OTgwODAwLCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ==">
+<!DOCTYPE html>
+<html lang="ar">
+<head>
     <meta charset="UTF-8">
     <title>لوحة تحكم الأدمن - كافيتيريا Fulla</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-<script type="text/javascript" async="" charset="utf-8" src="https://www.gstatic.com/recaptcha/releases/gTpTIWhbKpxADzTzkcabhXN4/recaptcha__ar.js" crossorigin="anonymous" integrity="sha384-DE44d1oDwaEpyCaFxNKBNEn+KhsqSBwqjXl734GP9FqYSSGQiqRc6FcD3mug/M0/"></script><script src="https://www.google.com/recaptcha/api.js"></script></head>
+
+    <style>
+        :root{
+            --bg-dark:#0f172a;
+            --bg-card:#111827;
+            --text-primary:#f8fafc;
+            --text-secondary:#cbd5e1;
+            --border-color:#334155;
+            --accent-primary:#ef4444;
+            --accent-secondary:#f59e0b;
+            --accent-tertiary:#38bdf8;
+            --radius-sm:12px;
+            --radius-md:18px;
+        }
+
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:var(--bg-dark);
+            color:var(--text-primary);
+        }
+
+        .admin-header{
+            background:rgba(17,24,39,.95);
+            border-bottom:1px solid var(--border-color);
+            position:sticky;
+            top:0;
+            z-index:50;
+            backdrop-filter:blur(10px);
+        }
+
+        .header-content{
+            max-width:1400px;
+            margin:auto;
+            padding:18px 20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-weight:700;
+            font-size:1.1rem;
+        }
+
+        .container{
+            max-width:1400px;
+            margin:auto;
+            padding:40px 20px;
+        }
+
+        .dashboard-stats{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+            margin-bottom:30px;
+        }
+
+        .stat-card{
+            background:var(--bg-card);
+            border:1px solid var(--border-color);
+            border-radius:var(--radius-md);
+            padding:24px;
+            text-align:center;
+        }
+
+        .stat-card i{
+            font-size:1.8rem;
+            margin-bottom:12px;
+            color:var(--accent-secondary);
+        }
+
+        .stat-card h3{
+            margin:0 0 8px;
+            font-size:2rem;
+        }
+
+        .stat-card p{
+            margin:0;
+            color:var(--text-secondary);
+        }
+
+        .order-summary{
+            background:var(--bg-card);
+            border:1px solid var(--border-color);
+            border-radius:var(--radius-md);
+            padding:20px;
+        }
+
+        .orders-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(350px,1fr));
+            gap:25px;
+            align-items:start;
+        }
+
+        .btn-primary,
+        .btn-outline{
+            border-radius:10px;
+            padding:10px 14px;
+            font-weight:700;
+            cursor:pointer;
+            transition:.2s;
+        }
+
+        .btn-primary{
+            background:var(--accent-primary);
+            color:#fff;
+            border:none;
+        }
+
+        .btn-outline{
+            background:transparent;
+            color:var(--text-primary);
+            border:1px solid var(--border-color);
+        }
+
+        .btn-primary:hover,
+        .btn-outline:hover{
+            opacity:.9;
+            transform:translateY(-1px);
+        }
+
+        .status-badge{
+            padding:6px 10px;
+            border-radius:999px;
+            font-size:.82rem;
+            font-weight:700;
+            white-space:nowrap;
+        }
+
+        .status-pending{
+            background:rgba(255,183,77,.12);
+            color:#ffb74d;
+        }
+
+        .status-preparing{
+            background:rgba(100,181,246,.12);
+            color:#64b5f6;
+        }
+
+        .status-ready{
+            background:rgba(129,199,132,.12);
+            color:#81c784;
+        }
+
+        .notification{
+            position:fixed;
+            left:20px;
+            bottom:20px;
+            z-index:9999;
+            padding:14px 18px;
+            border-radius:12px;
+            color:#fff;
+            font-weight:700;
+            box-shadow:0 10px 25px rgba(0,0,0,.25);
+        }
+
+        .notification.success{background:#16a34a}
+        .notification.error{background:#dc2626}
+
+        .login-overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(2,6,23,.92);
+            z-index:99999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+        }
+
+        .login-card{
+            width:min(460px,100%);
+            background:var(--bg-card);
+            border:1px solid var(--border-color);
+            border-radius:24px;
+            padding:32px 24px;
+            text-align:center;
+            box-shadow:0 20px 60px rgba(0,0,0,.35);
+        }
+
+        .login-card h2{
+            margin:0 0 10px;
+            color:var(--accent-secondary);
+        }
+
+        .login-card p{
+            color:var(--text-secondary);
+            line-height:1.8;
+            margin:0 0 22px;
+        }
+
+        .loader{
+            width:18px;
+            height:18px;
+            border:3px solid rgba(255,255,255,.25);
+            border-top-color:#fff;
+            border-radius:50%;
+            display:inline-block;
+            animation:spin 1s linear infinite;
+            vertical-align:middle;
+        }
+
+        @keyframes spin{
+            to{transform:rotate(360deg)}
+        }
+
+        @media (max-width:768px){
+            .orders-container{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
+</head>
 <body>
+
+    <div id="loginOverlay" class="login-overlay" style="display:none;">
+        <div class="login-card">
+            <h2><i class="fas fa-user-shield"></i> تسجيل دخول الأدمن</h2>
+            <p>
+                يجب تسجيل الدخول بحساب Google الخاص بالأدمن
+                <br>
+                <strong>mohamad.36669@gmail.com</strong>
+            </p>
+            <button id="googleLoginBtn" class="btn-primary" style="width:100%;padding:14px 16px;font-size:1rem;">
+                <i class="fab fa-google"></i>
+                تسجيل الدخول بحساب Google
+            </button>
+            <div id="loginHint" style="margin-top:14px;color:var(--text-secondary);font-size:.92rem;"></div>
+        </div>
+    </div>
 
     <div class="admin-header">
         <div class="header-content">
@@ -13,19 +250,34 @@
                 <i class="fas fa-user-shield"></i>
                 <span>لوحة تحكم الأدمن</span>
             </div>
-            <div class="user-actions" style="display:flex;gap:10px;align-items:center;">
+            <div class="user-actions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
                 <button onclick="openMealsModal()" class="btn-outline" style="border-color:var(--accent-secondary);color:var(--accent-secondary);padding:8px 15px;">
                     <i class="fas fa-list-check"></i> إدارة توفر الوجبات
+                </button>
+                <button onclick="logoutAdmin()" class="btn-outline" style="padding:8px 15px;">
+                    <i class="fas fa-right-from-bracket"></i> تسجيل الخروج
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="container" style="padding:40px 20px;">
+    <div class="container">
         <div class="dashboard-stats">
-            <div class="stat-card"><i class="fas fa-receipt"></i><h3 id="totalOrders" style="color:var(--text-primary);">0</h3><p>إجمالي الطلبات</p></div>
-            <div class="stat-card"><i class="fas fa-clock" style="color:var(--accent-tertiary);"></i><h3 id="pendingOrders" style="color:var(--text-primary);">0</h3><p>قيد المعالجة</p></div>
-            <div class="stat-card"><i class="fas fa-check-circle" style="color:#27ae60;"></i><h3 id="completedOrders" style="color:var(--text-primary);">0</h3><p>مكتملة</p></div>
+            <div class="stat-card">
+                <i class="fas fa-receipt"></i>
+                <h3 id="totalOrders" style="color:var(--text-primary);">0</h3>
+                <p>إجمالي الطلبات</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock" style="color:var(--accent-tertiary);"></i>
+                <h3 id="pendingOrders" style="color:var(--text-primary);">0</h3>
+                <p>قيد المعالجة</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle" style="color:#27ae60;"></i>
+                <h3 id="completedOrders" style="color:var(--text-primary);">0</h3>
+                <p>مكتملة</p>
+            </div>
         </div>
 
         <div class="order-summary" style="margin-bottom:30px;position:static;display:flex;gap:20px;flex-wrap:wrap;">
@@ -45,12 +297,13 @@
             </div>
         </div>
 
-        <div class="orders-container" id="ordersContainer" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:25px;align-items:start;">
-                <div class="order-summary" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
-                    <i class="fas fa-clipboard-list" style="font-size:4rem;color:var(--border-color);margin-bottom:20px;"></i>
-                    <h3>لا توجد طلبات</h3>
-                    <p style="color:var(--text-secondary);">لم يتم العثور على أي طلبات حتى الآن</p>
-                </div></div>
+        <div class="orders-container" id="ordersContainer">
+            <div class="order-summary" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+                <i class="fas fa-clipboard-list" style="font-size:4rem;color:var(--border-color);margin-bottom:20px;"></i>
+                <h3>لا توجد طلبات</h3>
+                <p style="color:var(--text-secondary);">لم يتم العثور على أي طلبات حتى الآن</p>
+            </div>
+        </div>
     </div>
 
     <div id="mealsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;padding:20px;overflow-y:auto;">
@@ -63,7 +316,7 @@
             <div id="mealsListContainer" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;"></div>
         </div>
     </div>
-    <!-- Firebase SDKs -->
+
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-check-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
@@ -74,8 +327,6 @@
         // =========================================
         // FIREBASE CONFIGS
         // =========================================
-
-        // المشروع القديم الحالي للوحة الأدمن
         const oldFirebaseConfig = {
             apiKey: "AIzaSyC3-Ljb1uKSD4VhgavLUmwebqVivLxFIis",
             authDomain: "cafeteria-app-82268.firebaseapp.com",
@@ -86,7 +337,6 @@
             appId: "1:457381739769:web:409cb927ef54368cb3f628"
         };
 
-        // المشروع الجديد الخاص بالتطبيق الحالي
         const newFirebaseConfig = {
             apiKey: "AIzaSyAkCrTm0ZuQS7l8prN0JQnhWD4Pc2j5QkQ",
             authDomain: "fulla-caffe.firebaseapp.com",
@@ -96,24 +346,18 @@
             appId: "1:557692512095:web:790f94d299b03a09f138ea"
         };
 
-        // ✅ التطبيق القديم يبقى كما هو
         const oldApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(oldFirebaseConfig);
-
-        // ✅ تطبيق جديد منفصل للـ Firestore بدون حذف القديم
         const newApp = firebase.apps.find(app => app.name === "fullaCaffeAdmin")
             || firebase.initializeApp(newFirebaseConfig, "fullaCaffeAdmin");
 
-        // ✅ App Check للمشروع القديم فقط لأنه كان موجود أصلاً
         oldApp.appCheck().activate(
             new firebase.appCheck.ReCaptchaV3Provider('6LcjCaUsAAAAACPx5JTY_kbMM7x766UiScBBIEkr'),
             true
         );
 
-        // مراجع المشروع القديم
         const db = oldApp.database();
         const auth = oldApp.auth();
 
-        // مراجع المشروع الجديد
         const newAuth = newApp.auth();
         const firestore = newApp.firestore();
 
@@ -126,58 +370,154 @@
         const totalOrdersElement = document.getElementById("totalOrders");
         const pendingOrdersElement = document.getElementById("pendingOrders");
         const completedOrdersElement = document.getElementById("completedOrders");
+        const loginOverlay = document.getElementById("loginOverlay");
+        const googleLoginBtn = document.getElementById("googleLoginBtn");
+        const loginHint = document.getElementById("loginHint");
 
+        // =========================================
+        // STATE
+        // =========================================
         let allOrders = [];
         let unavailableMeals = {};
-        let oldOrdersReady = false;
-        let firestoreOrdersReady = false;
         let oldOrdersCache = [];
         let firestoreOrdersCache = [];
+        let listenersStarted = false;
 
         const ADMIN_EMAIL = "mohamad.36669@gmail.com";
 
-        // ⚠️ مهم جداً:
-        // حط نفس كلمة سر الأدمن الموجودة داخل مشروع fulla-caffe
-        // إذا ما كان في حساب أدمن داخل fulla-caffe لازم تنشئه أولاً في Firebase Authentication
-        const FULLA_ADMIN_PASSWORD = "PUT_THE_FULLA_ADMIN_PASSWORD_HERE";
-
         // =========================================
-        // AUTH GUARDS
+        // AUTH UI
         // =========================================
-        auth.onAuthStateChanged(async user => {
-            if (!user) {
-                alert("يجب تسجيل الدخول أولاً");
-                window.location.href = 'index.html';
-                return;
-            }
+        googleLoginBtn.addEventListener("click", loginWithGoogleForBoth);
 
-            if (user.email !== ADMIN_EMAIL) {
-                alert("غير مصرح لك بالدخول لهذه الصفحة");
-                window.location.href = 'index.html';
-                return;
-            }
-
+        auth.onAuthStateChanged(async (user) => {
             try {
-                await ensureFullaAdminAuth();
-                startOldRealtimeListeners();
-                startFirestoreListeners();
+                if (!user || user.email !== ADMIN_EMAIL) {
+                    showLoginOverlay("يجب تسجيل الدخول بحساب الأدمن");
+                    return;
+                }
+
+                const newUser = newAuth.currentUser;
+                if (!newUser || newUser.email !== ADMIN_EMAIL) {
+                    showLoginOverlay("اضغط تسجيل الدخول لربط قاعدة التطبيق الجديدة");
+                    return;
+                }
+
+                hideLoginOverlay();
+                if (!listenersStarted) {
+                    listenersStarted = true;
+                    startOldRealtimeListeners();
+                    startFirestoreListeners();
+                }
             } catch (error) {
-                console.error("Fulla auth failed:", error);
-                showNotification("فشل ربط لوحة الأدمن مع قاعدة التطبيق الجديدة. تأكد من حساب الأدمن وكلمة المرور في مشروع fulla-caffe.", "error");
-                startOldRealtimeListeners();
+                console.error(error);
+                showLoginOverlay("حدث خطأ أثناء التحقق من الدخول");
             }
         });
 
-        async function ensureFullaAdminAuth() {
-            const current = newAuth.currentUser;
-            if (current && current.email === ADMIN_EMAIL) return current;
-
-            if (!FULLA_ADMIN_PASSWORD || FULLA_ADMIN_PASSWORD === "PUT_THE_FULLA_ADMIN_PASSWORD_HERE") {
-                throw new Error("FULLA_ADMIN_PASSWORD is not configured.");
+        newAuth.onAuthStateChanged((user) => {
+            const oldUser = auth.currentUser;
+            if (oldUser && oldUser.email === ADMIN_EMAIL && user && user.email === ADMIN_EMAIL) {
+                hideLoginOverlay();
             }
+        });
 
-            const credential = await newAuth.signInWithEmailAndPassword(ADMIN_EMAIL, FULLA_ADMIN_PASSWORD);
-            return credential.user;
+        async function loginWithGoogleForBoth() {
+            const providerOld = new firebase.auth.GoogleAuthProvider();
+            const providerNew = new firebase.auth.GoogleAuthProvider();
+
+            try {
+                setLoginLoading(true, "جاري تسجيل الدخول...");
+
+                let oldUser = auth.currentUser;
+                if (!oldUser || oldUser.email !== ADMIN_EMAIL) {
+                    const oldResult = await auth.signInWithPopup(providerOld);
+                    oldUser = oldResult.user;
+                }
+
+                if (!oldUser || oldUser.email !== ADMIN_EMAIL) {
+                    throw new Error("NOT_ADMIN_OLD");
+                }
+
+                let newUser = newAuth.currentUser;
+                if (!newUser || newUser.email !== ADMIN_EMAIL) {
+                    const newResult = await newAuth.signInWithPopup(providerNew);
+                    newUser = newResult.user;
+                }
+
+                if (!newUser || newUser.email !== ADMIN_EMAIL) {
+                    throw new Error("NOT_ADMIN_NEW");
+                }
+
+                hideLoginOverlay();
+
+                if (!listenersStarted) {
+                    listenersStarted = true;
+                    startOldRealtimeListeners();
+                    startFirestoreListeners();
+                }
+
+                showNotification("تم تسجيل دخول الأدمن وربط القاعدتين بنجاح", "success");
+            } catch (error) {
+                console.error("Dual Google auth failed:", error);
+
+                let msg = "فشل تسجيل الدخول بحساب Google";
+
+                if (error.code === "auth/popup-closed-by-user") {
+                    msg = "تم إغلاق نافذة تسجيل الدخول قبل الإكمال";
+                } else if (error.code === "auth/popup-blocked") {
+                    msg = "المتصفح منع نافذة تسجيل الدخول المنبثقة";
+                } else if (error.code === "auth/unauthorized-domain") {
+                    msg = "هذا الدومين غير مصرح به داخل Firebase Authentication";
+                } else if (error.message === "NOT_ADMIN_OLD" || error.message === "NOT_ADMIN_NEW") {
+                    msg = "الحساب المسجل ليس حساب الأدمن المصرح";
+                } else if (error.code === "auth/operation-not-allowed") {
+                    msg = "تسجيل الدخول بواسطة Google غير مفعل في أحد المشروعين";
+                } else if (error.message) {
+                    msg = error.message;
+                }
+
+                showLoginOverlay(msg);
+                showNotification(msg, "error");
+            } finally {
+                setLoginLoading(false, "");
+            }
+        }
+
+        async function logoutAdmin() {
+            try {
+                await Promise.allSettled([
+                    auth.signOut(),
+                    newAuth.signOut()
+                ]);
+                listenersStarted = false;
+                allOrders = [];
+                oldOrdersCache = [];
+                firestoreOrdersCache = [];
+                showEmptyState();
+                showLoginOverlay("تم تسجيل الخروج");
+                showNotification("تم تسجيل الخروج", "success");
+            } catch (error) {
+                console.error(error);
+                showNotification("فشل تسجيل الخروج", "error");
+            }
+        }
+
+        function showLoginOverlay(message = "") {
+            loginOverlay.style.display = "flex";
+            loginHint.textContent = message || "";
+        }
+
+        function hideLoginOverlay() {
+            loginOverlay.style.display = "none";
+            loginHint.textContent = "";
+        }
+
+        function setLoginLoading(isLoading, text) {
+            googleLoginBtn.disabled = isLoading;
+            googleLoginBtn.innerHTML = isLoading
+                ? `<span class="loader"></span> <span style="margin-right:8px;">${text}</span>`
+                : `<i class="fab fa-google"></i> تسجيل الدخول بحساب Google`;
         }
 
         // =========================================
@@ -334,7 +674,7 @@
         }
 
         // =========================================
-        // OLD REALTIME DATABASE LISTENERS (بدون حذف القديم)
+        // OLD REALTIME DATABASE LISTENERS
         // =========================================
         function startOldRealtimeListeners() {
             db.ref("orders").on("value", snapshot => {
@@ -345,7 +685,6 @@
                         oldOrdersCache.push(normalizeOldOrder(order, child.key));
                     });
                 }
-                oldOrdersReady = true;
                 mergeOrdersAndRender();
             });
 
@@ -356,14 +695,13 @@
         }
 
         // =========================================
-        // NEW FIRESTORE LISTENERS (الطلبات الجديدة)
+        // NEW FIRESTORE LISTENERS
         // =========================================
         function startFirestoreListeners() {
             firestore.collection("orders")
                 .orderBy("createdAt", "desc")
                 .onSnapshot(snapshot => {
                     firestoreOrdersCache = snapshot.docs.map(normalizeFirestoreOrder);
-                    firestoreOrdersReady = true;
                     mergeOrdersAndRender();
                 }, error => {
                     console.error("Firestore listener error:", error);
@@ -656,7 +994,16 @@
                 .catch(() => showNotification("❌ فشل في عملية التسليم", "error"));
         }
 
+        // =========================================
+        // EVENTS
+        // =========================================
         statusFilter.addEventListener('change', applyFilters);
         searchOrder.addEventListener('input', applyFilters);
+
+        // =========================================
+        // START
+        // =========================================
+        showLoginOverlay("يجب تسجيل الدخول أولاً بحساب الأدمن");
     </script>
-</body></html>
+</body>
+</html>
