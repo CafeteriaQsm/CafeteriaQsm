@@ -969,30 +969,62 @@
                 .catch(() => showNotification("❌ فشل في حذف الطلب", "error"));
         }
 
-        function markAsDelivered(orderId, code, source) {
-            if (!confirm(`تأكيد: هل تريد وضع الطلب ${code ? "#" + code : ""} كـ "تم التسليم"؟`)) return;
+       async function markAsDelivered(orderId, code, source) {
+    if (!confirm(`تأكيد: هل تريد وضع الطلب ${code ? "#" + code : ""} كـ "تم التسليم"؟`)) return;
 
-            if (source === "firestore") {
-                firestore.collection("orders").doc(orderId).update({
-                    status: "تم التسليم",
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                })
-                .then(() => showNotification("✅ تم تحديث حالة طلب Firestore", "success"))
-                .catch((error) => {
-                    console.error(error);
-                    showNotification("❌ فشل في عملية التسليم", "error");
-                });
+    try {
+        if (source === "firestore") {
+            const orderRef = firestore.collection("orders").doc(orderId);
+            const orderSnap = await orderRef.get();
+
+            if (!orderSnap.exists) {
+                showNotification("الطلب غير موجود", "error");
                 return;
             }
 
-            db.ref("orders/" + orderId).update({ status: "تم التسليم" })
-                .then(() => {
-                    showNotification("✅ تم تحديث الحالة", "success");
-                    if (!confirm("هل تريد حذف الطلب نهائياً؟")) return;
-                    return db.ref("orders/" + orderId).remove().then(() => showNotification("✅ تم حذف الطلب", "success"));
-                })
-                .catch(() => showNotification("❌ فشل في عملية التسليم", "error"));
+            const data = orderSnap.data();
+
+            await firestore.collection("orders_archive").doc(orderId).set({
+                ...data,
+                status: "تم التسليم",
+                archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                archiveReason: "delivered",
+                originalOrderId: orderId
+            });
+
+            await orderRef.delete();
+
+            showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
+            return;
         }
+
+        // Realtime DB القديم
+        const oldRef = db.ref("orders/" + orderId);
+        const snap = await oldRef.once("value");
+
+        if (!snap.exists()) {
+            showNotification("الطلب غير موجود", "error");
+            return;
+        }
+
+        const data = snap.val();
+
+        await db.ref("orders_archive/" + orderId).set({
+            ...data,
+            status: "تم التسليم",
+            archivedAt: Date.now(),
+            archiveReason: "delivered",
+            originalOrderId: orderId
+        });
+
+        await oldRef.remove();
+
+        showNotification("✅ تم تسليم الطلب ونقله إلى الأرشيف", "success");
+    } catch (error) {
+        console.error(error);
+        showNotification("❌ فشل في عملية التسليم", "error");
+    }
+}
 
         // =========================================
         // EVENTS
